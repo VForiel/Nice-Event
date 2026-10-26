@@ -1,0 +1,43 @@
+{% extends "gestion/base.html" %}
+{% load ne %}
+{% block title %}Événements{% endblock %}
+
+{% block content %}
+<h1 class="g-title">Événements</h1>
+<form class="g-inline g-filter" method="get">
+  <input type="search" name="q" value="{{ q }}" placeholder="Titre, lieu, organisateur…">
+  <select name="type">
+    <option value="">Tous (derniers ajoutés)</option>
+    <option value="a-venir"{% if type == 'a-venir' %} selected{% endif %}>À venir</option>
+    <option value="selection"{% if type == 'selection' %} selected{% endif %}>Sélection de l'équipe</option>
+    <option value="masques"{% if type == 'masques' %} selected{% endif %}>Masqués</option>
+    <option value="externes"{% if type == 'externes' %} selected{% endif %}>Externes</option>
+  </select>
+  <button class="btn btn-ghost" type="submit">Filtrer</button>
+</form>
+
+<table class="g-table g-events">
+  <thead><tr><th>Date</th><th>Événement</th><th>Lieu</th><th>Par</th><th>Statut</th><th></th></tr></thead>
+  <tbody>
+    {% for e in page %}
+    <tr>
+      <td class="nowrap">{{ e.local_start|date:"d/m/y H:i" }}</td>
+      <td><a href="{{ e.get_absolute_url }}" target="_blank">{{ e.title }}</a>{% if e.featured %} <span class="tag tag-free">sélection</span>{% endif %}</td>
+      <td>{{ e.venue.commune.name }}</td>
+      <td>{% if e.source %}via {{ e.source.name }}{% elif e.organizer %}{{ e.organizer.profile.display_name }}{% endif %}</td>
+      <td>{{ e.get_status_display }}{% if e.state != 'scheduled' %} · {{ e.get_state_display }}{% endif %}</td>
+      <td class="g-actions">
+        <form method="post" action="{% url 'gestion:event_action' e.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <button class="btn btn-ghost btn-sm" type="submit" name="action" value="feature">{% if e.featured %}Retirer de la sélection{% else %}Mettre en avant{% endif %}</button>
+          {% if e.status == 'hidden' %}<button class="btn btn-ghost btn-sm" type="submit" name="action" value="show">Republier</button>
+          {% elif e.status == 'published' %}<button class="btn btn-ghost btn-sm" type="submit" name="action" value="hide" data-confirm="Masquer cet événement ?">Masquer</button>{% endif %}
+          {% if not e.source %}<a class="btn btn-ghost btn-sm" href="{% url 'events:edit' e.slug %}">Modifier</a>{% endif %}
+        </form>
+      </td>
+    </tr>
+    {% empty %}<tr><td colspan="6">Aucun événement.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% if page.has_other_pages %}<p class="g-pages">{% if page.has_previous %}<a href="?q={{ q|urlencode }}&amp;type={{ type }}&amp;page={{ page.previous_page_number }}">← Précédents</a>{% endif %} Page {{ page.number }}/{{ page.paginator.num_pages }} {% if page.has_next %}<a href="?q={{ q|urlencode }}&amp;type={{ type }}&amp;page={{ page.next_page_number }}">Suivants →</a>{% endif %}</p>{% endif %}
+{% endblock %}

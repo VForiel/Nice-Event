@@ -1,0 +1,12 @@
+{% load i18n %}{# Résumé en tête de formulaire : rien n'est enregistré tant qu'un champ est en erreur, il faut que ça se voie. #}
+{% if form.errors or extra.errors %}
+<div class="form-error" role="alert" data-form-error tabindex="-1">
+  <p>{% translate "Rien n'a été enregistré : corrige les champs ci-dessous, puis enregistre à nouveau." %}</p>
+  <ul>
+    {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+    {% for field in form %}{% if field.errors %}<li><a href="#{{ field.id_for_label|default:field.auto_id }}">{{ field.label|capfirst }}</a> : {{ field.errors|join:" " }}</li>{% endif %}{% endfor %}
+    {% for field in extra %}{% if field.errors %}<li><a href="#{{ field.id_for_label|default:field.auto_id }}">{{ field.label|capfirst }}</a> : {{ field.errors|join:" " }}</li>{% endif %}{% endfor %}
+  </ul>
+  {% if file_field %}<p class="help">{% translate "Si tu avais choisi une photo, sélectionne-la de nouveau : le navigateur ne la garde pas." %}</p>{% endif %}
+</div>
+{% endif %}

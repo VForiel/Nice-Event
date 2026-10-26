@@ -1,0 +1,7 @@
+<a class="person" href="{{ p.get_absolute_url }}">
+  {% include "community/_avatar.html" with p=p size="md" %}
+  <span class="person-text">
+    <strong>{{ p.display_name }}</strong>
+    <span>{{ p.headline|default:"" }}</span>
+  </span>
+</a>

@@ -1,0 +1,14 @@
+{% autoescape off %}{% load ne %}Bonjour {{ n.recipient.profile.display_name }},
+
+{% with name=n.actor.profile.display_name e=n.event %}{% if n.verb == "invite" %}{{ name }} t'invite à « {{ e.title }} », {{ e|when }} à {{ e.venue.name }} ({{ e.venue.commune.name }}).{% elif n.verb == "approved" %}Bonne nouvelle : « {{ e.title }} » est validé et en ligne. Tes prochains événements seront publiés directement.
+
+Pense à le partager : c'est ce qui fait venir du monde !{% elif n.verb == "rejected" %}« {{ e.title }} » n'a pas été publié par l'équipe.{% if n.message %} Motif : {{ n.message }}{% endif %}
+
+Tu peux le modifier, et nous écrire si tu penses que c'est une erreur.{% elif n.verb == "changed" %}« {{ e.title }} », où tu as dit aller, a été {{ n.message|default:"modifié" }} : {{ e|when }}, {{ e|hours }}, {{ e.venue.name }} ({{ e.venue.commune.name }}).{% endif %}{% endwith %}
+
+{{ site }}{{ n.event.get_absolute_url }}
+
+—
+Nice-Event · {{ site }}
+Tu reçois ce message car tu as un compte sur Nice-Event. Pour ne plus en recevoir : {{ site }}/compte/reglages/
+{% endautoescape %}

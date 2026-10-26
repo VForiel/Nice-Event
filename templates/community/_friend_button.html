@@ -1,0 +1,14 @@
+{% load i18n ne %}{% if rel == "self" %}
+<a class="btn btn-ghost" href="{% url 'community:settings' %}">{% icon "edit" 18 %} {% translate "Modifier mon profil" %}</a>
+{% elif rel == "anonymous" %}
+<a class="btn btn-primary" href="{% url 'community:login' %}?next={{ request.path }}">{% icon "users" 18 %} {% translate "Se connecter pour l'ajouter" %}</a>
+{% else %}
+<form method="post" action="{% if rel == 'none' %}{% url 'community:friend' person.handle 'add' %}{% elif rel == 'received' %}{% url 'community:friend' person.handle 'accept' %}{% elif rel == 'sent' %}{% url 'community:friend' person.handle 'cancel' %}{% else %}{% url 'community:friend' person.handle 'remove' %}{% endif %}">
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ request.path }}">
+  {% if rel == "none" %}<button class="btn btn-primary" type="submit">{% icon "plus" 18 %} {% translate "Ajouter en ami" %}</button>
+  {% elif rel == "received" %}<button class="btn btn-primary" type="submit">{% icon "check" 18 %} {% translate "Accepter la demande" %}</button>
+  {% elif rel == "sent" %}<button class="btn btn-ghost" type="submit" title="{% translate "Annuler la demande" %}">{% icon "clock" 18 %} {% translate "Demande envoyée" %}</button>
+  {% else %}<button class="btn btn-ghost friend-remove" type="submit" title="{% translate "Retirer des amis" %}">{% icon "check" 18 %} <span>{% translate "Amis" %}</span></button>{% endif %}
+</form>
+{% endif %}

@@ -1,0 +1,13 @@
+{% extends "community/_auth_base.html" %}
+{% load i18n %}
+{% block title %}{{ person.display_name }}{% endblock %}
+{% block head %}<meta name="robots" content="noindex">{% endblock %}
+{% block pitch %}
+<p class="kicker">{% translate "Profil réservé aux membres" %}</p>
+<h1 class="page-title">{{ person.display_name }}</h1>
+<p class="page-lede">{% translate "Ce profil n'est visible que par les membres connectés." %}</p>
+{% endblock %}
+{% block card %}
+<a class="btn btn-primary" href="{% url 'community:login' %}?next={{ request.path }}">{% translate "Se connecter" %}</a>
+<p class="auth-switch">{% translate "Pas encore de compte ?" %} <a href="{% url 'community:signup' %}">{% translate "Rejoindre la communauté" %}</a></p>
+{% endblock %}

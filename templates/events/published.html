@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n ne %}
+{% block title %}{% translate "C'est en ligne !" %}{% endblock %}
+{% block head %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block content %}
+<div class="wrap published">
+  <div class="published-main">
+    {% if event.status == 'pending' %}
+    <p class="kicker">{% translate "Presque !" %}</p>
+    <h1 class="page-title">{% translate "Merci, c'est envoyé !" %}</h1>
+    <p class="page-lede">{% translate "Comme pour tout premier événement, l'équipe jette un œil avant la mise en ligne (en général dans la journée). Tu recevras une notification ; ensuite, tes événements seront publiés directement." %}</p>
+    {% else %}
+    <p class="kicker">{% translate "Bravo" %}</p>
+    <h1 class="page-title">{% translate "C'est en ligne !" %}</h1>
+    <p class="page-lede">{% translate "Maintenant, le plus important : fais-le savoir. Un partage dans un groupe WhatsApp ou une story suffit souvent à remplir une soirée." %}</p>
+    {% endif %}
+    {% if occurrences > 1 %}<p class="help">{% blocktranslate count n=occurrences %}{{ n }} date créée.{% plural %}{{ n }} dates créées (une par semaine), modifiables une à une.{% endblocktranslate %}</p>{% endif %}
+    <div class="published-card">{% include "events/_card.html" %}</div>
+    <p class="actions">
+      <a class="btn btn-ghost" href="{{ event.get_absolute_url }}">{% translate "Voir la page de l'événement" %} {% icon "arrow" 18 %}</a>
+      <a class="btn btn-ghost" href="{% url 'events:edit' event.slug %}">{% icon "edit" 18 %} {% translate "Modifier" %}</a>
+    </p>
+  </div>
+  {% if event.status == 'published' %}<aside>{% include "events/_share.html" %}</aside>{% endif %}
+</div>
+{% endblock %}

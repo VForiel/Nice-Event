@@ -1,0 +1,10 @@
+{% load i18n %}{% autoescape off %}{% blocktranslate %}Bonjour {{ name }},
+
+Bienvenue sur Nice-Event ! Pour confirmer ton adresse et pouvoir publier des événements, ouvre ce lien (valable trois jours) :{% endblocktranslate %}
+
+{{ link }}
+
+{% blocktranslate %}Si tu n'as pas créé de compte, ignore simplement ce message.
+
+— Nice-Event, l'agenda participatif de Nice{% endblocktranslate %}
+{% endautoescape %}

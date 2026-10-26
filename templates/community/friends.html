@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load i18n ne %}
+{% block title %}{% translate "Mes amis" %}{% endblock %}
+
+{% block content %}
+<header class="page-head">
+  <div class="wrap">
+    <p class="kicker">{% translate "Communauté" %}</p>
+    <h1 class="page-title">{% translate "Mes amis" %}</h1>
+    <p class="page-lede">{% translate "Tes amis voient les événements auxquels tu vas, et tu peux les inviter à ceux qui te tentent." %}
+      <a href="{% url 'community:members' %}">{% translate "Trouver des membres" %} {% icon "arrow" 16 %}</a></p>
+  </div>
+</header>
+
+<div class="wrap page-body">
+  {% if received %}
+  <section class="members-section">
+    <h2 class="members-h">{% translate "Demandes reçues" %}</h2>
+    <ul class="request-list">
+      {% for r in received %}
+      <li>
+        {% include "community/_person.html" with p=r.from_user.profile %}
+        <div class="request-actions">
+          <form method="post" action="{% url 'community:friend' r.from_user.profile.handle 'accept' %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}"><button class="btn btn-primary" type="submit">{% icon "check" 16 %} {% translate "Accepter" %}</button></form>
+          <form method="post" action="{% url 'community:friend' r.from_user.profile.handle 'decline' %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}"><button class="btn btn-ghost" type="submit">{% translate "Refuser" %}</button></form>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  <section class="members-section">
+    <h2 class="members-h">{% blocktranslate count n=friends|length %}{{ n }} ami·e{% plural %}{{ n }} ami·es{% endblocktranslate %}</h2>
+    {% if friends %}
+    <div class="people">{% for f in friends %}{% include "community/_person.html" with p=f.profile %}{% endfor %}</div>
+    {% else %}
+    <div class="empty">
+      <h3>{% translate "Pas encore d'amis." %}</h3>
+      <p>{% translate "Va voir l'annuaire, ou les participant·es d'un événement qui te tente." %}</p>
+      <div class="empty-actions"><a class="btn btn-primary" href="{% url 'community:members' %}">{% icon "users" 18 %} {% translate "Voir les membres" %}</a></div>
+    </div>
+    {% endif %}
+  </section>
+
+  {% if sent %}
+  <section class="members-section">
+    <h2 class="members-h">{% translate "Demandes envoyées" %}</h2>
+    <ul class="request-list">
+      {% for r in sent %}
+      <li>
+        {% include "community/_person.html" with p=r.to_user.profile %}
+        <form method="post" action="{% url 'community:friend' r.to_user.profile.handle 'cancel' %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}"><button class="btn btn-ghost" type="submit">{% translate "Annuler" %}</button></form>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

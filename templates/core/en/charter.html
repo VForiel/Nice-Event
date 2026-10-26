@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Terms of use and posting rules{% endblock %}
+
+{% block content %}
+<header class="page-head">
+  <div class="wrap">
+    <h1 class="page-title">Terms and rules</h1>
+    <p class="page-lede">Nice-Event is a free, community-run events calendar. To keep it useful and welcoming, a few simple
+      rules apply to everyone.</p>
+  </div>
+</header>
+<div class="wrap page-body prose">
+  <h2>Posting rules</h2>
+  <p>Every event posted must:</p>
+  <ul>
+    <li>actually take place in Nice, the Alpes-Maritimes or Monaco, on the date and at the place given;</li>
+    <li>be described honestly: price, audience, language, accessibility;</li>
+    <li>be open to the public, or at least to anyone who registers as explained.</li>
+  </ul>
+  <p>Not allowed: illegal, hateful, discriminatory, violent or sexual content; scams and fake events; ticket resale;
+    advertising disguised as an event; duplicate events.</p>
+  <p>Each account's first event is reviewed by the team before going live. Any event breaking these rules may be hidden
+    at any time, and the account that posted it deactivated.</p>
+
+  <h2>Reporting content</h2>
+  <p>Every event and profile has a “Report” link. An event reported by several members is hidden until the team reviews
+    it. You can also write to <a href="mailto:{{ CONTACT_EMAIL }}">{{ CONTACT_EMAIL }}</a>.</p>
+
+  <h2>Terms of use</h2>
+  <ul>
+    <li>The site is free. Posting events may later cost €1 per event once the site has grown; this will be announced in
+      advance and never applied retroactively.</li>
+    <li>You are responsible for what you post (texts, photos: you must have the right to share them). By posting, you
+      allow Nice-Event to display your event and share it on its social accounts (Instagram, Facebook, X, Bluesky), with a
+      visual made from your photo.</li>
+    <li>External events come from public calendars: their accuracy is up to their source, which is always linked.</li>
+    <li>Nice-Event does not organise events or sell tickets: if something goes wrong with an event, contact its organiser.</li>
+    <li>You can delete your account at any time from your settings.</li>
+  </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n ne %}
+{% block title %}{% translate "Confirme ton adresse" %}{% endblock %}
+
+{% block content %}
+<div class="wrap page narrow">
+  <p class="kicker">{% translate "Une dernière chose" %}</p>
+  <h1 class="page-title">{% translate "Confirme ton adresse" %}</h1>
+  <p class="page-lede">{% blocktranslate with email=user.email %}Pour publier, ouvre le lien envoyé à {{ email }} à ton inscription. C'est ce qui nous protège des robots et des arnaques.{% endblocktranslate %}</p>
+  <form method="post" action="{% url 'community:confirm_resend' %}">
+    {% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}">
+    <p class="actions"><button class="btn btn-primary" type="submit">{% icon "mail" 18 %} {% translate "Renvoyer le lien" %}</button>
+      <a class="btn btn-ghost" href="{% url 'community:settings' %}">{% translate "Corriger mon adresse" %}</a></p>
+  </form>
+  <p class="help">{% translate "Rien reçu ? Regarde dans les indésirables, ou écris-nous." %}</p>
+</div>
+{% endblock %}

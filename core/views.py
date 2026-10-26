@@ -6,7 +6,6 @@ from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
-from django.utils.translation import gettext_lazy
 from django.views.decorators.http import require_GET
 
 from siteconfig.models import SiteConfig
@@ -19,21 +18,6 @@ from .security import client_ip, throttled
 log = logging.getLogger(__name__)
 CONTACTS_PER_HOUR = 5
 
-# Catégories mises en avant sur l'accueil d'attente (la liste complète arrive avec les événements, phase 2).
-TEASER_CATEGORIES = [
-    ("music", "chaise", gettext_lazy("Concert & musique")),
-    ("party", "lavande", gettext_lazy("Soirée & fête")),
-    ("sea", "chaise", gettext_lazy("Mer & plage")),
-    ("hike", "pin", gettext_lazy("Plein air & rando")),
-    ("food", "corail", gettext_lazy("Gastronomie")),
-    ("lang", "chaise", gettext_lazy("Échanges linguistiques")),
-    ("meet", "corail", gettext_lazy("Rencontres en groupe")),
-    ("market", "ocre", gettext_lazy("Marché & brocante")),
-    ("show", "corail", gettext_lazy("Spectacle & théâtre")),
-    ("kids", "ocre", gettext_lazy("Famille & enfants")),
-]
-
-
 def localized(name):
     """Pages surtout rédactionnelles : une version par langue (core/en/<page>.html), repli sur le français."""
     folder, file = name.rsplit("/", 1)
@@ -41,7 +25,29 @@ def localized(name):
 
 
 def home(request):
-    return render(request, "core/home.html", {"categories": TEASER_CATEGORIES})
+    from django.db.models import Count, Q
+    from django.utils import timezone
+
+    from events.models import Category, Event
+    from events.views import base_queryset, friends_going, window
+
+    events = base_queryset()
+    today_start, today_end = window("aujourdhui")
+    we_start, we_end = window("weekend")
+    today = list(events.between(today_start, today_end)[:6])
+    weekend = list(events.between(we_start, we_end).exclude(pk__in=[e.pk for e in today])[:6])
+    featured = list(events.filter(featured=True)[:3])
+    latest = list(events.internal().order_by("-published_at")[:4])
+    going = friends_going(request.user, today + weekend + featured + latest)
+    for e in today + weekend + featured + latest:
+        e.friends_going = going.get(e.pk, 0)
+    now = timezone.now()
+    categories = Category.objects.annotate(n=Count("events", filter=Q(events__status=Event.Status.PUBLISHED,
+                                                                        events__ends_at__gte=now))).order_by("order")
+    return render(request, "core/home.html", {
+        "today": today, "weekend": weekend, "featured": featured, "latest": latest, "categories": categories,
+        "total": events.count(),
+    })
 
 
 def contact(request):
@@ -74,6 +80,10 @@ def legal(request):
 
 def privacy(request):
     return render(request, localized("core/privacy.html"))
+
+
+def charter(request):
+    return render(request, localized("core/charter.html"))
 
 
 @require_GET

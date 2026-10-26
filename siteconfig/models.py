@@ -27,6 +27,12 @@ class SiteConfig(models.Model):
     contact_email = models.EmailField("adresse de contact", default="contact@nice-event.fr",
                                       help_text="Reçoit les messages du formulaire de contact ; affichée sur le site.")
 
+    # Comptes et publication
+    require_email_confirmation = models.BooleanField(
+        "courriel confirmé pour publier", default=True,
+        help_text="Les membres doivent avoir ouvert le lien reçu par courriel avant de publier un événement. "
+                  "Le premier événement de chaque compte reste modéré dans tous les cas.")
+
     updated_at = models.DateTimeField("modifié le", auto_now=True)
 
     class Meta:

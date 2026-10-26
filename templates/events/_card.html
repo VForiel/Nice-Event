@@ -1,0 +1,23 @@
+{% load i18n ne %}{% with cat=event.main_category %}
+<article class="card{% if event.is_cancelled %} is-cancelled{% endif %}{% if event.is_external %} is-external{% endif %}">
+  <a class="card-link" href="{{ event.get_absolute_url }}">
+    <div class="card-pic tone-{{ cat.tone|default:'nuit' }}">
+      {% if event.photo %}<img src="{{ event.photo|thumb:480 }}" alt="" loading="lazy">
+      {% else %}<span class="card-art" aria-hidden="true">{% icon cat.icon|default:"pin" 64 %}</span>{% endif %}
+      <span class="card-when"><small>{{ event.local_start|weekday_short }}</small>{% if event.all_day %}{{ event.local_start.day }}{% else %}{{ event.local_start|time:"H:i" }}{% endif %}</span>
+      {% if event.state != 'scheduled' %}<span class="card-state state-{{ event.state }}">{{ event.get_state_display }}</span>{% endif %}
+    </div>
+    <div class="card-body">
+      <div class="tags">
+        {% if cat %}<span class="tag tag-cat tone-{{ cat.tone }}">{{ cat.name_tr }}</span>{% endif %}
+        {% if event.is_free %}<span class="tag tag-free">{% translate "Gratuit" %}</span>{% else %}<span class="tag tag-price">{{ event.price_label }}</span>{% endif %}
+        {% if event.english_friendly %}<span class="tag tag-en" lang="en">EN friendly</span>{% endif %}
+        {% if event.is_external %}<span class="tag tag-ext">{% blocktranslate with name=event.source.name %}via {{ name }}{% endblocktranslate %}</span>{% endif %}
+      </div>
+      <h3 class="card-title">{{ event.title_tr }}</h3>
+      <p class="meta">{{ event.venue.name }} · {{ event.venue.commune.name }}</p>
+      {% if event.friends_going %}<p class="going">{% blocktranslate count n=event.friends_going %}{{ n }} ami y va{% plural %}{{ n }} amis y vont{% endblocktranslate %}</p>{% endif %}
+    </div>
+  </a>
+</article>
+{% endwith %}

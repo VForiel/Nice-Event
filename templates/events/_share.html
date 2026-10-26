@@ -1,0 +1,20 @@
+{% load i18n ne %}{# Bloc « Fais tourner ! » : liens de partage simples, rien n'est chargé chez les réseaux avant le clic. #}
+{% with u=share_url|urlencode:"" t=share_text|urlencode:"" %}
+<div class="share" id="partager">
+  <h2 class="share-title">{% translate "Fais tourner !" %}</h2>
+  <p>{% translate "Plus on est, plus on rit : partage l'événement à tes amis et sur tes réseaux." %}</p>
+  <button class="btn share-native" type="button" data-share data-share-url="{{ share_url }}" data-share-title="{{ share_text }}" hidden>{% icon "share" 18 %} {% translate "Partager…" %}</button>
+  <div class="share-grid">
+    <a href="https://wa.me/?text={{ t }}%20{{ u }}" rel="noopener" target="_blank">{% icon "whatsapp" 18 %} WhatsApp</a>
+    <a class="mobile-only" href="fb-messenger://share/?link={{ u }}">{% icon "messenger" 18 %} Messenger</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u={{ u }}" rel="noopener" target="_blank">{% icon "facebook" 18 %} Facebook</a>
+    <a href="https://bsky.app/intent/compose?text={{ t }}%20{{ u }}" rel="noopener" target="_blank">{% icon "bluesky" 18 %} Bluesky</a>
+    <a href="https://x.com/intent/post?text={{ t }}&amp;url={{ u }}" rel="noopener" target="_blank">{% icon "x" 18 %} X</a>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ u }}" rel="noopener" target="_blank">{% icon "linkedin" 18 %} LinkedIn</a>
+    <a href="https://t.me/share/url?url={{ u }}&amp;text={{ t }}" rel="noopener" target="_blank">{% icon "telegram" 18 %} Telegram</a>
+    <a href="mailto:?subject={{ t }}&amp;body={{ u }}">{% icon "mail" 18 %} {% translate "Courriel" %}</a>
+    <button type="button" data-copy="{{ share_url }}" data-copied="{% translate "Copié !" %}">{% icon "copy" 18 %} <span data-copy-label>{% translate "Copier le lien" %}</span></button>
+  </div>
+  {% if story_url %}<a class="btn share-story" href="{{ story_url }}" download>{% icon "download" 18 %} {% translate "Visuel pour ta story Instagram" %}</a>{% endif %}
+</div>
+{% endwith %}

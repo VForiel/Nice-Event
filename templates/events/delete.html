@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Supprimer l'événement" %}{% endblock %}
+
+{% block content %}
+<div class="wrap page narrow">
+  <h1 class="page-title">{% translate "Supprimer l'événement ?" %}</h1>
+  <p class="page-lede">{% blocktranslate with title=event.title %}« {{ title }} » disparaîtra du site, avec la liste des participant·es. C'est définitif.{% endblocktranslate %}</p>
+  <p class="help">{% translate "Si l'événement n'a simplement pas lieu, mieux vaut le marquer « annulé » en le modifiant : les personnes inscrites seront prévenues." %}</p>
+  <form method="post" class="form">
+    {% csrf_token %}
+    {% if following %}<label class="check"><input type="checkbox" name="following" value="1"> <span>{% blocktranslate count n=following %}Supprimer aussi la date suivante de la série{% plural %}Supprimer aussi les {{ n }} dates suivantes de la série{% endblocktranslate %}</span></label>{% endif %}
+    <p class="actions"><button class="btn btn-primary" type="submit">{% translate "Supprimer" %}</button>
+      <a class="btn btn-ghost" href="{% url 'events:edit' event.slug %}">{% translate "Plutôt le modifier" %}</a></p>
+  </form>
+</div>
+{% endblock %}

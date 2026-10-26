@@ -1,0 +1,8 @@
+<div class="field{% if field.errors %} has-error{% endif %}">
+  <fieldset>
+    <legend>{{ field.label|capfirst }}</legend>
+    <div class="choices">{% for option in field %}<label>{{ option.tag }} {{ option.choice_label }}</label>{% endfor %}</div>
+  </fieldset>
+  {% if field.help_text %}<p class="help">{{ field.help_text }}</p>{% endif %}
+  {{ field.errors }}
+</div>

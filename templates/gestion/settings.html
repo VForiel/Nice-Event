@@ -27,6 +27,12 @@
     </div>
   </fieldset>
 
+  <fieldset class="g-block">
+    <legend>Comptes et publication</legend>
+    <div class="field field-check"><label class="check">{{ form.require_email_confirmation }} <span>{{ form.require_email_confirmation.label|capfirst }}</span></label>
+      <p class="help">{{ form.require_email_confirmation.help_text }}</p></div>
+  </fieldset>
+
   <fieldset class="g-block g-block-later">
     <legend>Réseaux sociaux</legend>
     <p class="g-help">Instagram, Facebook, X et Bluesky : arrivent avec la diffusion des événements (phase 4).</p>

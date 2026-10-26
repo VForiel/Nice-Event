@@ -1,0 +1,15 @@
+{% extends "community/_auth_base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Supprimer mon compte" %}{% endblock %}
+{% block pitch %}
+<h1 class="page-title">{% translate "Supprimer mon compte" %}</h1>
+<p class="page-lede">{% translate "Ton profil, tes amitiés, tes participations et tes notifications seront effacés définitivement. Les événements que tu as proposés restent en ligne, sans ton nom." %}</p>
+{% endblock %}
+{% block card %}
+<form class="form" method="post" novalidate>
+  {% csrf_token %}
+  <div class="field"><label for="id_password">{{ form.password.label }}</label>{{ form.password }}{{ form.password.errors }}</div>
+  <button class="btn btn-danger" type="submit">{% translate "Supprimer définitivement" %}</button>
+  <a class="auth-switch" href="{% url 'community:settings' %}">{% translate "Annuler" %}</a>
+</form>
+{% endblock %}

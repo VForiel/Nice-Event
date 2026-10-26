@@ -28,3 +28,23 @@
 .g-log { margin: 0; padding-left: 1.2em; color: var(--ink-2); font-size: .9375rem; }
 .ok { color: var(--pin); font-weight: 700; }
 .warn { color: var(--corail-ink); font-weight: 700; }
+
+.g-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(180px, 100%), 1fr)); gap: 12px; margin: 16px 0 8px; }
+.g-stat { display: grid; gap: 2px; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); color: var(--ink); text-decoration: none; }
+a.g-stat:hover { border-color: var(--ink); }
+.g-stat b { font: 800 2rem/1 var(--title); }
+.g-stat span { color: var(--ink-2); font-size: .9375rem; }
+.g-stat-hot { background: var(--soleil); border-color: var(--ink); color: var(--soleil-ink); }
+.g-stat-hot span { color: inherit; }
+.g-mod-head { display: flex; justify-content: space-between; gap: 16px; }
+.g-mod h2 a { color: var(--ink); }
+.g-thumb { width: 120px; height: 120px; object-fit: cover; border-radius: var(--radius); flex: none; }
+.g-desc { max-height: 240px; overflow: auto; padding: 10px 12px; background: var(--paper); border-radius: var(--radius); }
+.g-mod-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.g-inline input[type=text], .g-inline input[type=search], .g-inline select { min-height: 42px; padding: 0 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); color: var(--ink); font: inherit; }
+.g-filter { margin-bottom: 16px; }
+.g-actions form { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.g-table tr.is-done { opacity: .55; }
+.nowrap { white-space: nowrap; }
+.g-pages { margin-top: 16px; display: flex; gap: 16px; }
+.gestion .badge-inline { display: inline-block; min-width: 18px; padding: 0 5px; border-radius: 999px; background: var(--corail); color: #fff; font-size: .75rem; line-height: 18px; text-align: center; }

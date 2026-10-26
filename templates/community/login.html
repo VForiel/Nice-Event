@@ -1,0 +1,23 @@
+{% extends "community/_auth_base.html" %}
+{% load i18n ne %}
+{% block title %}{% translate "Se connecter" %}{% endblock %}
+
+{% block pitch %}
+<p class="kicker">{% translate "Espace membres" %}</p>
+<h1 class="page-title">{% translate "Re-bonjour" %}</h1>
+<p class="page-lede">{% translate "Connecte-toi pour publier un événement, dire où tu vas et retrouver tes amis." %}</p>
+{% endblock %}
+
+{% block card %}
+<h2>{% translate "Se connecter" %}</h2>
+<form class="form" method="post" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="errorlist">{{ form.non_field_errors }}</div>{% endif %}
+  <div class="field"><label for="id_username">{{ form.username.label }}</label>{{ form.username }}</div>
+  <div class="field"><label for="id_password">{{ form.password.label }}</label>{{ form.password }}</div>
+  <input type="hidden" name="next" value="{{ next }}">
+  <button class="btn btn-primary" type="submit">{% translate "Se connecter" %} {% icon "arrow" 18 %}</button>
+</form>
+<p class="auth-switch"><a href="{% url 'community:password_reset' %}">{% translate "Mot de passe oublié ?" %}</a></p>
+<p class="auth-switch">{% translate "Pas encore de compte ?" %} <a href="{% url 'community:signup' %}">{% translate "Créer un compte" %}</a></p>
+{% endblock %}

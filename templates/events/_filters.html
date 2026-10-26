@@ -1,0 +1,29 @@
+{% load i18n ne %}
+<form class="filters" method="get" action="{{ action }}" role="search">
+  <div class="search">
+    <label class="sr" for="id_q">{% translate "Rechercher" %}</label>
+    <input id="id_q" type="search" name="q" value="{{ active.q|default:'' }}" placeholder="{% translate "Jazz, brocante, yoga, Antibes…" %}">
+    {% for name, value in request.GET.lists %}{% if name != "q" and name != "page" %}{% for v in value %}<input type="hidden" name="{{ name }}" value="{{ v }}">{% endfor %}{% endif %}{% endfor %}
+    <button type="submit">{% translate "Chercher" %}</button>
+  </div>
+  <div class="chips" aria-label="{% translate "Quand" %}">
+    {% for value, label in when_choices %}<a class="chip{% if active.quand == value %} on{% endif %}" href="{% toggle_param 'quand' value %}">{{ label }}</a>{% endfor %}
+    <a class="chip{% if active.gratuit %} on{% endif %}" href="{% toggle_param 'gratuit' '1' %}">{% translate "Gratuit" %}</a>
+    <a class="chip{% if active.en %} on{% endif %}" href="{% toggle_param 'en' '1' %}" lang="en">EN friendly</a>
+    <a class="chip{% if active.famille %} on{% endif %}" href="{% toggle_param 'famille' '1' %}">{% translate "En famille" %}</a>
+  </div>
+  <details class="more-filters"{% if active.categorie or active.zone or active.source %} open{% endif %}>
+    <summary>{% translate "Catégories, zones, sources" %}{% if active.categorie %} <span class="badge badge-inline">{{ active.categorie|length }}</span>{% endif %}</summary>
+    <div class="chips chips-cats">
+      {% for cat in categories %}<a class="chip chip-cat tone-{{ cat.tone }}{% if cat.slug in active.categorie %} on{% endif %}" href="{% toggle_param 'categorie' cat.slug %}">{% icon cat.icon 16 %} {{ cat.name_tr }}</a>{% endfor %}
+    </div>
+    <div class="chips">
+      {% for value, label in zones %}<a class="chip{% if active.zone == value %} on{% endif %}" href="{% toggle_param 'zone' value %}">{{ label }}</a>{% endfor %}
+    </div>
+    <div class="chips">
+      <a class="chip{% if active.source == 'membres' %} on{% endif %}" href="{% toggle_param 'source' 'membres' %}">{% translate "Publiés par les membres" %}</a>
+      <a class="chip{% if active.source == 'externes' %} on{% endif %}" href="{% toggle_param 'source' 'externes' %}">{% translate "Autres agendas" %}</a>
+    </div>
+  </details>
+  {% if active %}<p class="filters-reset"><a href="{{ action }}">{% icon "close" 14 %} {% translate "Effacer les filtres" %}</a></p>{% endif %}
+</form>

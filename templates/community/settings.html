@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load i18n ne %}
+{% block title %}{% translate "Mon profil" %}{% endblock %}
+{% block head %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block content %}
+<header class="page-head page-head-tight">
+  <div class="wrap">
+    <p class="kicker">{% translate "Réglages" %}</p>
+    <h1 class="page-title">{% translate "Mon profil" %}</h1>
+    <p class="page-lede">{% translate "Tout est facultatif, sauf ton nom." %}
+      <a href="{{ profile.get_absolute_url }}">{% translate "Voir ma page" %} {% icon "arrow" 16 %}</a></p>
+  </div>
+</header>
+
+<div class="wrap page-body settings">
+  <form class="form settings-form" method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    {% include "community/_form_errors.html" with file_field=True %}
+    <section class="settings-block">
+      <h2>{% translate "Qui je suis" %}</h2>
+      <div class="grid-2">
+        {% include "community/_field.html" with field=form.display_name %}
+        {% include "community/_field.html" with field=form.pronouns %}
+      </div>
+      <div class="avatar-field">
+        {% include "community/_avatar.html" with p=profile size="lg" %}
+        {% include "community/_field.html" with field=form.avatar %}
+      </div>
+      {% include "community/_field.html" with field=form.headline %}
+      {% include "community/_field.html" with field=form.bio %}
+      {% include "community/_field.html" with field=form.commune %}
+    </section>
+
+    <section class="settings-block">
+      <h2>{% translate "Ce qui me plaît" %}</h2>
+      <div class="cat-picker">{% for box in form.interests %}<label class="cat-option">{{ box.tag }}<span>{{ box.choice_label }}</span></label>{% endfor %}</div>
+      {% include "community/_choices.html" with field=form.spoken_list %}
+    </section>
+
+    <section class="settings-block">
+      <h2>{% translate "Coordonnées" %}</h2>
+      <div class="grid-2">
+        {% include "community/_field.html" with field=form.phone %}
+        {% include "community/_field.html" with field=form.whatsapp %}
+        {% include "community/_field.html" with field=form.instagram %}
+        {% include "community/_field.html" with field=form.facebook %}
+        {% include "community/_field.html" with field=form.bluesky %}
+        {% include "community/_field.html" with field=form.x %}
+      </div>
+      {% include "community/_field.html" with field=form.other_contact %}
+      {% include "community/_field.html" with field=form.website %}
+      {% include "community/_choices.html" with field=form.contact_visibility %}
+      <p class="help">{% translate "Tes coordonnées ne sont jamais publiques : par défaut, seuls tes amis les voient." %}</p>
+    </section>
+
+    <section class="settings-block">
+      <h2>{% translate "Personnalisation et confidentialité" %}</h2>
+      <fieldset class="field" id="{{ form.accent.auto_id }}">
+        <legend>{{ form.accent.label|capfirst }}</legend>
+        <div class="swatches">{% for radio in form.accent %}<label class="swatch">{{ radio.tag }}<span class="swatch-color accent-{{ radio.data.value }}"></span><span>{{ radio.choice_label }}</span></label>{% endfor %}</div>
+      </fieldset>
+      {% include "community/_choices.html" with field=form.visibility %}
+      {% include "community/_field.html" with field=form.show_events %}
+      {% include "community/_field.html" with field=form.email_notifications %}
+    </section>
+
+    <div class="settings-actions"><button class="btn btn-primary" type="submit" name="save_profile" value="1">{% icon "check" 18 %} {% translate "Enregistrer mon profil" %}</button></div>
+  </form>
+
+  <aside class="settings-side">
+    <form class="settings-block" method="post" novalidate>
+      {% csrf_token %}
+      <h2>{% translate "Mon compte" %}</h2>
+      {% include "community/_field.html" with field=email_form.email %}
+      {% if profile.email_confirmed %}<p class="help ok">{% icon "check" 14 %} {% translate "Adresse confirmée" %}</p>{% endif %}
+      <button class="btn btn-ghost" type="submit" name="save_email" value="1">{% translate "Changer d'adresse" %}</button>
+    </form>
+    {% if not profile.email_confirmed %}
+    <form class="settings-block notice-wait" method="post" action="{% url 'community:confirm_resend' %}">
+      {% csrf_token %}
+      <p>{% translate "Adresse pas encore confirmée : ouvre le lien reçu par courriel pour pouvoir publier." %}</p>
+      <button class="btn btn-ghost" type="submit">{% icon "mail" 18 %} {% translate "Renvoyer le lien" %}</button>
+    </form>
+    {% endif %}
+    <div class="settings-block">
+      <ul class="settings-links">
+        <li><a href="{% url 'community:password_change' %}">{% translate "Changer de mot de passe" %}</a></li>
+        <li><a href="{% url 'community:friends' %}">{% translate "Mes amis" %}</a></li>
+        <li><a class="danger-link" href="{% url 'community:delete_account' %}">{% translate "Supprimer mon compte" %}</a></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+{% endblock %}

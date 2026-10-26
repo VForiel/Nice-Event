@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load i18n ne static %}
+{% block title %}{% if event %}{% translate "Modifier l'événement" %}{% else %}{% translate "Publier un événement" %}{% endif %}{% endblock %}
+{% block head %}<meta name="robots" content="noindex"><script src="{% static 'js/event-form.js' %}" defer></script>{% endblock %}
+
+{% block content %}
+<header class="page-head page-head-tight">
+  <div class="wrap">
+    <p class="kicker">{% if event %}{% translate "Modifier" %}{% else %}{% translate "C'est gratuit" %}{% endif %}</p>
+    <h1 class="page-title">{% if event %}{{ event.title }}{% else %}{% translate "Publier un événement" %}{% endif %}</h1>
+    {% if not event %}<p class="page-lede">{% translate "Cinq étapes, deux minutes. Plus c'est précis, plus il y aura de monde !" %}</p>{% endif %}
+  </div>
+</header>
+
+<div class="wrap">
+  <form class="form event-form" method="post" enctype="multipart/form-data" novalidate
+        data-addresses="{% url 'events:api_addresses' %}" data-venues="{% url 'events:api_venues' %}">
+    {% csrf_token %}
+    {% include "community/_form_errors.html" with file_field=True %}
+
+    <fieldset class="step">
+      <legend><span class="step-n">1</span> {% translate "L'essentiel" %}</legend>
+      {% include "community/_field.html" with field=form.title %}
+      <div class="field{% if form.categories.errors %} has-error{% endif %}">
+        <fieldset>
+          <legend>{{ form.categories.label }} <span class="help">{{ form.categories.help_text }}</span></legend>
+          <div class="cat-picker" data-max="3">
+            {% for box in form.categories %}<label class="cat-option">{{ box.tag }}<span>{{ box.choice_label }}</span></label>{% endfor %}
+          </div>
+        </fieldset>
+        {{ form.categories.errors }}
+      </div>
+      <div class="field{% if form.summary.errors %} has-error{% endif %}">
+        <label for="{{ form.summary.id_for_label }}">{{ form.summary.label|capfirst }}</label>
+        {{ form.summary }}
+        <p class="help">{{ form.summary.help_text }} <span class="counter" data-counter="{{ form.summary.id_for_label }}" data-max="200"></span></p>
+        {{ form.summary.errors }}
+      </div>
+      {% include "community/_field.html" with field=form.photo %}
+      {% include "community/_field.html" with field=form.description %}
+    </fieldset>
+
+    <fieldset class="step">
+      <legend><span class="step-n">2</span> {% translate "Quand ?" %}</legend>
+      <div class="grid-3">
+        {% include "community/_field.html" with field=form.date %}
+        <div data-hide-if="id_all_day">{% include "community/_field.html" with field=form.start_time %}</div>
+        <div data-hide-if="id_all_day">{% include "community/_field.html" with field=form.end_time %}</div>
+      </div>
+      {% include "community/_field.html" with field=form.all_day %}
+      {% include "community/_field.html" with field=form.end_date %}
+      {% if form.repeat_weekly %}
+      {% include "community/_field.html" with field=form.repeat_weekly %}
+      <div data-show-if="id_repeat_weekly">{% include "community/_field.html" with field=form.repeat_until %}</div>
+      {% endif %}
+    </fieldset>
+
+    <fieldset class="step">
+      <legend><span class="step-n">3</span> {% translate "Où ?" %}</legend>
+      {{ form.venue_id }}{{ form.lat }}{{ form.lon }}
+      <div class="field autocomplete{% if form.venue_name.errors %} has-error{% endif %}">
+        <label for="{{ form.venue_name.id_for_label }}">{{ form.venue_name.label }}</label>
+        {{ form.venue_name }}
+        <ul class="suggestions" data-for="venue" hidden></ul>
+        <p class="help">{{ form.venue_name.help_text }}</p>
+        {{ form.venue_name.errors }}
+      </div>
+      <div class="grid-2">
+        <div class="field autocomplete{% if form.address.errors %} has-error{% endif %}">
+          <label for="{{ form.address.id_for_label }}">{{ form.address.label }} <span class="optional">{% translate "facultatif" %}</span></label>
+          {{ form.address }}
+          <ul class="suggestions" data-for="address" hidden></ul>
+          <p class="help">{{ form.address.help_text }}</p>
+          {{ form.address.errors }}
+        </div>
+        {% include "community/_field.html" with field=form.commune %}
+      </div>
+      <p class="help located" data-located hidden>{% icon "check" 16 %} {% translate "Adresse trouvée : l'événement sera bien placé sur la carte." %}</p>
+      {% include "community/_field.html" with field=form.access_notes %}
+      {% include "community/_choices.html" with field=form.accessible %}
+    </fieldset>
+
+    <fieldset class="step">
+      <legend><span class="step-n">4</span> {% translate "Combien ?" %}</legend>
+      {% include "community/_choices.html" with field=form.price_kind %}
+      <div class="grid-2" data-show-if-value="price_kind:paid,pwyw">
+        {% include "community/_field.html" with field=form.price_min %}
+        {% include "community/_field.html" with field=form.price_max %}
+      </div>
+      {% include "community/_field.html" with field=form.booking_required %}
+      {% include "community/_field.html" with field=form.ticket_url %}
+      {% include "community/_field.html" with field=form.capacity %}
+    </fieldset>
+
+    <fieldset class="step">
+      <legend><span class="step-n">5</span> {% translate "Pour qui ?" %}</legend>
+      {% include "community/_choices.html" with field=form.age_kind %}
+      <div class="grid-2">
+        <div data-show-if-value="age_kind:from,range">{% include "community/_field.html" with field=form.age_min %}</div>
+        <div data-show-if-value="age_kind:range">{% include "community/_field.html" with field=form.age_max %}</div>
+      </div>
+      {% include "community/_choices.html" with field=form.language %}
+      {% include "community/_choices.html" with field=form.spoken_list %}
+      <div class="grid-2">
+        {% include "community/_field.html" with field=form.organizer_name %}
+        {% include "community/_field.html" with field=form.organizer_url %}
+      </div>
+    </fieldset>
+
+    <details class="step step-optional"{% if form.title_en.value or form.summary_en.value %} open{% endif %}>
+      <summary>{% translate "Version anglaise (facultatif)" %}</summary>
+      <p class="help">{% translate "Sans elle, le site anglais affiche le texte français." %}</p>
+      {% include "community/_field.html" with field=form.title_en %}
+      {% include "community/_field.html" with field=form.summary_en %}
+      {% include "community/_field.html" with field=form.description_en %}
+    </details>
+
+    {% if form.state %}
+    <fieldset class="step">
+      <legend>{% translate "État" %}</legend>
+      {% include "community/_choices.html" with field=form.state %}
+      <p class="help">{% translate "Complet, reporté ou annulé : l'événement reste visible avec la mention, et les personnes inscrites sont prévenues." %}</p>
+    </fieldset>
+    {% endif %}
+
+    <div class="form-submit">
+      {% url 'core:charter' as charter_url %}
+      {% if not event %}<p class="help">{% blocktranslate trimmed with url=charter_url %}En publiant, tu acceptes la <a href="{{ url }}">charte de publication</a> : pas de contenu illégal, haineux, trompeur ni de revente de billets.{% endblocktranslate %}</p>{% endif %}
+      <button class="btn btn-primary btn-lg" type="submit">{% if event %}{% translate "Enregistrer" %}{% else %}{% icon "plus" 18 %} {% translate "Publier" %}{% endif %}</button>
+      {% if event %}<a class="btn btn-ghost" href="{{ event.get_absolute_url }}">{% translate "Annuler" %}</a>{% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}

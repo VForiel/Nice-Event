@@ -11,27 +11,97 @@
       <h1 class="hero-title">{% blocktranslate trimmed %}Qu'est-ce qu'on fait à <em>Nice</em> ce&nbsp;soir&nbsp;<span class="q">?</span>{% endblocktranslate %}</h1>
       <p class="hero-lede">{% translate "Concerts, apéros, randos, ateliers, rencontres : l'agenda que tout le monde peut remplir, de Menton à Cannes." %}</p>
     </div>
-    <div class="hero-side" id="bientot">
-      <div class="soon">
-        <p class="soon-kicker">{% translate "Bientôt" %}</p>
-        <p class="soon-title">{% translate "Le site ouvre ses portes très vite." %}</p>
-        <p>{% translate "Publication d'événements, carte, comptes membres et agenda partagé arrivent dans les prochaines semaines. Une idée, une question, un événement à signaler ?" %}</p>
-        <a class="btn btn-primary" href="{% url 'core:contact' %}">{% icon "mail" 18 %} {% translate "Écris-nous" %}</a>
+    <div class="hero-side">
+      <form class="search" method="get" action="{% url 'events:list' %}" role="search">
+        <label class="sr" for="home-q">{% translate "Rechercher" %}</label>
+        <input id="home-q" type="search" name="q" placeholder="{% translate "Jazz, brocante, yoga, Antibes…" %}">
+        <button type="submit">{% translate "Chercher" %}</button>
+      </form>
+      <div class="chips">
+        <a class="chip" href="{% url 'events:list' %}?quand=aujourdhui">{% translate "Ce soir" %}</a>
+        <a class="chip" href="{% url 'events:list' %}?quand=demain">{% translate "Demain" %}</a>
+        <a class="chip" href="{% url 'events:list' %}?quand=weekend">{% translate "Ce week-end" %}</a>
+        <a class="chip" href="{% url 'events:list' %}?gratuit=1">{% translate "Gratuit" %}</a>
+        <a class="chip" href="{% url 'events:list' %}?en=1" lang="en">EN friendly</a>
+        <a class="chip" href="{% url 'events:list' %}?famille=1">{% translate "En famille" %}</a>
+        <a class="chip chip-map" href="{% url 'events:map' %}">{% icon "map" 16 %} {% translate "Carte" %}</a>
       </div>
+      <a class="publish-cta" href="{% url 'events:new' %}">
+        <span>{% icon "plus" 22 %}</span>
+        <span><b>{% translate "Tu organises quelque chose ?" %}</b>{% translate "Publie-le gratuitement en deux minutes." %}</span>
+      </a>
     </div>
   </div>
 </section>
 
 <div class="stripe" aria-hidden="true"></div>
 
-<section class="section">
+{% if featured %}
+<section class="section section-tight">
+  <div class="wrap">
+    <div class="section-head"><h2 class="section-title">{% translate "La sélection de l'équipe" %}</h2></div>
+    <div class="cards">{% for event in featured %}{% include "events/_card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section section-tight">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="section-title">{% translate "Aujourd'hui" %}</h2>
+      <a class="link-more" href="{% url 'events:list' %}?quand=aujourdhui">{% translate "Tout voir" %} {% icon "arrow" 16 %}</a>
+    </div>
+    {% if today %}<div class="cards">{% for event in today %}{% include "events/_card.html" %}{% endfor %}</div>
+    {% else %}<p class="empty-inline">{% translate "Rien d'annoncé pour aujourd'hui… pour l'instant." %} <a href="{% url 'events:new' %}">{% translate "Publie le tien !" %}</a></p>{% endif %}
+  </div>
+</section>
+
+{% if weekend %}
+<section class="section section-tight">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="section-title">{% translate "Ce week-end" %}</h2>
+      <a class="link-more" href="{% url 'events:list' %}?quand=weekend">{% translate "Tout voir" %} {% icon "arrow" 16 %}</a>
+    </div>
+    <div class="cards">{% for event in weekend %}{% include "events/_card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section section-tight">
   <div class="wrap">
     <h2 class="section-title">{% translate "Envie de…" %}</h2>
     <ul class="cat-grid">
-      {% for icon_name, tone, label in categories %}
-      <li class="cat cat-{{ tone }}">{% icon icon_name 28 %}<span>{{ label }}</span></li>
+      {% for cat in categories %}
+      <li><a class="cat cat-{{ cat.tone }}" href="{% url 'events:list' %}?categorie={{ cat.slug }}">{% icon cat.icon 28 %}<span>{{ cat.name_tr }}</span><small>{% blocktranslate count n=cat.n %}{{ n }} à venir{% plural %}{{ n }} à venir{% endblocktranslate %}</small></a></li>
       {% endfor %}
     </ul>
+  </div>
+</section>
+
+{% if latest %}
+<section class="section section-tight">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="section-title">{% translate "Fraîchement publiés" %}</h2>
+      <a class="link-more" href="{% url 'events:list' %}?source=membres">{% translate "Tout voir" %} {% icon "arrow" 16 %}</a>
+    </div>
+    <div class="cards">{% for event in latest %}{% include "events/_card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+
+<section class="join">
+  <div class="wrap join-grid">
+    <div>
+      <h2 class="join-title">{% translate "Rejoins la bande" %}</h2>
+      <p>{% translate "Crée ton profil, retrouve tes amis, dis où tu vas et vois qui vient. Gratuit, sans pub, sans traqueur." %}</p>
+    </div>
+    <p class="actions">
+      {% if user.is_authenticated %}<a class="btn btn-primary" href="{% url 'community:members' %}">{% icon "users" 18 %} {% translate "Les membres" %}</a>
+      {% else %}<a class="btn btn-primary" href="{% url 'community:signup' %}">{% translate "Créer mon compte" %}</a>
+      <a class="btn btn-light" href="{% url 'community:login' %}">{% translate "Se connecter" %}</a>{% endif %}
+    </p>
   </div>
 </section>
 {% endblock %}

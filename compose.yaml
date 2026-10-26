@@ -24,6 +24,16 @@ services:
       - data:/data
       - ./backups:/backups
 
+  # Fond de carte : tiles/nice-region.pmtiles (scripts/extract_tiles.py, copié à la main), servi par plages d'octets.
+  tiles:
+    image: caddy:2-alpine
+    container_name: nice-event_tiles
+    restart: unless-stopped
+    volumes:
+      - ./deploy/tiles.Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./tiles:/srv:ro
+    networks: [proxy]
+
 volumes:
   data:
 

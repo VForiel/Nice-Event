@@ -20,12 +20,16 @@
       <nav class="g-nav" aria-label="Gestion">
         {% with page=request.resolver_match.url_name %}
         <a href="{% url 'gestion:dashboard' %}"{% if page == 'dashboard' %} aria-current="page"{% endif %}>Tableau de bord</a>
+        <a href="{% url 'gestion:moderation' %}"{% if page == 'moderation' %} aria-current="page"{% endif %}>Modération{% if pending_count %} <span class="badge badge-inline">{{ pending_count }}</span>{% endif %}</a>
+        <a href="{% url 'gestion:events' %}"{% if page == 'events' %} aria-current="page"{% endif %}>Événements</a>
+        <a href="{% url 'gestion:reports' %}"{% if page == 'reports' %} aria-current="page"{% endif %}>Signalements</a>
+        <a href="{% url 'gestion:members' %}"{% if page == 'members' %} aria-current="page"{% endif %}>Membres</a>
         {% if user.is_superuser %}<a href="{% url 'gestion:settings' %}"{% if page == 'settings' %} aria-current="page"{% endif %}>Réglages</a>{% endif %}
-        <a href="{% url 'admin:index' %}">Admin Django</a>
+        <a href="{% url 'admin:index' %}">Admin</a>
         <a href="{% url 'core:home' %}">Voir le site</a>
         {% endwith %}
       </nav>
-      <form method="post" action="{% url 'admin:logout' %}">{% csrf_token %}<button class="btn btn-ghost btn-sm" type="submit">Se déconnecter</button></form>
+      <form method="post" action="{% url 'community:logout' %}">{% csrf_token %}<button class="btn btn-ghost btn-sm" type="submit">Se déconnecter</button></form>
     </div>
   </header>
   {% if messages %}

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load i18n ne %}
+{% block title %}{{ person.display_name }}{% endblock %}
+{% block description %}{{ person.display_name }}{% if person.headline %} · {{ person.headline }}{% endif %} — Nice-Event{% endblock %}
+{% block head %}{% if person.visibility != 'public' %}<meta name="robots" content="noindex">{% endif %}{% endblock %}
+
+{% block content %}
+<div class="profile-cover accent-{{ person.accent }}" aria-hidden="true"></div>
+
+<div class="wrap page-body">
+  <header class="profile-head">
+    {% include "community/_avatar.html" with p=person size="xl" %}
+    <div class="profile-id">
+      <h1 class="profile-name">{{ person.display_name }}</h1>
+      <p class="profile-sub">{% if person.pronouns %}<span>{{ person.pronouns }}</span>{% endif %}{% if person.commune %}<span>{{ person.commune.name }}</span>{% endif %}<span>{% blocktranslate count n=friend_count %}{{ n }} ami·e{% plural %}{{ n }} ami·es{% endblocktranslate %}</span></p>
+      {% if person.headline %}<p class="profile-headline">{{ person.headline }}</p>{% endif %}
+    </div>
+    <div class="profile-actions">{% include "community/_friend_button.html" %}</div>
+  </header>
+
+  {% if interests or person.spoken_labels %}
+  <ul class="profile-chips">
+    {% for c in interests %}<li><a class="tag tag-cat tone-{{ c.tone }}" href="{% url 'events:list' %}?categorie={{ c.slug }}">{{ c.name_tr }}</a></li>{% endfor %}
+    {% if person.spoken_labels %}<li class="tag tag-price">{% translate "Parle" %} {{ person.spoken_labels|join:", "|lower }}</li>{% endif %}
+  </ul>
+  {% endif %}
+
+  <div class="profile-layout">
+    <div class="profile-main">
+      {% if person.bio %}
+      <section class="profile-block">
+        <h2>{% translate "Présentation" %}</h2>
+        <div class="prose">{{ person.bio_html }}</div>
+      </section>
+      {% endif %}
+
+      {% if going %}
+      <section class="profile-block">
+        <h2>{% translate "Y va bientôt" %}</h2>
+        <div class="cards cards-compact">{% for event in going %}{% include "events/_card.html" %}{% endfor %}</div>
+      </section>
+      {% endif %}
+
+      {% if organized %}
+      <section class="profile-block">
+        <h2>{% translate "Organise" %}</h2>
+        <div class="cards cards-compact">{% for event in organized %}{% include "events/_card.html" %}{% endfor %}</div>
+      </section>
+      {% endif %}
+
+      {% if rel == "self" and not person.bio and not interests %}
+      <div class="empty">
+        <p class="empty-title">{% translate "Ta page est encore vide." %}</p>
+        <p>{% translate "Ajoute une photo, quelques mots et ce qui te plaît pour que tes amis te reconnaissent." %}</p>
+        <p><a class="btn btn-primary" href="{% url 'community:settings' %}">{% icon "edit" 18 %} {% translate "Compléter mon profil" %}</a></p>
+      </div>
+      {% endif %}
+    </div>
+
+    <aside class="profile-side">
+      {% if show_contacts %}
+      <section class="profile-block">
+        <h2>{% translate "Me contacter" %}</h2>
+        <ul class="profile-links">
+          {% if person.phone %}<li><a href="tel:{{ person.phone|cut:' ' }}">{% icon "mail" 16 %} {{ person.phone }}</a></li>{% endif %}
+          {% if person.whatsapp_link %}<li><a href="{{ person.whatsapp_link }}" rel="noopener nofollow">{% icon "whatsapp" 16 %} WhatsApp{% if person.whatsapp %} · {{ person.whatsapp }}{% endif %}</a></li>{% endif %}
+          {% if person.instagram %}<li><a href="https://www.instagram.com/{{ person.instagram|urlencode }}/" rel="noopener nofollow">{% icon "instagram" 16 %} @{{ person.instagram }}</a></li>{% endif %}
+          {% if person.facebook %}<li><a href="{% if 'http' in person.facebook %}{{ person.facebook }}{% else %}https://www.facebook.com/{{ person.facebook|urlencode }}{% endif %}" rel="noopener nofollow">{% icon "facebook" 16 %} Facebook</a></li>{% endif %}
+          {% if person.bluesky %}<li><a href="https://bsky.app/profile/{{ person.bluesky|urlencode }}" rel="noopener nofollow">{% icon "bluesky" 16 %} {{ person.bluesky }}</a></li>{% endif %}
+          {% if person.x %}<li><a href="https://x.com/{{ person.x|urlencode }}" rel="noopener nofollow">{% icon "x" 16 %} @{{ person.x }}</a></li>{% endif %}
+          {% if person.other_contact %}<li><span>{% icon "external" 16 %} {{ person.other_contact }}</span></li>{% endif %}
+        </ul>
+        {% if rel == "self" %}<p class="help">{% blocktranslate with who=person.get_contact_visibility_display|lower %}Visible par : {{ who }}.{% endblocktranslate %}</p>{% endif %}
+      </section>
+      {% endif %}
+      {% if person.website %}
+      <section class="profile-block">
+        <h2>{% translate "Liens" %}</h2>
+        <ul class="profile-links"><li><a href="{{ person.website }}" rel="noopener nofollow">{% icon "external" 16 %} {% translate "Site web" %}</a></li></ul>
+      </section>
+      {% endif %}
+
+      <section class="profile-block">
+        <h2>{% translate "Amis" %} <small>{{ friend_count }}</small></h2>
+        {% if friends %}
+        <ul class="friend-grid">
+          {% for f in friends %}<li><a href="{{ f.profile.get_absolute_url }}" title="{{ f.profile.display_name }}">{% include "community/_avatar.html" with p=f.profile size="md" %}<span>{{ f.profile.display_name }}</span></a></li>{% endfor %}
+        </ul>
+        {% else %}
+        <p class="help">{% translate "Pas encore d'amis sur le site." %}</p>
+        {% endif %}
+      </section>
+
+      {% if rel != "self" and rel != "anonymous" %}
+      <p class="report-link"><a href="{% url 'community:report' 'profil' person.handle %}">{% translate "Signaler ce profil" %}</a></p>
+      {% endif %}
+    </aside>
+  </div>
+</div>
+{% endblock %}

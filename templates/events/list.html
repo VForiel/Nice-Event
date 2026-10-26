@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n ne %}
+{% block title %}{% translate "Agenda" %}{% endblock %}
+{% block description %}{% translate "Tous les événements à venir à Nice, sur la Côte d'Azur et à Monaco : concerts, soirées, sorties, ateliers, rencontres." %}{% endblock %}
+
+{% block content %}
+<header class="page-head page-head-tight">
+  <div class="wrap head-row">
+    <div>
+      <p class="kicker">{% translate "Agenda" %}</p>
+      <h1 class="page-title">{% translate "Qu'est-ce qu'on fait ?" %}</h1>
+    </div>
+    <p class="head-actions">
+      <a class="btn btn-ghost" href="{% url 'events:map' %}{% if map_query %}?{{ map_query }}{% endif %}">{% icon "pin" 18 %} {% translate "Voir sur la carte" %}</a>
+      <a class="btn btn-ghost" href="{% url 'events:agenda' %}{% if query %}?{{ query }}{% endif %}" title="{% translate "Ajouter ces événements à ton agenda (Google, Apple, Outlook, Thunderbird…)" %}">{% icon "calendar" 18 %} {% translate "S'abonner" %}</a>
+    </p>
+  </div>
+</header>
+
+<div class="wrap">
+  {% url 'events:list' as action %}{% include "events/_filters.html" with action=action %}
+  <div class="list-body">
+    {% include "events/_days.html" %}
+    {% if more %}<p class="more"><a class="btn btn-ghost" href="?{% if query %}{{ query }}&amp;{% endif %}page={{ next_page }}">{% translate "Afficher plus d'événements" %}</a></p>{% endif %}
+  </div>
+</div>
+{% endblock %}

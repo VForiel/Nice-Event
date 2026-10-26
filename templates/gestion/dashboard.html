@@ -2,7 +2,15 @@
 {% block title %}Tableau de bord{% endblock %}
 
 {% block content %}
-<h1 class="g-title">Bonjour {{ user.first_name|default:user.username }}</h1>
+<h1 class="g-title">Bonjour {{ user.profile.display_name|default:user.username }}</h1>
+
+<div class="g-stats">
+  <a class="g-stat{% if pending %} g-stat-hot{% endif %}" href="{% url 'gestion:moderation' %}"><b>{{ pending }}</b><span>à modérer</span></a>
+  <a class="g-stat{% if reports %} g-stat-hot{% endif %}" href="{% url 'gestion:reports' %}"><b>{{ reports }}</b><span>signalement{{ reports|pluralize }}</span></a>
+  <a class="g-stat" href="{% url 'gestion:events' %}?type=a-venir"><b>{{ counts.upcoming }}</b><span>événements à venir, dont {{ counts.internal }} de membres</span></a>
+  <a class="g-stat" href="{% url 'gestion:members' %}"><b>{{ counts.members }}</b><span>membres</span></a>
+  <span class="g-stat"><b>{{ counts.week }}</b><span>publiés cette semaine</span></span>
+</div>
 
 <div class="g-cards">
   <section class="g-card">
@@ -12,7 +20,7 @@
     {% else %}
     <p class="warn">Aucun serveur SMTP : les courriels ne partent pas (ils s'affichent dans les journaux).</p>
     {% endif %}
-    {% if user.is_superuser %}<p><a href="{% url 'gestion:settings' %}">Réglages du courriel</a></p>{% endif %}
+    {% if user.is_superuser %}<p><a href="{% url 'gestion:settings' %}">Réglages du site</a></p>{% endif %}
   </section>
 
   <section class="g-card">

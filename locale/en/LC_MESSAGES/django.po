@@ -5,6 +5,334 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: community/confirmation.py
+msgid "Nice-Event : confirme ton adresse"
+msgstr "Nice-Event: confirm your email address"
+
+#: community/forms.py
+msgid "Arnaque, faux événement, contenu choquant ou illégal, revente de billets…"
+msgstr "Scam, fake event, offensive or illegal content, ticket resale…"
+
+#: community/forms.py
+msgid "Au moins 8 caractères, pas uniquement des chiffres."
+msgstr "At least 8 characters, not only digits."
+
+#: community/forms.py
+msgid "Ce compte est désactivé."
+msgstr "This account is deactivated."
+
+#: community/forms.py
+msgid "Courriel"
+msgstr "Email"
+
+#: community/forms.py
+msgid "Courriel ou mot de passe incorrect."
+msgstr "Wrong email or password."
+
+#: community/forms.py
+msgid "J'accepte les conditions d'utilisation et la charte de publication."
+msgstr "I accept the terms of use and the posting rules."
+
+#: community/forms.py
+msgid "Langues parlées"
+msgstr "Languages spoken"
+
+#: community/forms.py
+msgid "Mot de passe"
+msgstr "Password"
+
+#: community/forms.py
+msgid "Mot de passe incorrect."
+msgstr "Wrong password."
+
+#: community/forms.py
+msgid "Prénom et nom (ou pseudo)"
+msgstr "Name (or nickname)"
+
+#: community/forms.py
+msgid "Qu'est-ce qui ne va pas ?"
+msgstr "What's wrong?"
+
+#: community/forms.py
+msgid "Quelques lignes sur toi. Mise en forme Markdown possible."
+msgstr "A few lines about you. Markdown formatting allowed."
+
+#: community/forms.py
+msgid "Ton mot de passe, pour confirmer"
+msgstr "Your password, to confirm"
+
+#: community/forms.py
+msgid "Un compte existe déjà avec cette adresse."
+msgstr "An account already exists with this address."
+
+#: community/models.py
+msgid "Bleu chaise"
+msgstr "Chair blue"
+
+#: community/models.py
+msgid "Corail"
+msgstr "Coral"
+
+#: community/models.py
+msgid "Discord, Signal, Mastodon… avec le nom du réseau"
+msgstr "Discord, Signal, Mastodon… with the network name"
+
+#: community/models.py
+msgid "Identifiant ou lien du profil"
+msgstr "Username or profile link"
+
+#: community/models.py
+msgid "Identifiant, ex. nom.bsky.social"
+msgstr "Handle, e.g. name.bsky.social"
+
+#: community/models.py
+msgid "Identifiant, sans @"
+msgstr "Username, without @"
+
+#: community/models.py
+msgid "Lavande"
+msgstr "Lavender"
+
+#: community/models.py
+msgid "Membres connectés uniquement"
+msgstr "Signed-in members only"
+
+#: community/models.py
+msgid "Mes amis uniquement"
+msgstr "My friends only"
+
+#: community/models.py
+msgid "Numéro, si différent du téléphone"
+msgstr "Number, if different from phone"
+
+#: community/models.py
+msgid "Ocre"
+msgstr "Ochre"
+
+#: community/models.py
+msgid "Personne"
+msgstr "Nobody"
+
+#: community/models.py
+msgid "Pin parasol"
+msgstr "Stone pine"
+
+#: community/models.py
+msgid "Soleil"
+msgstr "Sun"
+
+#: community/models.py
+msgid "Tous les membres connectés"
+msgstr "All signed-in members"
+
+#: community/models.py
+msgid "Tout le monde"
+msgstr "Everyone"
+
+#: community/models.py
+msgid "Une ligne : « Nouvelle à Nice, je cherche des sorties ! », « Fan de jazz »…"
+msgstr "One line: “New in Nice, looking for things to do!”, “Jazz fan”…"
+
+#: community/models.py
+msgid "adresse du profil"
+msgstr "profile address"
+
+#: community/models.py
+msgid "afficher les événements auxquels je participe"
+msgstr "show the events I'm going to"
+
+#: community/models.py
+msgid "autre"
+msgstr "other"
+
+#: community/models.py
+msgid "ce qui me plaît"
+msgstr "what I like"
+
+#: community/models.py
+msgid "couleur du profil"
+msgstr "profile colour"
+
+#: community/models.py
+msgid "en ce moment"
+msgstr "right now"
+
+#: community/models.py
+msgid "langues parlées"
+msgstr "languages spoken"
+
+#: community/models.py
+msgid "ma commune"
+msgstr "my town"
+
+#: community/models.py
+msgid "nom affiché"
+msgstr "display name"
+
+#: community/models.py
+msgid "photo"
+msgstr "photo"
+
+#: community/models.py
+msgid "pronoms"
+msgstr "pronouns"
+
+#: community/models.py
+msgid "présentation"
+msgstr "about me"
+
+#: community/models.py
+msgid "qui peut voir mes coordonnées"
+msgstr "who can see my contact details"
+
+#: community/models.py
+msgid "qui peut voir mon profil"
+msgstr "who can see my profile"
+
+#: community/models.py
+msgid "recevoir par courriel les invitations et les changements des événements où je vais"
+msgstr "get invitations and changes to events I'm going to by email"
+
+#: community/models.py
+msgid "site web"
+msgstr "website"
+
+#: community/models.py
+msgid "téléphone"
+msgstr "phone"
+
+#: community/urls.py
+msgid "amis/"
+msgstr "friends/"
+
+#: community/urls.py
+msgid "compte/"
+msgstr "account/"
+
+#: community/urls.py
+msgid "compte/confirmer/<uidb64>/<token>/"
+msgstr "account/confirm/<uidb64>/<token>/"
+
+#: community/urls.py
+msgid "compte/confirmer/renvoyer/"
+msgstr "account/confirm/resend/"
+
+#: community/urls.py
+msgid "compte/connexion/"
+msgstr "account/login/"
+
+#: community/urls.py
+msgid "compte/deconnexion/"
+msgstr "account/logout/"
+
+#: community/urls.py
+msgid "compte/inscription/"
+msgstr "account/signup/"
+
+#: community/urls.py
+msgid "compte/mot-de-passe/"
+msgstr "account/password/"
+
+#: community/urls.py
+msgid "compte/mot-de-passe/<uidb64>/<token>/"
+msgstr "account/password/<uidb64>/<token>/"
+
+#: community/urls.py
+msgid "compte/mot-de-passe/changer/"
+msgstr "account/password/change/"
+
+#: community/urls.py
+msgid "compte/mot-de-passe/envoye/"
+msgstr "account/password/sent/"
+
+#: community/urls.py
+msgid "compte/reglages/"
+msgstr "account/settings/"
+
+#: community/urls.py
+msgid "compte/supprimer/"
+msgstr "account/delete/"
+
+#: community/urls.py
+msgid "membres/"
+msgstr "members/"
+
+#: community/urls.py
+msgid "membres/<slug:handle>/"
+msgstr "members/<slug:handle>/"
+
+#: community/urls.py
+msgid "membres/<slug:handle>/ami/<str:action>/"
+msgstr "members/<slug:handle>/friend/<str:action>/"
+
+#: community/urls.py
+msgid "signaler/<str:kind>/<slug:key>/"
+msgstr "report/<str:kind>/<slug:key>/"
+
+#: community/views.py
+msgid "Adresse confirmée : tu peux publier tes événements !"
+msgstr "Address confirmed: you can now post events!"
+
+#: community/views.py
+msgid "Adresse mise à jour : confirme-la avec le lien qui vient de partir."
+msgstr "Address updated: confirm it with the link we just sent."
+
+#: community/views.py
+msgid "Beaucoup de demandes : réessaie dans une heure."
+msgstr "Too many requests: try again in an hour."
+
+#: community/views.py
+msgid "Beaucoup de signalements aujourd'hui : réessaie demain ou écris-nous."
+msgstr "Lots of reports today: try again tomorrow or write to us."
+
+#: community/views.py
+msgid "Bienvenue ! Complète ton profil pour que tes amis te trouvent."
+msgstr "Welcome! Fill in your profile so your friends can find you."
+
+#: community/views.py
+msgid "Bienvenue ! Un lien de confirmation vient de partir à %(email)s : ouvre-le pour pouvoir publier des événements."
+msgstr "Welcome! A confirmation link was just sent to %(email)s: open it to be able to post events."
+
+#: community/views.py
+msgid "Ce lien de confirmation n'est plus valable. Connecte-toi pour en demander un nouveau."
+msgstr "This confirmation link is no longer valid. Sign in to request a new one."
+
+#: community/views.py
+msgid "Demande envoyée."
+msgstr "Request sent."
+
+#: community/views.py
+msgid "Le courriel n'a pas pu partir. Réessaie plus tard ou écris-nous."
+msgstr "The email couldn't be sent. Try again later or write to us."
+
+#: community/views.py
+msgid "Merci, l'équipe va regarder ça."
+msgstr "Thanks, the team will look into it."
+
+#: community/views.py
+msgid "Nouveau lien envoyé à %(email)s."
+msgstr "New link sent to %(email)s."
+
+#: community/views.py
+msgid "Profil enregistré, sauf ces champs, laissés tels quels : %(fields)s."
+msgstr "Profile saved, except these fields, left unchanged: %(fields)s."
+
+#: community/views.py
+msgid "Profil enregistré."
+msgstr "Profile saved."
+
+#: community/views.py
+msgid "Ton compte et tes données ont été supprimés."
+msgstr "Your account and your data have been deleted."
+
+#: community/views.py
+msgid "Trop d'inscriptions depuis cette connexion, réessaie plus tard."
+msgstr "Too many sign-ups from this connection, try again later."
+
+#: community/views.py
+msgid "Vous êtes maintenant amis."
+msgstr "You are now friends."
+
 #: core/forms.py
 msgid "C'est à propos de"
 msgstr "It's about"
@@ -57,6 +385,30 @@ msgstr "A problem with an event"
 msgid "Une question"
 msgstr "A question"
 
+#: core/templatetags/ne.py
+msgid "Aujourd'hui"
+msgstr "Today"
+
+#: core/templatetags/ne.py
+msgid "Demain"
+msgstr "Tomorrow"
+
+#: core/templatetags/ne.py
+msgid "Dès %(heure)s"
+msgstr "From %(heure)s"
+
+#: core/templatetags/ne.py
+msgid "Toute la journée"
+msgstr "All day"
+
+#: core/templatetags/ne.py
+msgid "du %(a)s au %(b)s"
+msgstr "%(a)s to %(b)s"
+
+#: core/urls.py
+msgid "conditions/"
+msgstr "terms/"
+
 #: core/urls.py
 msgid "confidentialite/"
 msgstr "privacy/"
@@ -66,52 +418,480 @@ msgid "mentions-legales/"
 msgstr "legal-notice/"
 
 #: core/views.py
-msgid "Concert & musique"
-msgstr "Concerts & music"
-
-#: core/views.py
-msgid "Famille & enfants"
-msgstr "Family & kids"
-
-#: core/views.py
-msgid "Gastronomie"
-msgstr "Food & drink"
-
-#: core/views.py
-msgid "Marché & brocante"
-msgstr "Markets & flea markets"
-
-#: core/views.py
-msgid "Mer & plage"
-msgstr "Sea & beach"
-
-#: core/views.py
 msgid "Message envoyé. On te répond dès que possible."
 msgstr "Message sent. We'll get back to you as soon as we can."
-
-#: core/views.py
-msgid "Plein air & rando"
-msgstr "Outdoors & hiking"
-
-#: core/views.py
-msgid "Rencontres en groupe"
-msgstr "Group meetups"
-
-#: core/views.py
-msgid "Soirée & fête"
-msgstr "Nights out & parties"
-
-#: core/views.py
-msgid "Spectacle & théâtre"
-msgstr "Shows & theatre"
 
 #: core/views.py
 msgid "Trop de messages envoyés depuis cette connexion, réessaie dans une heure."
 msgstr "Too many messages sent from this connection, please try again in an hour."
 
-#: core/views.py
-msgid "Échanges linguistiques"
-msgstr "Language exchanges"
+#: events/forms.py
+msgid "Adresse"
+msgstr "Address"
+
+#: events/forms.py
+msgid "Catégories"
+msgstr "Categories"
+
+#: events/forms.py
+msgid "Cet événement est déjà passé."
+msgstr "This event is already over."
+
+#: events/forms.py
+msgid "Choisir…"
+msgstr "Choose…"
+
+#: events/forms.py
+msgid "Commence à taper : des adresses te sont proposées."
+msgstr "Start typing: addresses will be suggested."
+
+#: events/forms.py
+msgid "Commune"
+msgstr "Town"
+
+#: events/forms.py
+msgid "Date"
+msgstr "Date"
+
+#: events/forms.py
+msgid "Date de fin"
+msgstr "End date"
+
+#: events/forms.py
+msgid "Ex. Théâtre de Verdure, Plage du Castel, Bar Le Comptoir…"
+msgstr "E.g. Théâtre de Verdure, Plage du Castel, Bar Le Comptoir…"
+
+#: events/forms.py
+msgid "Facultative mais recommandée : sans photo, un visuel aux couleurs de la catégorie est utilisé."
+msgstr "Optional but recommended: without a photo, a picture in the category colours is used."
+
+#: events/forms.py
+msgid "Heure de début"
+msgstr "Start time"
+
+#: events/forms.py
+msgid "Heure de fin"
+msgstr "End time"
+
+#: events/forms.py
+msgid "Indique jusqu'à quand l'événement se répète."
+msgstr "Say until when the event repeats."
+
+#: events/forms.py
+msgid "Indique l'heure de début, ou coche « toute la journée »."
+msgstr "Give the start time, or tick “all day”."
+
+#: events/forms.py
+msgid "Indique l'âge minimum."
+msgstr "Give the minimum age."
+
+#: events/forms.py
+msgid "Indique le prix (ou le prix le plus bas)."
+msgstr "Give the price (or the lowest price)."
+
+#: events/forms.py
+msgid "Indique les deux âges."
+msgstr "Give both ages."
+
+#: events/forms.py
+msgid "Jusqu'au"
+msgstr "Until"
+
+#: events/forms.py
+msgid "L'âge maximum doit être supérieur au minimum."
+msgstr "The maximum age must be above the minimum."
+
+#: events/forms.py
+msgid "La fin doit être après le début."
+msgstr "The end must be after the start."
+
+#: events/forms.py
+msgid "Langues parlées sur place"
+msgstr "Languages spoken there"
+
+#: events/forms.py
+msgid "Le prix maximum doit être supérieur au minimum."
+msgstr "The maximum price must be above the minimum."
+
+#: events/forms.py
+msgid "Nom du lieu"
+msgstr "Venue name"
+
+#: events/forms.py
+msgid "Programme, déroulé, infos pratiques… Mise en forme Markdown possible."
+msgstr "Programme, schedule, practical info… Markdown formatting allowed."
+
+#: events/forms.py
+msgid "Se répète chaque semaine"
+msgstr "Repeats every week"
+
+#: events/forms.py
+msgid "Seulement si l'événement dure plusieurs jours."
+msgstr "Only if the event lasts several days."
+
+#: events/forms.py
+msgid "Six mois au plus : republie ensuite si besoin."
+msgstr "Six months at most: post again later if needed."
+
+#: events/forms.py
+msgid "Trois catégories au plus."
+msgstr "Three categories at most."
+
+#: events/forms.py
+msgid "Une à trois."
+msgstr "One to three."
+
+#: events/ical.py
+msgid "ANNULÉ : %(title)s"
+msgstr "CANCELLED: %(title)s"
+
+#: events/ical.py
+msgid "Billetterie : %(url)s"
+msgstr "Tickets: %(url)s"
+
+#: events/models.py
+msgid "%(a)s–%(b)s ans"
+msgstr "Ages %(a)s–%(b)s"
+
+#: events/models.py
+msgid "18 ans et plus"
+msgstr "18 and over"
+
+#: events/models.py
+msgid "Allemand"
+msgstr "German"
+
+#: events/models.py
+msgid "Anglais"
+msgstr "English"
+
+#: events/models.py
+msgid "Annulé"
+msgstr "Cancelled"
+
+#: events/models.py
+msgid "Autre"
+msgstr "Other"
+
+#: events/models.py
+msgid "Complet"
+msgstr "Sold out"
+
+#: events/models.py
+msgid "Dès %(n)s ans"
+msgstr "Ages %(n)s+"
+
+#: events/models.py
+msgid "En attente de modération"
+msgstr "Awaiting review"
+
+#: events/models.py
+msgid "En français"
+msgstr "In French"
+
+#: events/models.py
+msgid "Espagnol"
+msgstr "Spanish"
+
+#: events/models.py
+msgid "Facultatif : affiche « complet » quand autant de membres ont cliqué « J'y vais »."
+msgstr "Optional: shows “sold out” once that many members have clicked “I’m going”."
+
+#: events/models.py
+msgid "Famille et enfants"
+msgstr "Family and kids"
+
+#: events/models.py
+msgid "Français"
+msgstr "French"
+
+#: events/models.py
+msgid "Gratuit"
+msgstr "Free"
+
+#: events/models.py
+msgid "International : accessible sans parler français"
+msgstr "International: no French needed"
+
+#: events/models.py
+msgid "Italien"
+msgstr "Italian"
+
+#: events/models.py
+msgid "Je ne sais pas"
+msgstr "I don't know"
+
+#: events/models.py
+msgid "Masqué"
+msgstr "Hidden"
+
+#: events/models.py
+msgid "Nom de l'asso, du bar, de la salle… Vide : ton nom."
+msgstr "Name of the club, bar, venue… Empty: your name."
+
+#: events/models.py
+msgid "Non"
+msgstr "No"
+
+#: events/models.py
+msgid "Oui"
+msgstr "Yes"
+
+#: events/models.py
+msgid "Payant"
+msgstr "Paid"
+
+#: events/models.py
+msgid "Prix libre"
+msgstr "Pay what you want"
+
+#: events/models.py
+msgid "Prévu"
+msgstr "Scheduled"
+
+#: events/models.py
+msgid "Publié"
+msgstr "Published"
+
+#: events/models.py
+msgid "Reporté"
+msgstr "Postponed"
+
+#: events/models.py
+msgid "Sans barrière de langue (musique, sport…)"
+msgstr "No language barrier (music, sport…)"
+
+#: events/models.py
+msgid "Tout public"
+msgstr "All ages"
+
+#: events/models.py
+msgid "Tranche d'âge"
+msgstr "Age range"
+
+#: events/models.py
+msgid "Une ou deux phrases : elles apparaissent dans les listes, sur la carte et sur les visuels."
+msgstr "One or two sentences: shown in lists, on the map and on the visuals."
+
+#: events/models.py
+msgid "accessible en fauteuil roulant"
+msgstr "wheelchair accessible"
+
+#: events/models.py
+msgid "catégories"
+msgstr "categories"
+
+#: events/models.py
+msgid "description"
+msgstr "description"
+
+#: events/models.py
+msgid "description (anglais)"
+msgstr "description (English)"
+
+#: events/models.py
+msgid "début"
+msgstr "start"
+
+#: events/models.py
+msgid "fin"
+msgstr "end"
+
+#: events/models.py
+msgid "langue"
+msgstr "language"
+
+#: events/models.py
+msgid "langues parlées sur place"
+msgstr "languages spoken there"
+
+#: events/models.py
+msgid "lien de billetterie ou d'inscription"
+msgstr "ticket or registration link"
+
+#: events/models.py
+msgid "lieu"
+msgstr "venue"
+
+#: events/models.py
+msgid "nombre de places"
+msgstr "number of places"
+
+#: events/models.py
+msgid "organisé par"
+msgstr "organised by"
+
+#: events/models.py
+msgid "photo ou affiche"
+msgstr "photo or poster"
+
+#: events/models.py
+msgid "prix"
+msgstr "price"
+
+#: events/models.py
+msgid "prix (à partir de)"
+msgstr "price (from)"
+
+#: events/models.py
+msgid "prix maximum"
+msgstr "maximum price"
+
+#: events/models.py
+msgid "précisions d'accès"
+msgstr "access details"
+
+#: events/models.py
+msgid "public"
+msgstr "audience"
+
+#: events/models.py
+msgid "publié par"
+msgstr "posted by"
+
+#: events/models.py
+msgid "réservation obligatoire"
+msgstr "booking required"
+
+#: events/models.py
+msgid "résumé"
+msgstr "summary"
+
+#: events/models.py
+msgid "résumé (anglais)"
+msgstr "summary (English)"
+
+#: events/models.py
+msgid "site, Instagram ou Facebook de l'organisateur"
+msgstr "organiser's website, Instagram or Facebook"
+
+#: events/models.py
+msgid "titre"
+msgstr "title"
+
+#: events/models.py
+msgid "titre (anglais)"
+msgstr "title (English)"
+
+#: events/models.py
+msgid "toute la journée"
+msgstr "all day"
+
+#: events/models.py
+msgid "À partir d'un âge"
+msgstr "From a given age"
+
+#: events/models.py
+msgid "Étage, entrée, parking, arrêt de tram…"
+msgstr "Floor, entrance, parking, tram stop…"
+
+#: events/models.py
+msgid "âge maximum"
+msgstr "maximum age"
+
+#: events/models.py
+msgid "âge minimum"
+msgstr "minimum age"
+
+#: events/models.py
+msgid "état"
+msgstr "status"
+
+#: events/urls.py
+msgid "carte/"
+msgstr "map/"
+
+#: events/urls.py
+msgid "carte/evenements.json"
+msgstr "map/events.json"
+
+#: events/urls.py
+msgid "evenements/"
+msgstr "events/"
+
+#: events/urls.py
+msgid "evenements/<slug:slug>.ics"
+msgstr "events/<slug:slug>.ics"
+
+#: events/urls.py
+msgid "evenements/<slug:slug>/"
+msgstr "events/<slug:slug>/"
+
+#: events/urls.py
+msgid "evenements/<slug:slug>/en-ligne/"
+msgstr "events/<slug:slug>/live/"
+
+#: events/urls.py
+msgid "evenements/<slug:slug>/inviter/"
+msgstr "events/<slug:slug>/invite/"
+
+#: events/urls.py
+msgid "evenements/<slug:slug>/modifier/"
+msgstr "events/<slug:slug>/edit/"
+
+#: events/urls.py
+msgid "evenements/<slug:slug>/participer/"
+msgstr "events/<slug:slug>/attend/"
+
+#: events/urls.py
+msgid "evenements/<slug:slug>/supprimer/"
+msgstr "events/<slug:slug>/delete/"
+
+#: events/urls.py
+msgid "evenements/agenda.ics"
+msgstr "events/calendar.ics"
+
+#: events/urls.py
+msgid "evenements/publier/"
+msgstr "events/new/"
+
+#: events/urls.py
+msgid "lieux/<slug:slug>/"
+msgstr "venues/<slug:slug>/"
+
+#: events/views.py
+msgid "%(n)s invitations envoyées."
+msgstr "%(n)s invitations sent."
+
+#: events/views.py
+msgid "30 prochains jours"
+msgstr "Next 30 days"
+
+#: events/views.py
+msgid "7 prochains jours"
+msgstr "Next 7 days"
+
+#: events/views.py
+msgid "Ce week-end"
+msgstr "This weekend"
+
+#: events/views.py
+msgid "Cet événement est annulé."
+msgstr "This event is cancelled."
+
+#: events/views.py
+msgid "Cet événement est passé."
+msgstr "This event is over."
+
+#: events/views.py
+msgid "Désolé, c'est complet."
+msgstr "Sorry, it's sold out."
+
+#: events/views.py
+msgid "Invitation envoyée."
+msgstr "Invitation sent."
+
+#: events/views.py
+msgid "Tu as déjà publié beaucoup d'événements aujourd'hui, réessaie demain."
+msgstr "You've already posted lots of events today, try again tomorrow."
+
+#: events/views.py
+msgid "Événement mis à jour."
+msgstr "Event updated."
+
+#: events/views.py
+msgid "Événement supprimé."
+msgstr "Event deleted."
 
 #: templates/404.html
 msgid "Cette page n'existe pas, ou plus."
@@ -134,6 +914,12 @@ msgid "Retour à l'accueil"
 msgstr "Back to the home page"
 
 #: templates/base.html
+msgid "%(n)s notification non lue"
+msgid_plural "%(n)s notifications non lues"
+msgstr[0] "%(n)s unread notification"
+msgstr[1] "%(n)s unread notifications"
+
+#: templates/base.html
 msgid "Agenda"
 msgstr "What's on"
 
@@ -146,8 +932,20 @@ msgid "Annonce"
 msgstr "Announcement"
 
 #: templates/base.html
+msgid "Carte"
+msgstr "Map"
+
+#: templates/base.html
+msgid "Carte des événements"
+msgstr "Events map"
+
+#: templates/base.html
 msgid "Changer de thème"
 msgstr "Switch theme"
+
+#: templates/base.html
+msgid "Conditions et charte"
+msgstr "Terms and rules"
 
 #: templates/base.html
 msgid "Confidentialité"
@@ -182,6 +980,10 @@ msgid "L'agenda que tout le monde peut remplir, de Menton à Cannes et jusqu'à 
 msgstr "The events calendar anyone can add to, from Menton to Cannes and up into the hills."
 
 #: templates/base.html
+msgid "Les membres"
+msgstr "Members"
+
+#: templates/base.html
 msgid "Masquer l'annonce"
 msgstr "Hide announcement"
 
@@ -192,6 +994,18 @@ msgstr "Legal notice"
 #: templates/base.html
 msgid "Menu"
 msgstr "Menu"
+
+#: templates/base.html
+msgid "Mes amis"
+msgstr "My friends"
+
+#: templates/base.html
+msgid "Mon compte"
+msgstr "My account"
+
+#: templates/base.html
+msgid "Mon profil"
+msgstr "My profile"
 
 #: templates/base.html
 msgid "Navigation principale"
@@ -206,6 +1020,10 @@ msgid "Nice-Event, accueil"
 msgstr "Nice-Event, home"
 
 #: templates/base.html
+msgid "Notifications"
+msgstr "Notifications"
+
+#: templates/base.html
 msgid "Publier un événement"
 msgstr "Post an event"
 
@@ -214,16 +1032,480 @@ msgid "Que faire à Nice et sur la Côte d'Azur"
 msgstr "What's on in Nice and on the French Riviera"
 
 #: templates/base.html
+msgid "Réglages"
+msgstr "Settings"
+
+#: templates/base.html
+msgid "S'abonner à l'agenda (iCal)"
+msgstr "Subscribe to the calendar (iCal)"
+
+#: templates/base.html
+msgid "Se connecter"
+msgstr "Sign in"
+
+#: templates/base.html
+msgid "Se déconnecter"
+msgstr "Sign out"
+
+#: templates/base.html
 msgid "Thème clair / sombre"
 msgstr "Light / dark theme"
+
+#: templates/community/_form_errors.html
+msgid "Rien n'a été enregistré : corrige les champs ci-dessous, puis enregistre à nouveau."
+msgstr "Nothing was saved: fix the fields below, then save again."
+
+#: templates/community/_form_errors.html
+msgid "Si tu avais choisi une photo, sélectionne-la de nouveau : le navigateur ne la garde pas."
+msgstr "If you had chosen a photo, select it again: the browser doesn't keep it."
+
+#: templates/community/_friend_button.html
+msgid "Accepter la demande"
+msgstr "Accept request"
+
+#: templates/community/_friend_button.html
+msgid "Ajouter en ami"
+msgstr "Add friend"
+
+#: templates/community/_friend_button.html
+msgid "Amis"
+msgstr "Friends"
+
+#: templates/community/_friend_button.html
+msgid "Annuler la demande"
+msgstr "Cancel request"
+
+#: templates/community/_friend_button.html
+msgid "Demande envoyée"
+msgstr "Request sent"
+
+#: templates/community/_friend_button.html
+msgid "Modifier mon profil"
+msgstr "Edit my profile"
+
+#: templates/community/_friend_button.html
+msgid "Retirer des amis"
+msgstr "Remove friend"
+
+#: templates/community/_friend_button.html
+msgid "Se connecter pour l'ajouter"
+msgstr "Sign in to add them"
+
+#: templates/community/confirm_email.txt
+msgid "Bonjour %(name)s,\n\nBienvenue sur Nice-Event ! Pour confirmer ton adresse et pouvoir publier des événements, ouvre ce lien (valable trois jours) :"
+msgstr "Hi %(name)s,\n\nWelcome to Nice-Event! To confirm your address and be able to post events, open this link (valid for three days):"
+
+#: templates/community/confirm_email.txt
+msgid "Si tu n'as pas créé de compte, ignore simplement ce message.\n\n— Nice-Event, l'agenda participatif de Nice"
+msgstr "If you didn't create an account, just ignore this message.\n\n— Nice-Event, the community events calendar for Nice"
+
+#: templates/community/delete_account.html
+msgid "Annuler"
+msgstr "Cancel"
+
+#: templates/community/delete_account.html
+msgid "Supprimer définitivement"
+msgstr "Delete permanently"
+
+#: templates/community/delete_account.html
+msgid "Supprimer mon compte"
+msgstr "Delete my account"
+
+#: templates/community/delete_account.html
+msgid "Ton profil, tes amitiés, tes participations et tes notifications seront effacés définitivement. Les événements que tu as proposés restent en ligne, sans ton nom."
+msgstr "Your profile, friendships, attendances and notifications will be permanently deleted. Events you posted stay online, without your name."
+
+#: templates/community/friends.html
+msgid "%(n)s ami·e"
+msgid_plural "%(n)s ami·es"
+msgstr[0] "%(n)s friend"
+msgstr[1] "%(n)s friends"
+
+#: templates/community/friends.html
+msgid "Accepter"
+msgstr "Accept"
+
+#: templates/community/friends.html
+msgid "Communauté"
+msgstr "Community"
+
+#: templates/community/friends.html
+msgid "Demandes envoyées"
+msgstr "Requests sent"
+
+#: templates/community/friends.html
+msgid "Demandes reçues"
+msgstr "Requests received"
+
+#: templates/community/friends.html
+msgid "Pas encore d'amis."
+msgstr "No friends yet."
+
+#: templates/community/friends.html
+msgid "Refuser"
+msgstr "Decline"
+
+#: templates/community/friends.html
+msgid "Tes amis voient les événements auxquels tu vas, et tu peux les inviter à ceux qui te tentent."
+msgstr "Your friends see the events you're going to, and you can invite them to the ones you fancy."
+
+#: templates/community/friends.html
+msgid "Trouver des membres"
+msgstr "Find members"
+
+#: templates/community/friends.html
+msgid "Va voir l'annuaire, ou les participant·es d'un événement qui te tente."
+msgstr "Browse the members, or the people going to an event you fancy."
+
+#: templates/community/friends.html
+msgid "Voir les membres"
+msgstr "See members"
+
+#: templates/community/login.html
+msgid "Connecte-toi pour publier un événement, dire où tu vas et retrouver tes amis."
+msgstr "Sign in to post an event, say where you're going and find your friends."
+
+#: templates/community/login.html
+msgid "Créer un compte"
+msgstr "Create an account"
+
+#: templates/community/login.html
+msgid "Espace membres"
+msgstr "Members"
+
+#: templates/community/login.html
+msgid "Mot de passe oublié ?"
+msgstr "Forgot your password?"
+
+#: templates/community/login.html
+msgid "Pas encore de compte ?"
+msgstr "No account yet?"
+
+#: templates/community/login.html
+msgid "Re-bonjour"
+msgstr "Welcome back"
+
+#: templates/community/members.html
+msgid "%(n)s résultat"
+msgid_plural "%(n)s résultats"
+msgstr[0] "%(n)s result"
+msgstr[1] "%(n)s results"
+
+#: templates/community/members.html
+msgid "Chercher"
+msgstr "Search"
+
+#: templates/community/members.html
+msgid "Membres"
+msgstr "Members"
+
+#: templates/community/members.html
+msgid "Nom, centre d'intérêt…"
+msgstr "Name, interest…"
+
+#: templates/community/members.html
+msgid "Personne ne correspond pour l'instant."
+msgstr "Nobody matches yet."
+
+#: templates/community/members.html
+msgid "Qui aiment les mêmes choses que toi"
+msgstr "Who like the same things as you"
+
+#: templates/community/members.html
+msgid "Rechercher un membre"
+msgstr "Search for a member"
+
+#: templates/community/members.html
+msgid "Retrouve tes amis, ou des gens qui aiment les mêmes sorties que toi."
+msgstr "Find your friends, or people who like the same outings as you."
+
+#: templates/community/notifications.html
+msgid "<strong>%(name)s</strong> a accepté ta demande d'ami·e."
+msgstr "<strong>%(name)s</strong> accepted your friend request."
+
+#: templates/community/notifications.html
+msgid "<strong>%(name)s</strong> a publié « %(title)s » : à modérer."
+msgstr "<strong>%(name)s</strong> posted “%(title)s”: to review."
+
+#: templates/community/notifications.html
+msgid "<strong>%(name)s</strong> t'invite à « %(title)s »."
+msgstr "<strong>%(name)s</strong> invites you to “%(title)s”."
+
+#: templates/community/notifications.html
+msgid "<strong>%(name)s</strong> veut t'ajouter en ami·e."
+msgstr "<strong>%(name)s</strong> wants to add you as a friend."
+
+#: templates/community/notifications.html
+msgid "<strong>%(name)s</strong> vient à ton événement « %(title)s »."
+msgstr "<strong>%(name)s</strong> is coming to your event “%(title)s”."
+
+#: templates/community/notifications.html
+msgid "Les demandes d'ami, les invitations et les inscriptions à tes événements apparaîtront ici."
+msgstr "Friend requests, invitations and people joining your events will show up here."
+
+#: templates/community/notifications.html
+msgid "Modérer"
+msgstr "Review"
+
+#: templates/community/notifications.html
+msgid "Rien de neuf pour l'instant."
+msgstr "Nothing new for now."
+
+#: templates/community/notifications.html
+msgid "Répondre"
+msgstr "Reply"
+
+#: templates/community/notifications.html
+msgid "Ton événement « %(title)s » est validé et en ligne. Tes prochains seront publiés directement."
+msgstr "Your event “%(title)s” is approved and live. Your next ones will be published right away."
+
+#: templates/community/notifications.html
+msgid "Ton événement « %(title)s » n'a pas été publié."
+msgstr "Your event “%(title)s” was not published."
+
+#: templates/community/notifications.html
+msgid "Voir"
+msgstr "See"
+
+#: templates/community/notifications.html
+msgid "« %(title)s », où tu vas, a été %(what)s."
+msgstr "“%(title)s”, which you are going to, was %(what)s."
+
+#: templates/community/password_change.html
+msgid "Changer de mot de passe"
+msgstr "Change password"
+
+#: templates/community/password_change.html
+msgid "Encore une fois"
+msgstr "Once more"
+
+#: templates/community/password_change.html
+msgid "Enregistrer"
+msgstr "Save"
+
+#: templates/community/password_change.html
+msgid "Mot de passe actuel"
+msgstr "Current password"
+
+#: templates/community/password_change.html
+msgid "Nouveau mot de passe"
+msgstr "New password"
+
+#: templates/community/password_reset.html
+msgid "Envoyer le lien"
+msgstr "Send the link"
+
+#: templates/community/password_reset.html
+msgid "Indique ton adresse : nous t'envoyons un lien pour en choisir un nouveau."
+msgstr "Enter your address: we'll send you a link to choose a new one."
+
+#: templates/community/password_reset.html
+msgid "Mot de passe oublié"
+msgstr "Forgotten password"
+
+#: templates/community/password_reset_confirm.html
+msgid "Ce lien n'est plus valable. Demande-en un nouveau."
+msgstr "This link is no longer valid. Request a new one."
+
+#: templates/community/password_reset_done.html
+msgid "Regarde ta boîte mail"
+msgstr "Check your inbox"
+
+#: templates/community/password_reset_done.html
+msgid "Si un compte existe avec cette adresse, tu vas recevoir un lien pour choisir un nouveau mot de passe. Pense aux indésirables."
+msgstr "If an account exists with this address, you'll receive a link to choose a new password. Check your spam folder."
+
+#: templates/community/password_reset_email.txt
+msgid "Bonjour,\n\nTu as demandé à changer ton mot de passe sur Nice-Event. Pour en choisir un nouveau, ouvre ce lien :"
+msgstr "Hi,\n\nYou asked to change your password on Nice-Event. To choose a new one, open this link:"
+
+#: templates/community/password_reset_email.txt
+msgid "Si ce n'est pas toi, ignore simplement ce message.\n\n— Nice-Event"
+msgstr "If it wasn't you, just ignore this message.\n\n— Nice-Event"
+
+#: templates/community/password_reset_subject.txt
+msgid "Nice-Event : changer ton mot de passe"
+msgstr "Nice-Event: change your password"
+
+#: templates/community/profile.html
+msgid "Ajoute une photo, quelques mots et ce qui te plaît pour que tes amis te reconnaissent."
+msgstr "Add a photo, a few words and what you like so your friends recognise you."
+
+#: templates/community/profile.html
+msgid "Compléter mon profil"
+msgstr "Complete my profile"
+
+#: templates/community/profile.html
+msgid "Liens"
+msgstr "Links"
+
+#: templates/community/profile.html
+msgid "Me contacter"
+msgstr "Contact me"
+
+#: templates/community/profile.html
+msgid "Organise"
+msgstr "Organises"
+
+#: templates/community/profile.html
+msgid "Parle"
+msgstr "Speaks"
+
+#: templates/community/profile.html
+msgid "Pas encore d'amis sur le site."
+msgstr "No friends on the site yet."
+
+#: templates/community/profile.html
+msgid "Présentation"
+msgstr "About"
+
+#: templates/community/profile.html
+msgid "Signaler ce profil"
+msgstr "Report this profile"
+
+#: templates/community/profile.html
+msgid "Site web"
+msgstr "Website"
+
+#: templates/community/profile.html
+msgid "Ta page est encore vide."
+msgstr "Your page is still empty."
+
+#: templates/community/profile.html
+msgid "Visible par : %(who)s."
+msgstr "Visible to: %(who)s."
+
+#: templates/community/profile.html
+msgid "Y va bientôt"
+msgstr "Going soon"
+
+#: templates/community/profile_private.html
+msgid "Ce profil n'est visible que par les membres connectés."
+msgstr "This profile is only visible to signed-in members."
+
+#: templates/community/profile_private.html
+msgid "Profil réservé aux membres"
+msgstr "Members-only profile"
+
+#: templates/community/profile_private.html
+msgid "Rejoindre la communauté"
+msgstr "Join the community"
+
+#: templates/community/report.html
+msgid "Envoyer"
+msgstr "Send"
+
+#: templates/community/report.html
+msgid "Signaler"
+msgstr "Report"
+
+#: templates/community/report.html
+msgid "Tu signales « %(name)s ». L'équipe de Nice-Event lira ton message ; la personne concernée ne saura pas qui l'a envoyé."
+msgstr "You are reporting “%(name)s”. The Nice-Event team will read your message; the person concerned won't know who sent it."
+
+#: templates/community/settings.html
+msgid "Adresse confirmée"
+msgstr "Address confirmed"
+
+#: templates/community/settings.html
+msgid "Adresse pas encore confirmée : ouvre le lien reçu par courriel pour pouvoir publier."
+msgstr "Address not confirmed yet: open the link we emailed you to be able to post."
+
+#: templates/community/settings.html
+msgid "Ce qui me plaît"
+msgstr "What I like"
+
+#: templates/community/settings.html
+msgid "Changer d'adresse"
+msgstr "Change address"
+
+#: templates/community/settings.html
+msgid "Coordonnées"
+msgstr "Contact details"
+
+#: templates/community/settings.html
+msgid "Enregistrer mon profil"
+msgstr "Save my profile"
+
+#: templates/community/settings.html
+msgid "Personnalisation et confidentialité"
+msgstr "Look and privacy"
+
+#: templates/community/settings.html
+msgid "Qui je suis"
+msgstr "About me"
+
+#: templates/community/settings.html
+msgid "Renvoyer le lien"
+msgstr "Resend the link"
+
+#: templates/community/settings.html
+msgid "Tes coordonnées ne sont jamais publiques : par défaut, seuls tes amis les voient."
+msgstr "Your contact details are never public: by default, only your friends see them."
+
+#: templates/community/settings.html
+msgid "Tout est facultatif, sauf ton nom."
+msgstr "Everything is optional, except your name."
+
+#: templates/community/settings.html
+msgid "Voir ma page"
+msgstr "See my page"
+
+#: templates/community/signup.html
+msgid "Ajoute-les, invite-les, et vois où ils vont."
+msgstr "Add them, invite them, and see where they're going."
+
+#: templates/community/signup.html
+msgid "C'est parti"
+msgstr "Let's go"
+
+#: templates/community/signup.html
+msgid "Concert, apéro, rando, atelier, brocante : en deux minutes, visible par tout Nice."
+msgstr "Concert, drinks, hike, workshop, flea market: in two minutes, seen by all of Nice."
+
+#: templates/community/signup.html
+msgid "Crée ton compte Nice-Event pour publier des événements, retrouver tes amis et voir qui vient."
+msgstr "Create your Nice-Event account to post events, find your friends and see who's coming."
+
+#: templates/community/signup.html
+msgid "Créer mon compte"
+msgstr "Create my account"
+
+#: templates/community/signup.html
+msgid "Dis où tu vas"
+msgstr "Say where you're going"
+
+#: templates/community/signup.html
+msgid "Déjà inscrit·e ?"
+msgstr "Already have an account?"
+
+#: templates/community/signup.html
+msgid "Gratuit, sans pub"
+msgstr "Free, no ads"
+
+#: templates/community/signup.html
+msgid "Les lire"
+msgstr "Read them"
+
+#: templates/community/signup.html
+msgid "Publie tes événements"
+msgstr "Post your events"
+
+#: templates/community/signup.html
+msgid "Rejoins la bande"
+msgstr "Join the crowd"
+
+#: templates/community/signup.html
+msgid "Retrouve tes amis"
+msgstr "Find your friends"
+
+#: templates/community/signup.html
+msgid "Un clic sur « J'y vais », et tu sais qui sera là."
+msgstr "One click on “I'm going”, and you know who'll be there."
 
 #: templates/core/contact.html
 msgid "Détails dans la <a href=\"%(url)s\">politique de confidentialité</a>."
 msgstr "Details in the <a href=\"%(url)s\">privacy policy</a>."
-
-#: templates/core/contact.html
-msgid "Envoyer"
-msgstr "Send"
 
 #: templates/core/contact.html
 msgid "Le message n'est pas parti : vérifie les champs signalés."
@@ -246,29 +1528,473 @@ msgid "Écris-nous"
 msgstr "Write to us"
 
 #: templates/core/home.html
-msgid "Bientôt"
-msgstr "Coming soon"
+msgid "%(n)s à venir"
+msgid_plural "%(n)s à venir"
+msgstr[0] "%(n)s upcoming"
+msgstr[1] "%(n)s upcoming"
+
+#: templates/core/home.html
+msgid "Ce soir"
+msgstr "Tonight"
 
 #: templates/core/home.html
 msgid "Concerts, apéros, randos, ateliers, rencontres : l'agenda que tout le monde peut remplir, de Menton à Cannes."
 msgstr "Concerts, drinks, hikes, workshops, meetups: the events calendar anyone can add to, from Menton to Cannes."
 
 #: templates/core/home.html
+msgid "Crée ton profil, retrouve tes amis, dis où tu vas et vois qui vient. Gratuit, sans pub, sans traqueur."
+msgstr "Create your profile, find your friends, say where you're going and see who's coming. Free, no ads, no trackers."
+
+#: templates/core/home.html
+msgid "En famille"
+msgstr "Family"
+
+#: templates/core/home.html
 msgid "Envie de…"
 msgstr "In the mood for…"
 
 #: templates/core/home.html
-msgid "Le site ouvre ses portes très vite."
-msgstr "The site opens very soon."
+msgid "Fraîchement publiés"
+msgstr "Just posted"
+
+#: templates/core/home.html
+msgid "Jazz, brocante, yoga, Antibes…"
+msgstr "Jazz, flea market, yoga, Antibes…"
+
+#: templates/core/home.html
+msgid "La sélection de l'équipe"
+msgstr "Team's picks"
 
 #: templates/core/home.html
 msgid "Nice · Côte d'Azur · Monaco"
 msgstr "Nice · French Riviera · Monaco"
 
 #: templates/core/home.html
-msgid "Publication d'événements, carte, comptes membres et agenda partagé arrivent dans les prochaines semaines. Une idée, une question, un événement à signaler ?"
-msgstr "Event posting, the map, member accounts and the shared calendar are coming in the next few weeks. An idea, a question, an event to tell us about?"
+msgid "Publie le tien !"
+msgstr "Post yours!"
+
+#: templates/core/home.html
+msgid "Publie-le gratuitement en deux minutes."
+msgstr "Post it for free in two minutes."
 
 #: templates/core/home.html
 msgid "Qu'est-ce qu'on fait à <em>Nice</em> ce&nbsp;soir&nbsp;<span class=\"q\">?</span>"
 msgstr "What's on in <em>Nice</em> tonight<span class=\"q\">?</span>"
+
+#: templates/core/home.html
+msgid "Rechercher"
+msgstr "Search"
+
+#: templates/core/home.html
+msgid "Rien d'annoncé pour aujourd'hui… pour l'instant."
+msgstr "Nothing announced for today… yet."
+
+#: templates/core/home.html
+msgid "Tout voir"
+msgstr "See all"
+
+#: templates/core/home.html
+msgid "Tu organises quelque chose ?"
+msgstr "Organising something?"
+
+#: templates/events/_card.html
+msgid "%(n)s ami y va"
+msgid_plural "%(n)s amis y vont"
+msgstr[0] "%(n)s friend is going"
+msgstr[1] "%(n)s friends are going"
+
+#: templates/events/_card.html
+msgid "via %(name)s"
+msgstr "via %(name)s"
+
+#: templates/events/_days.html
+msgid "Aucun événement ne correspond. Élargis les filtres, ou publie le tien !"
+msgstr "No events match. Widen the filters, or post yours!"
+
+#: templates/events/_days.html
+msgid "Rien pour l'instant…"
+msgstr "Nothing yet…"
+
+#: templates/events/_filters.html
+msgid "Autres agendas"
+msgstr "Other calendars"
+
+#: templates/events/_filters.html
+msgid "Catégories, zones, sources"
+msgstr "Categories, areas, sources"
+
+#: templates/events/_filters.html
+msgid "Effacer les filtres"
+msgstr "Clear filters"
+
+#: templates/events/_filters.html
+msgid "Publiés par les membres"
+msgstr "Posted by members"
+
+#: templates/events/_filters.html
+msgid "Quand"
+msgstr "When"
+
+#: templates/events/_share.html
+msgid "Copier le lien"
+msgstr "Copy link"
+
+#: templates/events/_share.html
+msgid "Copié !"
+msgstr "Copied!"
+
+#: templates/events/_share.html
+msgid "Fais tourner !"
+msgstr "Spread the word!"
+
+#: templates/events/_share.html
+msgid "Partager…"
+msgstr "Share…"
+
+#: templates/events/_share.html
+msgid "Plus on est, plus on rit : partage l'événement à tes amis et sur tes réseaux."
+msgstr "The more the merrier: share the event with your friends and on your socials."
+
+#: templates/events/_share.html
+msgid "Visuel pour ta story Instagram"
+msgstr "Picture for your Instagram story"
+
+#: templates/events/confirm_first.html
+msgid "Confirme ton adresse"
+msgstr "Confirm your address"
+
+#: templates/events/confirm_first.html
+msgid "Corriger mon adresse"
+msgstr "Fix my address"
+
+#: templates/events/confirm_first.html
+msgid "Pour publier, ouvre le lien envoyé à %(email)s à ton inscription. C'est ce qui nous protège des robots et des arnaques."
+msgstr "To post, open the link sent to %(email)s when you signed up. That's what protects us from bots and scams."
+
+#: templates/events/confirm_first.html
+msgid "Rien reçu ? Regarde dans les indésirables, ou écris-nous."
+msgstr "Nothing received? Check your spam folder, or write to us."
+
+#: templates/events/confirm_first.html
+msgid "Une dernière chose"
+msgstr "One last thing"
+
+#: templates/events/delete.html
+msgid "Supprimer aussi la date suivante de la série"
+msgid_plural "Supprimer aussi les %(n)s dates suivantes de la série"
+msgstr[0] "Also delete the next date in the series"
+msgstr[1] "Also delete the next %(n)s dates in the series"
+
+#: templates/events/delete.html
+msgid "Plutôt le modifier"
+msgstr "Edit it instead"
+
+#: templates/events/delete.html
+msgid "Si l'événement n'a simplement pas lieu, mieux vaut le marquer « annulé » en le modifiant : les personnes inscrites seront prévenues."
+msgstr "If the event simply isn't happening, better mark it “cancelled” by editing it: people going will be notified."
+
+#: templates/events/delete.html
+msgid "Supprimer"
+msgstr "Delete"
+
+#: templates/events/delete.html
+msgid "Supprimer l'événement"
+msgstr "Delete the event"
+
+#: templates/events/delete.html
+msgid "Supprimer l'événement ?"
+msgstr "Delete the event?"
+
+#: templates/events/delete.html
+msgid "« %(title)s » disparaîtra du site, avec la liste des participant·es. C'est définitif."
+msgstr "“%(title)s” will disappear from the site, along with the list of people going. This cannot be undone."
+
+#: templates/events/detail.html
+msgid "%(n)s personne y va"
+msgid_plural "%(n)s personnes y vont"
+msgstr[0] "%(n)s person going"
+msgstr[1] "%(n)s people going"
+
+#: templates/events/detail.html
+msgid "Dont %(n)s de tes amis"
+msgid_plural "Dont %(n)s de tes amis"
+msgstr[0] "Including %(n)s of your friends"
+msgstr[1] "Including %(n)s of your friends"
+
+#: templates/events/detail.html
+msgid "Accessible en fauteuil roulant"
+msgstr "Wheelchair accessible"
+
+#: templates/events/detail.html
+msgid "Ajouter à mon agenda"
+msgstr "Add to my calendar"
+
+#: templates/events/detail.html
+msgid "Billetterie"
+msgstr "Tickets"
+
+#: templates/events/detail.html
+msgid "Dans le même genre"
+msgstr "More like this"
+
+#: templates/events/detail.html
+msgid "En attente de validation par l'équipe : l'événement n'est visible que par toi pour l'instant. C'est le cas du premier événement de chaque compte ; ensuite, tu publies directement."
+msgstr "Awaiting team review: only you can see this event for now. This applies to each account's first event; after that, you publish right away."
+
+#: templates/events/detail.html
+msgid "Envoyer les invitations"
+msgstr "Send invitations"
+
+#: templates/events/detail.html
+msgid "Inviter des amis"
+msgstr "Invite friends"
+
+#: templates/events/detail.html
+msgid "Itinéraire"
+msgstr "Directions"
+
+#: templates/events/detail.html
+msgid "J'y vais"
+msgstr "I'm going"
+
+#: templates/events/detail.html
+msgid "J'y vais (annuler)"
+msgstr "I'm going (cancel)"
+
+#: templates/events/detail.html
+msgid "Modifier"
+msgstr "Edit"
+
+#: templates/events/detail.html
+msgid "Non accessible en fauteuil roulant"
+msgstr "Not wheelchair accessible"
+
+#: templates/events/detail.html
+msgid "Organisé par"
+msgstr "Organised by"
+
+#: templates/events/detail.html
+msgid "Personne ne s'est encore signalé : sois le premier ou la première !"
+msgstr "Nobody yet: be the first!"
+
+#: templates/events/detail.html
+msgid "Prochaines dates"
+msgstr "Next dates"
+
+#: templates/events/detail.html
+msgid "Proposé par"
+msgstr "Posted by"
+
+#: templates/events/detail.html
+msgid "Qui y va ?"
+msgstr "Who's going?"
+
+#: templates/events/detail.html
+msgid "Repéré sur %(name)s"
+msgstr "Spotted on %(name)s"
+
+#: templates/events/detail.html
+msgid "Réservation obligatoire"
+msgstr "Booking required"
+
+#: templates/events/detail.html
+msgid "S'inscrire"
+msgstr "Register"
+
+#: templates/events/detail.html
+msgid "Sur la carte"
+msgstr "On the map"
+
+#: templates/events/detail.html
+msgid "Voir sur le site de l'organisateur"
+msgstr "See on the organiser's site"
+
+#: templates/events/detail.html
+msgid "Événement masqué : il n'est visible que par toi et l'équipe."
+msgstr "Hidden event: only you and the team can see it."
+
+#: templates/events/form.html
+msgid "Adresse trouvée : l'événement sera bien placé sur la carte."
+msgstr "Address found: the event will be placed correctly on the map."
+
+#: templates/events/form.html
+msgid "C'est gratuit"
+msgstr "It's free"
+
+#: templates/events/form.html
+msgid "Cinq étapes, deux minutes. Plus c'est précis, plus il y aura de monde !"
+msgstr "Five steps, two minutes. The more precise, the more people will come!"
+
+#: templates/events/form.html
+msgid "Combien ?"
+msgstr "How much?"
+
+#: templates/events/form.html
+msgid "Complet, reporté ou annulé : l'événement reste visible avec la mention, et les personnes inscrites sont prévenues."
+msgstr "Sold out, postponed or cancelled: the event stays visible with the label, and people going are notified."
+
+#: templates/events/form.html
+msgid "En publiant, tu acceptes la <a href=\"%(url)s\">charte de publication</a> : pas de contenu illégal, haineux, trompeur ni de revente de billets."
+msgstr "By posting, you accept the <a href=\"%(url)s\">posting rules</a>: no illegal, hateful or misleading content, and no ticket resale."
+
+#: templates/events/form.html
+msgid "L'essentiel"
+msgstr "The basics"
+
+#: templates/events/form.html
+msgid "Modifier l'événement"
+msgstr "Edit the event"
+
+#: templates/events/form.html
+msgid "Où ?"
+msgstr "Where?"
+
+#: templates/events/form.html
+msgid "Pour qui ?"
+msgstr "For whom?"
+
+#: templates/events/form.html
+msgid "Publier"
+msgstr "Post"
+
+#: templates/events/form.html
+msgid "Quand ?"
+msgstr "When?"
+
+#: templates/events/form.html
+msgid "Sans elle, le site anglais affiche le texte français."
+msgstr "Without it, the English site shows the French text."
+
+#: templates/events/form.html
+msgid "Version anglaise (facultatif)"
+msgstr "English version (optional)"
+
+#: templates/events/form.html
+msgid "facultatif"
+msgstr "optional"
+
+#: templates/events/form.html
+msgid "État"
+msgstr "Status"
+
+#: templates/events/list.html
+msgid "Afficher plus d'événements"
+msgstr "Show more events"
+
+#: templates/events/list.html
+msgid "Ajouter ces événements à ton agenda (Google, Apple, Outlook, Thunderbird…)"
+msgstr "Add these events to your calendar (Google, Apple, Outlook, Thunderbird…)"
+
+#: templates/events/list.html
+msgid "Qu'est-ce qu'on fait ?"
+msgstr "What's on?"
+
+#: templates/events/list.html
+msgid "S'abonner"
+msgstr "Subscribe"
+
+#: templates/events/list.html
+msgid "Tous les événements à venir à Nice, sur la Côte d'Azur et à Monaco : concerts, soirées, sorties, ateliers, rencontres."
+msgstr "All upcoming events in Nice, on the French Riviera and in Monaco: concerts, parties, outings, workshops, meetups."
+
+#: templates/events/list.html
+msgid "Voir sur la carte"
+msgstr "See on the map"
+
+#: templates/events/map.html
+msgid "Aucun événement sur la carte avec ces filtres."
+msgstr "No events on the map with these filters."
+
+#: templates/events/map.html
+msgid "Autour de moi"
+msgstr "Near me"
+
+#: templates/events/map.html
+msgid "La carte ne s'affiche pas ?"
+msgstr "Map not showing?"
+
+#: templates/events/map.html
+msgid "Tous les événements à venir à Nice et sur la Côte d'Azur, sur une carte."
+msgstr "All upcoming events in Nice and on the French Riviera, on a map."
+
+#: templates/events/map.html
+msgid "Voir l'événement"
+msgstr "See the event"
+
+#: templates/events/map.html
+msgid "Voir la liste des événements"
+msgstr "See the list of events"
+
+#: templates/events/map.html
+msgid "via"
+msgstr "via"
+
+#: templates/events/published.html
+msgid "%(n)s date créée."
+msgid_plural "%(n)s dates créées (une par semaine), modifiables une à une."
+msgstr[0] "%(n)s date created."
+msgstr[1] "%(n)s dates created (one a week), each editable separately."
+
+#: templates/events/published.html
+msgid "Bravo"
+msgstr "Well done"
+
+#: templates/events/published.html
+msgid "C'est en ligne !"
+msgstr "It's live!"
+
+#: templates/events/published.html
+msgid "Comme pour tout premier événement, l'équipe jette un œil avant la mise en ligne (en général dans la journée). Tu recevras une notification ; ensuite, tes événements seront publiés directement."
+msgstr "As with every first event, the team takes a look before it goes live (usually within the day). You'll get a notification; after that, your events will be published right away."
+
+#: templates/events/published.html
+msgid "Maintenant, le plus important : fais-le savoir. Un partage dans un groupe WhatsApp ou une story suffit souvent à remplir une soirée."
+msgstr "Now the most important part: spread the word. A share in a WhatsApp group or a story is often enough to fill an evening."
+
+#: templates/events/published.html
+msgid "Merci, c'est envoyé !"
+msgstr "Thanks, it's sent!"
+
+#: templates/events/published.html
+msgid "Presque !"
+msgstr "Almost!"
+
+#: templates/events/published.html
+msgid "Voir la page de l'événement"
+msgstr "See the event page"
+
+#: templates/events/venue.html
+msgid "Les prochains événements à %(name)s, %(city)s."
+msgstr "Upcoming events at %(name)s, %(city)s."
+
+#: venues/models.py
+msgid "Arrière-pays"
+msgstr "Inland"
+
+#: venues/models.py
+msgid "Côte (Cannes → Menton)"
+msgstr "Coast (Cannes → Menton)"
+
+#: venues/models.py
+msgid "Monaco"
+msgstr "Monaco"
+
+#: venues/models.py
+msgid "Métropole Nice Côte d'Azur"
+msgstr "Nice Côte d’Azur metropolis"
+
+#: venues/models.py
+msgid "Nice"
+msgstr "Nice"
+
+#: venues/models.py
+msgid "adresse"
+msgstr "address"
+
+#: venues/models.py
+msgid "commune"
+msgstr "town"
+
+#: venues/models.py
+msgid "nom du lieu"
+msgstr "venue name"

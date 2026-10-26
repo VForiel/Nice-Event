@@ -1,0 +1,39 @@
+{% extends "community/_auth_base.html" %}
+{% load i18n ne %}
+{% block title %}{% translate "Créer un compte" %}{% endblock %}
+{% block description %}{% translate "Crée ton compte Nice-Event pour publier des événements, retrouver tes amis et voir qui vient." %}{% endblock %}
+
+{% block pitch %}
+<p class="kicker">{% translate "Gratuit, sans pub" %}</p>
+<h1 class="page-title">{% translate "Rejoins la bande" %}</h1>
+<ul class="auth-perks">
+  <li>{% icon "plus" 22 %}<div><strong>{% translate "Publie tes événements" %}</strong><span>{% translate "Concert, apéro, rando, atelier, brocante : en deux minutes, visible par tout Nice." %}</span></div></li>
+  <li>{% icon "users" 22 %}<div><strong>{% translate "Retrouve tes amis" %}</strong><span>{% translate "Ajoute-les, invite-les, et vois où ils vont." %}</span></div></li>
+  <li>{% icon "heart" 22 %}<div><strong>{% translate "Dis où tu vas" %}</strong><span>{% translate "Un clic sur « J'y vais », et tu sais qui sera là." %}</span></div></li>
+</ul>
+{% endblock %}
+
+{% block card %}
+<h2>{% translate "Créer mon compte" %}</h2>
+<form class="form" method="post" novalidate>
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ next }}">
+  {% for field in form %}
+    {% if field.name == "website" %}
+    <div class="hp" aria-hidden="true">{{ field.label_tag }}{{ field }}</div>
+    {% elif field.name == "consent" %}
+    {% url 'core:charter' as charter_url %}
+    <div class="field"><label class="check">{{ field }} <span>{{ field.label }} <a href="{{ charter_url }}" target="_blank">{% translate "Les lire" %}</a></span></label>{{ field.errors }}</div>
+    {% else %}
+    <div class="field">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% if field.help_text %}<p class="help">{{ field.help_text }}</p>{% endif %}
+      {{ field.errors }}
+    </div>
+    {% endif %}
+  {% endfor %}
+  <button class="btn btn-primary" type="submit">{% translate "C'est parti" %} {% icon "arrow" 18 %}</button>
+</form>
+<p class="auth-switch">{% translate "Déjà inscrit·e ?" %} <a href="{% url 'community:login' %}">{% translate "Se connecter" %}</a></p>
+{% endblock %}

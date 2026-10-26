@@ -79,3 +79,16 @@
     if (toggle) toggle.click();
   });
 })();
+
+// Partage natif (mobile) : le bouton n'apparaît que si le navigateur sait partager.
+(function () {
+  "use strict";
+  document.querySelectorAll("[data-share]").forEach(function (btn) {
+    if (!navigator.share) return;
+    btn.hidden = false;
+    btn.addEventListener("click", function () {
+      navigator.share({ title: btn.dataset.shareTitle, text: btn.dataset.shareTitle, url: btn.dataset.shareUrl })
+        .catch(function () { /* partage annulé */ });
+    });
+  });
+})();

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load i18n ne %}
+{% block title %}{{ venue.name }}, {{ venue.commune.name }}{% endblock %}
+{% block description %}{% blocktranslate with name=venue.name city=venue.commune.name %}Les prochains événements à {{ name }}, {{ city }}.{% endblocktranslate %}{% endblock %}
+
+{% block content %}
+<header class="page-head page-head-tight">
+  <div class="wrap">
+    <p class="kicker">{{ venue.commune.name }}</p>
+    <h1 class="page-title">{{ venue.name }}</h1>
+    <p class="page-lede">{{ venue.address }}{% if venue.address %} · {% endif %}<a href="{{ venue.directions_url }}" rel="noopener" target="_blank">{% translate "Itinéraire" %} {% icon "external" 14 %}</a></p>
+  </div>
+</header>
+<div class="wrap list-body">{% include "events/_days.html" %}</div>
+{% endblock %}

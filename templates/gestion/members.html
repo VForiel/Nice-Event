@@ -1,0 +1,33 @@
+{% extends "gestion/base.html" %}
+{% block title %}Membres{% endblock %}
+
+{% block content %}
+<h1 class="g-title">Membres</h1>
+<form class="g-inline g-filter" method="get">
+  <input type="search" name="q" value="{{ q }}" placeholder="Nom ou courriel">
+  <button class="btn btn-ghost" type="submit">Chercher</button>
+</form>
+<table class="g-table">
+  <thead><tr><th>Inscrit·e</th><th>Membre</th><th>Courriel</th><th>Événements</th><th>État</th><th></th></tr></thead>
+  <tbody>
+    {% for p in page %}
+    <tr{% if not p.user.is_active %} class="is-done"{% endif %}>
+      <td class="nowrap">{{ p.created_at|date:"d/m/y" }}</td>
+      <td><a href="{{ p.get_absolute_url }}" target="_blank">{{ p.display_name }}</a>{% if p.user.is_staff %} <span class="tag tag-price">équipe</span>{% endif %}</td>
+      <td>{{ p.user.email }}{% if not p.email_confirmed %} <span class="warn">non confirmé</span>{% endif %}</td>
+      <td>{{ p.n_events }}</td>
+      <td>{% if not p.user.is_active %}désactivé{% elif p.trusted %}<span class="ok">de confiance</span>{% else %}modéré{% endif %}</td>
+      <td class="g-actions">
+        <form method="post" action="{% url 'gestion:member_action' p.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <button class="btn btn-ghost btn-sm" type="submit" name="action" value="trust">{% if p.trusted %}Retirer la confiance{% else %}Faire confiance{% endif %}</button>
+          {% if not p.email_confirmed %}<button class="btn btn-ghost btn-sm" type="submit" name="action" value="confirm">Confirmer l'adresse</button>{% endif %}
+          {% if not p.user.is_superuser %}<button class="btn btn-ghost btn-sm" type="submit" name="action" value="deactivate"{% if p.user.is_active %} data-confirm="Désactiver ce compte ? Ses événements seront masqués."{% endif %}>{% if p.user.is_active %}Désactiver{% else %}Réactiver{% endif %}</button>{% endif %}
+        </form>
+      </td>
+    </tr>
+    {% empty %}<tr><td colspan="6">Personne.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% if page.has_other_pages %}<p class="g-pages">{% if page.has_previous %}<a href="?q={{ q|urlencode }}&amp;page={{ page.previous_page_number }}">← Précédents</a>{% endif %} Page {{ page.number }}/{{ page.paginator.num_pages }} {% if page.has_next %}<a href="?q={{ q|urlencode }}&amp;page={{ page.next_page_number }}">Suivants →</a>{% endif %}</p>{% endif %}
+{% endblock %}

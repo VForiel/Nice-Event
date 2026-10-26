@@ -1,0 +1,30 @@
+{% extends "gestion/base.html" %}
+{% block title %}Signalements{% endblock %}
+
+{% block content %}
+<h1 class="g-title">Signalements</h1>
+<p class="g-lede">Un événement signalé par trois membres différents est masqué automatiquement en attendant ta décision
+  (Événements › Masqués).</p>
+<table class="g-table">
+  <thead><tr><th>Reçu</th><th>Contenu</th><th>Motif</th><th>Par</th><th></th></tr></thead>
+  <tbody>
+    {% for r in items %}
+    <tr{% if r.handled %} class="is-done"{% endif %}>
+      <td class="nowrap">{{ r.created_at|date:"d/m H:i" }}</td>
+      <td>{% if r.event %}Événement : <a href="{{ r.event.get_absolute_url }}" target="_blank">{{ r.event.title }}</a> ({{ r.event.get_status_display|lower }})
+        {% elif r.profile %}Profil : <a href="{{ r.profile.get_absolute_url }}" target="_blank">{{ r.profile.display_name }}</a>{% endif %}</td>
+      <td>{{ r.reason|linebreaksbr }}</td>
+      <td>{{ r.reporter.profile.display_name|default:"compte supprimé" }}</td>
+      <td class="g-actions">
+        <form method="post" action="{% url 'gestion:report_toggle' r.pk %}">{% csrf_token %}
+          <button class="btn btn-ghost btn-sm" type="submit">{% if r.handled %}Rouvrir{% else %}Traité{% endif %}</button></form>
+        {% if r.event and r.event.status == 'published' %}
+        <form method="post" action="{% url 'gestion:event_action' r.event.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}">
+          <button class="btn btn-ghost btn-sm" type="submit" name="action" value="hide">Masquer l'événement</button></form>{% endif %}
+      </td>
+    </tr>
+    {% empty %}<tr><td colspan="5">Aucun signalement.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

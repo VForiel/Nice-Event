@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Conditions d'utilisation et charte de publication{% endblock %}
+
+{% block content %}
+<header class="page-head">
+  <div class="wrap">
+    <h1 class="page-title">Conditions et charte</h1>
+    <p class="page-lede">Nice-Event est un agenda participatif et gratuit. Pour qu'il reste utile et accueillant, quelques
+      règles simples s'appliquent à tout le monde.</p>
+  </div>
+</header>
+<div class="wrap page-body prose">
+  <h2>Charte de publication</h2>
+  <p>Tout événement publié doit :</p>
+  <ul>
+    <li>avoir réellement lieu à Nice, dans les Alpes-Maritimes ou à Monaco, à la date et au lieu indiqués ;</li>
+    <li>être décrit honnêtement : prix, public, langue, accessibilité ;</li>
+    <li>être ouvert au public, ou au moins aux personnes qui s'inscrivent selon les modalités indiquées.</li>
+  </ul>
+  <p>Sont interdits : les contenus illégaux, haineux, discriminatoires, violents ou à caractère sexuel ; les arnaques et
+    faux événements ; la revente de billets ; la publicité pour un produit ou un service déguisée en événement ; les
+    événements publiés plusieurs fois.</p>
+  <p>Le premier événement de chaque compte est relu par l'équipe avant sa mise en ligne. Un événement contraire à la
+    charte peut être masqué à tout moment, et le compte qui l'a publié désactivé.</p>
+
+  <h2>Signaler un contenu</h2>
+  <p>Chaque événement et chaque profil a un lien « Signaler ». Un événement signalé par plusieurs membres est masqué en
+    attendant l'examen de l'équipe. Tu peux aussi écrire à <a href="mailto:{{ CONTACT_EMAIL }}">{{ CONTACT_EMAIL }}</a>.</p>
+
+  <h2>Conditions d'utilisation</h2>
+  <ul>
+    <li>Le site est gratuit. La publication d'événements pourra devenir payante (1 € par événement) quand le site aura
+      grandi ; ce sera annoncé à l'avance et ne s'appliquera jamais rétroactivement.</li>
+    <li>Tu es responsable de ce que tu publies (textes, photos : tu dois avoir le droit de les diffuser). En publiant,
+      tu autorises Nice-Event à afficher ton événement et à le partager sur ses réseaux sociaux (Instagram, Facebook, X,
+      Bluesky), avec un visuel créé à partir de ta photo.</li>
+    <li>Les événements externes viennent d'agendas publics : leur exactitude relève de leur source, vers laquelle un lien
+      est toujours donné.</li>
+    <li>Nice-Event n'organise pas les événements et ne vend pas de billets : en cas de problème avec un événement,
+      adresse-toi à son organisateur.</li>
+    <li>Tu peux supprimer ton compte à tout moment depuis tes réglages.</li>
+  </ul>
+</div>
+{% endblock %}

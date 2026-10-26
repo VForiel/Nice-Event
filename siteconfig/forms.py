@@ -16,7 +16,8 @@ class SiteConfigForm(forms.ModelForm):
 
     class Meta:
         model = SiteConfig
-        fields = ["smtp_host", "smtp_port", "smtp_security", "smtp_user", "smtp_password", "from_email", "contact_email"]
+        fields = ["smtp_host", "smtp_port", "smtp_security", "smtp_user", "smtp_password", "from_email", "contact_email",
+                  "require_email_confirmation"]
         widgets = {"smtp_password": SecretInput()}
 
     def __init__(self, *args, **kwargs):

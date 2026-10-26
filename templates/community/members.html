@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load i18n ne %}
+{% block title %}{% translate "Membres" %}{% endblock %}
+
+{% block content %}
+<header class="page-head page-head-tight">
+  <div class="wrap">
+    <p class="kicker">{% translate "Communauté" %}</p>
+    <h1 class="page-title">{% translate "Les membres" %}</h1>
+    <p class="page-lede">{% translate "Retrouve tes amis, ou des gens qui aiment les mêmes sorties que toi." %}</p>
+  </div>
+</header>
+
+<div class="wrap page-body">
+  <form class="search members-search" method="get" role="search">
+    <input type="search" name="q" value="{{ q }}" placeholder="{% translate "Nom, centre d'intérêt…" %}" aria-label="{% translate "Rechercher un membre" %}">
+    <button type="submit">{% translate "Chercher" %}</button>
+  </form>
+
+  {% if suggestions %}
+  <section class="members-section">
+    <h2 class="members-h">{% translate "Qui aiment les mêmes choses que toi" %}</h2>
+    <div class="people">{% for p in suggestions %}{% include "community/_person.html" %}{% endfor %}</div>
+  </section>
+  {% endif %}
+
+  <section class="members-section">
+    <h2 class="members-h">{% if q %}{% blocktranslate count n=people|length %}{{ n }} résultat{% plural %}{{ n }} résultats{% endblocktranslate %}{% else %}{% translate "Tout le monde" %}{% endif %}</h2>
+    {% if people %}
+    <div class="people">{% for p in people %}{% include "community/_person.html" %}{% endfor %}</div>
+    {% else %}
+    <div class="empty"><p class="empty-title">{% translate "Personne ne correspond pour l'instant." %}</p></div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load i18n ne static %}
+{% block title %}{% translate "Carte des événements" %}{% endblock %}
+{% block description %}{% translate "Tous les événements à venir à Nice et sur la Côte d'Azur, sur une carte." %}{% endblock %}
+{% block body_class %}page-map{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="{% static 'vendor/leaflet/leaflet.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/leaflet/MarkerCluster.css' %}">
+  <script src="{% static 'vendor/leaflet/leaflet.js' %}" defer></script>
+  <script src="{% static 'vendor/leaflet/leaflet.markercluster.js' %}" defer></script>
+  <script src="{% static 'vendor/leaflet/protomaps-leaflet.js' %}" defer></script>
+  <script src="{% static 'js/map.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+{% get_current_language as LANG %}
+<div class="map-page">
+  <div class="map-bar wrap">
+    <h1 class="map-title">{% translate "Carte" %}</h1>
+    {% url 'events:map' as action %}{% include "events/_filters.html" with action=action %}
+  </div>
+  <div class="map-frame">
+    <div id="map" class="map" data-events="{% url 'events:map_data' %}{% if data_query %}?{{ data_query }}{% endif %}"
+         data-tiles="/tiles/nice-region.pmtiles" data-lang="{{ LANG }}"
+         data-label-see="{% translate "Voir l'événement" %}" data-label-free="{% translate "Gratuit" %}"
+         data-label-cancelled="{% translate "Annulé" %}" data-label-via="{% translate "via" %}"
+         data-label-empty="{% translate "Aucun événement sur la carte avec ces filtres." %}"
+         role="region" aria-label="{% translate "Carte des événements" %}"></div>
+    <button class="btn btn-ghost map-locate" type="button" data-locate>{% icon "pin" 18 %} {% translate "Autour de moi" %}</button>
+    <p class="map-status" data-map-status role="status"></p>
+  </div>
+  <p class="wrap map-alt">{% translate "La carte ne s'affiche pas ?" %} <a href="{% url 'events:list' %}{% if data_query %}?{{ data_query }}{% endif %}">{% translate "Voir la liste des événements" %}</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "community/_auth_base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Signaler" %}{% endblock %}
+{% block head %}<meta name="robots" content="noindex">{% endblock %}
+{% block pitch %}
+<h1 class="page-title">{% translate "Signaler" %}</h1>
+<p class="page-lede">{% blocktranslate with name=target %}Tu signales « {{ name }} ». L'équipe de Nice-Event lira ton message ; la personne concernée ne saura pas qui l'a envoyé.{% endblocktranslate %}</p>
+{% endblock %}
+{% block card %}
+<form class="form" method="post" novalidate>
+  {% csrf_token %}
+  <div class="field"><label for="id_reason">{{ form.reason.label }}</label>{{ form.reason }}<p class="help">{{ form.reason.help_text }}</p>{{ form.reason.errors }}</div>
+  <button class="btn btn-primary" type="submit">{% translate "Envoyer" %}</button>
+  <a class="auth-switch" href="{{ target.get_absolute_url }}">{% translate "Annuler" %}</a>
+</form>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+<div class="wrap auth">
+  <div class="auth-pitch">
+    {% block pitch %}{% endblock %}
+  </div>
+  <div class="auth-card">
+    {% block card %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

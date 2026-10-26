@@ -1,0 +1,12 @@
+{% load i18n ne %}{% for day, items in days %}
+<section class="day-block">
+  <h2 class="day">{% day_heading day %}</h2>
+  <div class="cards">{% for event in items %}{% include "events/_card.html" %}{% endfor %}</div>
+</section>
+{% empty %}
+<div class="empty">
+  <p class="empty-title">{% translate "Rien pour l'instant…" %}</p>
+  <p>{% translate "Aucun événement ne correspond. Élargis les filtres, ou publie le tien !" %}</p>
+  <p><a class="btn btn-primary" href="{% url 'events:new' %}">{% icon "plus" 18 %} {% translate "Publier un événement" %}</a></p>
+</div>
+{% endfor %}

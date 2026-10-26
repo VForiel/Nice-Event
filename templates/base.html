@@ -24,7 +24,10 @@
   <link rel="preload" href="{% static 'fonts/bricolage-grotesque-latin-standard-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="{% static 'fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  <link rel="stylesheet" href="{% static 'css/events.css' %}">
+  <link rel="stylesheet" href="{% static 'css/community.css' %}">
   <script nonce="{{ csp_nonce }}">try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+  <script type="speculationrules" nonce="{{ csp_nonce }}">{"prefetch": [{"where": {"and": [{"href_matches": "/*"}, {"not": {"href_matches": ["/gestion/*", "/admin/*", "/compte/*", "/en/account/*", "/media/*", "/notifications/*", "/*.ics", "/*.json", "/api/*"]}}]}, "eagerness": "moderate"}]}</script>
   <script src="{% static 'js/site.js' %}" defer></script>
   {% block head %}{% endblock %}
 </head>
@@ -50,8 +53,10 @@
         <span class="sr">{% translate "Menu" %}</span>
       </button>
       <nav id="nav" class="nav" aria-label="{% translate "Navigation principale" %}">
-        <a href="{% url 'core:home' %}#bientot">{% translate "Agenda" %}</a>
-        <a href="{% url 'core:contact' %}"{% if request.resolver_match.url_name == 'contact' %} aria-current="page"{% endif %}>{% translate "Contact" %}</a>
+        {% with ns=request.resolver_match.namespace page=request.resolver_match.url_name %}
+        <a href="{% url 'events:list' %}"{% if ns == 'events' and page != 'map' %} aria-current="page"{% endif %}>{% translate "Agenda" %}</a>
+        <a href="{% url 'events:map' %}"{% if page == 'map' %} aria-current="page"{% endif %}>{% translate "Carte" %}</a>
+        {% endwith %}
         <div class="nav-tools">
           {% if LANG == 'en' %}
           <a class="lang-switch" href="{% lang_url 'fr' %}" hreflang="fr" lang="fr" title="Version française">FR</a>
@@ -61,9 +66,29 @@
           <button class="theme-toggle" type="button" aria-label="{% translate "Changer de thème" %}" title="{% translate "Thème clair / sombre" %}">
             <span class="when-light">{% icon "moon" 18 %}</span><span class="when-dark">{% icon "sun" 18 %}</span>
           </button>
-          {% if user.is_staff %}<a class="btn btn-ghost btn-sm" href="{% url 'gestion:dashboard' %}">{% translate "Gestion" %}</a>{% endif %}
+          {% if user.is_authenticated and my_profile %}
+          <details class="account">
+            <summary aria-label="{% translate "Mon compte" %}">
+              {% include "community/_avatar.html" with p=my_profile size="sm" %}
+              <span class="account-label">{% translate "Mon compte" %}</span>
+              {% if unread_count %}<span class="badge" aria-label="{% blocktranslate count n=unread_count %}{{ n }} notification non lue{% plural %}{{ n }} notifications non lues{% endblocktranslate %}">{{ unread_count }}</span>{% endif %}
+            </summary>
+            <div class="account-menu">
+              <p class="account-name">{{ my_profile.display_name }}</p>
+              <a href="{{ my_profile.get_absolute_url }}">{% translate "Mon profil" %}</a>
+              <a href="{% url 'community:notifications' %}">{% translate "Notifications" %}{% if unread_count %} <span class="badge badge-inline">{{ unread_count }}</span>{% endif %}</a>
+              <a href="{% url 'community:friends' %}">{% translate "Mes amis" %}{% if pending_friends %} <span class="badge badge-inline">{{ pending_friends }}</span>{% endif %}</a>
+              <a href="{% url 'community:members' %}">{% translate "Les membres" %}</a>
+              <a href="{% url 'community:settings' %}">{% translate "Réglages" %}</a>
+              {% if user.is_staff %}<a href="{% url 'gestion:dashboard' %}">{% translate "Gestion" %}</a>{% endif %}
+              <form method="post" action="{% url 'community:logout' %}">{% csrf_token %}<button type="submit">{% translate "Se déconnecter" %}</button></form>
+            </div>
+          </details>
+          {% else %}
+          <a class="login-link" href="{% url 'community:login' %}{% if request.path != '/' %}?next={{ request.path|urlencode }}{% endif %}">{% translate "Se connecter" %}</a>
+          {% endif %}
         </div>
-        <a class="btn btn-primary nav-cta" href="{% url 'core:home' %}#bientot">{% icon "plus" 18 %} {% translate "Publier un événement" %}</a>
+        <a class="btn btn-primary nav-cta" href="{% url 'events:new' %}">{% icon "plus" 18 %} {% translate "Publier un événement" %}</a>
       </nav>
     </div>
   </header>
@@ -87,6 +112,10 @@
         <a class="footer-mail" href="mailto:{{ CONTACT_EMAIL }}">{{ CONTACT_EMAIL }}</a>
       </div>
       <ul class="footer-links">
+        <li><a href="{% url 'events:list' %}">{% translate "Agenda" %}</a></li>
+        <li><a href="{% url 'events:map' %}">{% translate "Carte des événements" %}</a></li>
+        <li><a href="{% url 'events:agenda' %}">{% translate "S'abonner à l'agenda (iCal)" %}</a></li>
+        <li><a href="{% url 'core:charter' %}">{% translate "Conditions et charte" %}</a></li>
         <li><a href="{% url 'core:contact' %}">{% translate "Contact" %}</a></li>
         <li><a href="{% url 'core:legal' %}">{% translate "Mentions légales" %}</a></li>
         <li><a href="{% url 'core:privacy' %}">{% translate "Confidentialité" %}</a></li>

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load i18n ne %}
+{% block title %}{% translate "Notifications" %}{% endblock %}
+
+{% block content %}
+<header class="page-head page-head-tight">
+  <div class="wrap">
+    <h1 class="page-title">{% translate "Notifications" %}</h1>
+  </div>
+</header>
+
+<div class="wrap page-body">
+  {% if items %}
+  <ul class="notif-list">
+    {% for n in items %}
+    <li class="notif{% if not n.read %} is-new{% endif %}">
+      {% if n.actor %}<a class="notif-avatar" href="{{ n.actor.profile.get_absolute_url }}">{% include "community/_avatar.html" with p=n.actor.profile size="md" %}</a>
+      {% else %}<span class="notif-avatar">{% icon "bell" 24 %}</span>{% endif %}
+      <div class="notif-text">
+        <p>
+          {% with name=n.actor.profile.display_name title=n.event.title_tr %}
+          {% if n.verb == "friend_request" %}{% blocktranslate %}<strong>{{ name }}</strong> veut t'ajouter en ami·e.{% endblocktranslate %}
+          {% elif n.verb == "friend_accepted" %}{% blocktranslate %}<strong>{{ name }}</strong> a accepté ta demande d'ami·e.{% endblocktranslate %}
+          {% elif n.verb == "invite" %}{% blocktranslate %}<strong>{{ name }}</strong> t'invite à « {{ title }} ».{% endblocktranslate %}
+          {% elif n.verb == "attending" %}{% blocktranslate %}<strong>{{ name }}</strong> vient à ton événement « {{ title }} ».{% endblocktranslate %}
+          {% elif n.verb == "approved" %}{% blocktranslate %}Ton événement « {{ title }} » est validé et en ligne. Tes prochains seront publiés directement.{% endblocktranslate %}
+          {% elif n.verb == "rejected" %}{% blocktranslate %}Ton événement « {{ title }} » n'a pas été publié.{% endblocktranslate %}{% if n.message %} {{ n.message }}{% endif %}
+          {% elif n.verb == "changed" %}{% blocktranslate with what=n.message %}« {{ title }} », où tu vas, a été {{ what }}.{% endblocktranslate %}
+          {% elif n.verb == "to_moderate" %}{% blocktranslate %}<strong>{{ name }}</strong> a publié « {{ title }} » : à modérer.{% endblocktranslate %}
+          {% endif %}
+          {% endwith %}
+        </p>
+        <time datetime="{{ n.created_at|date:'c' }}">{{ n.created_at|timesince }}</time>
+      </div>
+      <div class="notif-go">
+        {% if n.verb == "friend_request" %}<a class="btn btn-primary" href="{% url 'community:friends' %}">{% translate "Répondre" %}</a>
+        {% elif n.verb == "to_moderate" %}<a class="btn btn-primary" href="{% url 'gestion:moderation' %}">{% translate "Modérer" %}</a>
+        {% elif n.event %}<a class="btn btn-ghost" href="{{ n.event.get_absolute_url }}">{% translate "Voir" %}</a>
+        {% elif n.actor %}<a class="btn btn-ghost" href="{{ n.actor.profile.get_absolute_url }}">{% translate "Voir" %}</a>{% endif %}
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="empty"><p class="empty-title">{% translate "Rien de neuf pour l'instant." %}</p><p>{% translate "Les demandes d'ami, les invitations et les inscriptions à tes événements apparaîtront ici." %}</p></div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -66,6 +66,10 @@ INSTALLED_APPS = [
     "django.forms",
     "core",
     "siteconfig",
+    "venues",
+    "events",
+    "community",
+    "aggregator",
     "gestion",
 ]
 
@@ -97,6 +101,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "core.context_processors.site",
+                "community.context_processors.member",
             ],
         },
     },
@@ -157,9 +162,11 @@ if os.environ.get("CACHE_DIR"):
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Les comptes membres arrivent en phase 3 ; d'ici là, l'équipe se connecte par l'admin.
-LOGIN_URL = "admin:login"
+LOGIN_URL = "community:login"
+LOGIN_REDIRECT_URL = "community:me"
 LOGOUT_REDIRECT_URL = "core:home"
+# Connexion par courriel (les membres n'ont pas d'identifiant à retenir) ; l'admin accepte aussi l'identifiant.
+AUTHENTICATION_BACKENDS = ["community.auth.EmailBackend", "django.contrib.auth.backends.ModelBackend"]
 
 # Courriel : les paramètres SMTP sont lus en base à chaque envoi (siteconfig.mail). Tant qu'aucun serveur n'est
 # réglé, les messages s'affichent dans la console (journaux du conteneur).

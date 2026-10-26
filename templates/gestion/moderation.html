@@ -1,0 +1,37 @@
+{% extends "gestion/base.html" %}
+{% load ne %}
+{% block title %}Modération{% endblock %}
+
+{% block content %}
+<h1 class="g-title">Modération</h1>
+<p class="g-lede">Premier événement de chaque compte. Une fois validé, le compte devient « de confiance » et publie directement
+  (statut réversible dans Membres). Une série répétée se valide ou se refuse d'un coup.</p>
+
+{% for event in items %}
+<article class="g-block g-mod">
+  <div class="g-mod-head">
+    <div>
+      <h2><a href="{{ event.get_absolute_url }}" target="_blank">{{ event.title }}</a></h2>
+      <p class="g-help">{{ event.local_start|day_short }} · {{ event|hours }} · {{ event.venue.name }}, {{ event.venue.commune.name }} · {{ event.price_label }}
+        {% if event.series %} · <b>série répétée</b>{% endif %}</p>
+      <p class="g-help">Par <a href="{{ event.organizer.profile.get_absolute_url }}">{{ event.organizer.profile.display_name }}</a> ({{ event.organizer.email }}), inscrit·e le {{ event.organizer.date_joined|date:"d/m/Y" }}
+        {% if event.organizer_name %} · organisé par {{ event.organizer_name }}{% endif %}</p>
+    </div>
+    {% if event.photo %}<img class="g-thumb" src="{{ event.photo|thumb:192 }}" alt="">{% endif %}
+  </div>
+  <div class="tags">{% for c in event.categories.all %}<span class="tag tag-cat tone-{{ c.tone }}">{{ c.name }}</span>{% endfor %}</div>
+  <p><b>{{ event.summary }}</b></p>
+  {% if event.description %}<div class="prose g-desc">{{ event.description_html }}</div>{% endif %}
+  {% if event.ticket_url %}<p class="g-help">Lien : <a href="{{ event.ticket_url }}" rel="noopener nofollow" target="_blank">{{ event.ticket_url }}</a></p>{% endif %}
+  <div class="g-mod-actions">
+    <form method="post" action="{% url 'gestion:moderate' event.pk %}">{% csrf_token %}<input type="hidden" name="decision" value="approve">
+      <button class="btn btn-primary" type="submit">{% icon "check" 18 %} Valider et publier</button></form>
+    <form class="g-inline" method="post" action="{% url 'gestion:moderate' event.pk %}">{% csrf_token %}<input type="hidden" name="decision" value="reject">
+      <input type="text" name="note" placeholder="Motif (envoyé à l'auteur)" maxlength="300">
+      <button class="btn btn-ghost" type="submit">Refuser</button></form>
+  </div>
+</article>
+{% empty %}
+<p class="g-block">Rien à modérer.</p>
+{% endfor %}
+{% endblock %}
