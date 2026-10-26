@@ -3,3 +3,5 @@
 fonttools
 brotli
 uharfbuzz
+# Vérification des pages en vrai navigateur (utilise le Chrome installé : channel="chrome")
+playwright
