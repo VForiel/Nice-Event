@@ -27,6 +27,10 @@ class Source(models.Model):
                                         help_text="Quand la source n'indique pas de lieu reconnaissable.")
     max_pages = models.PositiveSmallIntegerField("pages de liste à suivre", default=3,
                                                  help_text="JSON-LD : nombre de pages de la liste parcourues (lien « suivant »).")
+    link_pattern = models.CharField(
+        "motif des liens d'événements", max_length=200, blank=True,
+        help_text="JSON-LD, quand la page de liste n'a pas de liste structurée : expression régulière des adresses de pages "
+                  "d'événements à ouvrir, ex. ^https://unidivers\\.fr/event/[^/]+/?$")
     images_allowed = models.BooleanField("reprendre les images", default=False,
                                          help_text="Seulement si la licence de la source le permet (ex. OpenAgenda, DATAtourisme).")
     notes = models.TextField("notes", blank=True)

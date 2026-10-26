@@ -162,3 +162,12 @@ class PaginationTests(TestCase):
         self.assertEqual(next_page('<a href="https://a.example/agenda/page/2/">2</a>', "https://a.example/agenda/", 2),
                          "https://a.example/agenda/page/2/")
         self.assertIsNone(next_page('<a href="/agenda/page/7/">7</a>', "https://a.example/agenda/", 2))
+
+
+class TitleTests(TestCase):
+    def test_trailing_place_and_city_are_removed(self):
+        from aggregator.importer import clean_title
+
+        item = {"title": "Concert de piano solo avec Thierry Jam Place de l’Eglise Saorge", "place": "Place de l'Eglise", "city": "Saorge"}
+        self.assertEqual(clean_title(item), "Concert de piano solo avec Thierry Jam")
+        self.assertEqual(clean_title({"title": "Nice Jazz Festival", "place": "Nice", "city": "Nice"}), "Nice Jazz Festival")

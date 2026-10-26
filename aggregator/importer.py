@@ -28,7 +28,7 @@ KEYWORDS = [
     ("expo", ["exposition", "expo ", "musee", "vernissage", "galerie"]),
     ("marche", ["marche", "brocante", "vide grenier", "puces", "foire", "salon"]),
     ("humour", ["humour", "stand up", "one man", "one woman", "humoriste", "comedy"]),
-    ("concert", ["concert", "musique", "jazz", "rock", "orchestre", "recital", "chorale", "symphon", "piano", "rap ",
+    ("concert", ["concert", "musique", "jazz", "rock", "world tour", "tournee", "en live", "orchestre", "recital", "chorale", "symphon", "piano", "rap ",
                  "MusicEvent"]),
     ("spectacle", ["theatre", "spectacle", "danse", "opera", "ballet", "cirque", "marionnette", "TheaterEvent",
                    "DanceEvent"]),
@@ -96,7 +96,7 @@ class Places:
 
 
 def venue_for(item, commune):
-    name = (item.get("place") or commune.name)[:120]
+    name = (place_name(item) or commune.name)[:120]
     address = (item.get("address") or "")[:200]
     venue = Venue.objects.filter(name__iexact=name, commune=commune, address__iexact=address).first()
     if venue:
@@ -106,6 +106,33 @@ def venue_for(item, commune):
     if not precise:
         lat, lon, precise = geocode.locate(address or name, commune)
     return Venue.objects.create(name=name, address=address, commune=commune, lat=lat, lon=lon, precise=precise)
+
+
+def flat(text):
+    """Minuscules et apostrophes droites, sans changer la longueur (les positions restent valables)."""
+    return text.lower().replace("’", "'")
+
+
+def strip_tail(text, tail):
+    tail = (tail or "").strip()
+    if len(tail) >= 4:
+        at = flat(text).rfind(" " + flat(tail))
+        if at > len(text) // 3 and at + len(tail) + 1 >= len(text.rstrip(" .")):
+            return text[:at].rstrip(" -–,·")
+    return text
+
+
+def place_name(item):
+    """Nom du lieu sans la ville collée à la fin (« Place de l'Église Saorge » -> « Place de l'Église »)."""
+    return strip_tail((item.get("place") or "").strip(), item.get("city"))
+
+
+def clean_title(item):
+    """Certains agendas collent le lieu et la ville à la fin du titre (« Concert de piano Place de l'Église Saorge »)."""
+    title = item["title"].strip()
+    for tail in (item.get("city"), item.get("place"), place_name(item)):
+        title = strip_tail(title, tail)
+    return title
 
 
 def excerpt(text):
@@ -161,7 +188,7 @@ def scan(source, fetcher=None):
             stats["duplicates"] += 1
             continue
         event = existing or Event(source=source, external_id=external_id)
-        event.title = item["title"][:140]
+        event.title = clean_title(item)[:140]
         event.summary = excerpt(item["description"]) or f"{item['title'][:150]} — voir le site de l'organisateur."
         event.description = ""  # seul un court extrait est repris ; le détail reste chez la source
         event.external_url = item["url"][:500]

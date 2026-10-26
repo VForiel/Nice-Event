@@ -178,8 +178,14 @@ def read_jsonld(source, fetcher, known_fresh=frozenset()):
     `known_fresh` : pages d'événements déjà vues il y a peu, qu'on ne retélécharge pas (on les signale juste vues).
     """
     items, seen, detail_urls, page_url = [], set(), [], source.url
+    pattern = re.compile(source.link_pattern) if source.link_pattern else None
     for _page in range(max(1, source.max_pages)):
         page = fetcher.get(page_url)
+        if pattern:
+            for href in re.findall(r"""href=["']([^"'#]+)["']""", page):
+                link = urljoin(page_url, html.unescape(href))
+                if pattern.search(link):
+                    detail_urls.append(link)
         for node in ld_blocks(page):
             if is_event(node):
                 event = ld_event(node, page_url)
