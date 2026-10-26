@@ -110,6 +110,16 @@ def ld_blocks(page):
                         stack.append(child)
 
 
+def next_page(page, page_url, number):
+    """Page suivante d'une liste : lien rel="next", sinon lien vers « page/N/ » ou « ?page=N » (pagination WordPress…)."""
+    match = NEXT_LINK.search(page)
+    if match:
+        return urljoin(page_url, html.unescape(match.group(1) or match.group(2)))
+    pattern = re.compile(rf"""href=["']([^"']*(?:/page/{number}/?|[?&](?:page|paged)={number})(?:[&#][^"']*)?)["']""")
+    match = pattern.search(page)
+    return urljoin(page_url, html.unescape(match.group(1))) if match else None
+
+
 def is_event(node):
     types = node.get("@type")
     types = types if isinstance(types, list) else [types]
@@ -178,10 +188,10 @@ def read_jsonld(source, fetcher, known_fresh=frozenset()):
                     items.append(event)
             elif node.get("@type") == "ListItem" and node.get("url") and not isinstance(node.get("item"), dict):
                 detail_urls.append(urljoin(page_url, node["url"]))
-        match = NEXT_LINK.search(page)
-        if not match:
+        following = next_page(page, page_url, _page + 2)
+        if not following:
             break
-        page_url = urljoin(page_url, html.unescape(match.group(1) or match.group(2)))
+        page_url = following
     fetched = 0
     for url in dict.fromkeys(detail_urls):
         if url in seen:

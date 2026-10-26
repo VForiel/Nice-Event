@@ -6,26 +6,53 @@
   <div class="wrap">
     <h1 class="page-title">Privacy</h1>
     <p class="page-lede">Short version: no ads, no analytics, no third-party cookies, nothing loaded from Google, Meta or
-      anywhere else. We only keep what you write to us.</p>
+      anywhere else (even the map is served by the site). We only keep what you give us, and you can delete it yourself.</p>
   </div>
 </header>
 <div class="wrap page-body prose">
   <h2>Data controller</h2>
   <p>{{ LEGAL_PUBLISHER }}, publisher of the site. Contact: <a href="mailto:{{ CONTACT_EMAIL }}">{{ CONTACT_EMAIL }}</a>.</p>
 
-  <h2>What we collect</h2>
-  <p>You can browse the whole site without giving us anything. The only personal data processed today is what you enter
-    in the <a href="{% url 'core:contact' %}">contact form</a>: name, email, subject and message. It is used only to reply
-    to you and is never sold or shared. This page will be updated when member accounts open.</p>
-  <p>To protect the site against attacks, the IP address of failed login attempts is kept for 7 days.</p>
+  <h2>Without an account</h2>
+  <p>You can browse the whole site without giving us anything. The <a href="{% url 'core:contact' %}">contact form</a> keeps
+    your name, email and message to reply to you, and nothing else. The map's “Near me” button uses your location in your
+    browser only: it is never sent to us.</p>
 
-  <h2>Retention</h2>
-  <p>Contact messages are kept while we handle your request, and for 24 months at most.</p>
+  <h2>Member account</h2>
+  <ul>
+    <li><strong>What we keep:</strong> your display name and email (to sign in and notify you), what you add to your profile
+      (photo, about, town, interests, languages, contact details), your friendships, the events you post or say you're going
+      to, your invitations, notifications and reports.</li>
+    <li><strong>Who sees what:</strong> your profile is visible to signed-in members (or everyone if you choose); your contact
+      details only to your friends by default; your email is never shown. Events you post are public, with your name or the
+      organisation you give.</li>
+    <li><strong>Emails:</strong> address confirmation, forgotten password and, if you keep it on in your settings, invitations
+      and changes to events you're going to. Never advertising.</li>
+    <li><strong>Purpose and legal basis:</strong> running the calendar and community (performance of the service you ask for
+      by creating an account).</li>
+    <li><strong>Retention:</strong> as long as your account exists. You can delete it at any time from your settings; everything
+      is then erased, except the events you posted, which stay online without your name.</li>
+    <li><strong>Moderation:</strong> the team can read reports, hide an event or deactivate an account that breaks the
+      <a href="{% url 'core:charter' %}">rules</a>.</li>
+  </ul>
+
+  <h2>Social networks</h2>
+  <p>The team may share a published event on Nice-Event's Instagram, Facebook, X and Bluesky accounts, with a picture made from
+    its photo. Only the event's information is shared, never your account's. The site's share buttons are plain links: nothing
+    is loaded from these networks until you click.</p>
+
+  <h2>External events</h2>
+  <p>Some events come from public calendars (tourist offices, clubs…); they contain no personal data and link to their
+    original page.</p>
+
+  <h2>Security and retention</h2>
+  <p>The site is hosted in France (OVH, Roubaix). The IP address of failed login attempts is kept for 7 days to block attacks.
+    Contact messages are kept while we handle your request, and for 24 months at most. Database backups are kept for 30 days.</p>
 
   <h2>Cookies</h2>
-  <p>The site sets no analytics, advertising or social media cookies, hence no cookie banner. The only cookie is a
-    technical one, exempt from consent: the form security token. Your light or dark theme choice is stored in your
-    browser and never sent to us.</p>
+  <p>No analytics, advertising or social media cookies, hence no cookie banner. The only cookies are technical ones, exempt
+    from consent: the form security token and the session of signed-in members. Your light or dark theme choice stays in your
+    browser.</p>
 
   <h2>Your rights</h2>
   <p>Under the GDPR you may access, correct or erase your data, object to its processing or ask for a copy by writing to

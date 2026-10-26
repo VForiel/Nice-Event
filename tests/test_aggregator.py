@@ -152,3 +152,13 @@ class ImporterTests(TestCase):
         response = self.client.post(reverse("gestion:source_new"), {"name": "OA", "kind": "openagenda",
                                     "url": "https://openagenda.com/agendas/1234567", "max_pages": 3})
         self.assertContains(response, "clé d&#x27;API")
+
+
+class PaginationTests(TestCase):
+    def test_next_page_detection(self):
+        from aggregator.connectors import next_page
+
+        self.assertEqual(next_page('<link rel="next" href="/agenda/?p=2">', "https://a.example/agenda/", 2), "https://a.example/agenda/?p=2")
+        self.assertEqual(next_page('<a href="https://a.example/agenda/page/2/">2</a>', "https://a.example/agenda/", 2),
+                         "https://a.example/agenda/page/2/")
+        self.assertIsNone(next_page('<a href="/agenda/page/7/">7</a>', "https://a.example/agenda/", 2))

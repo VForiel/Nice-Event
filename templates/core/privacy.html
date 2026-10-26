@@ -6,27 +6,55 @@
   <div class="wrap">
     <h1 class="page-title">Confidentialité</h1>
     <p class="page-lede">Version courte : pas de publicité, pas de mesure d'audience, pas de cookie tiers, aucune ressource
-      chargée chez Google, Meta ou ailleurs. Nous ne gardons que ce que tu nous écris.</p>
+      chargée chez Google, Meta ou ailleurs (même la carte est servie par le site). Nous ne gardons que ce que tu nous
+      confies, et tu peux tout supprimer toi-même.</p>
   </div>
 </header>
 <div class="wrap page-body prose">
   <h2>Responsable du traitement</h2>
   <p>{{ LEGAL_PUBLISHER }}, éditeur du site. Contact : <a href="mailto:{{ CONTACT_EMAIL }}">{{ CONTACT_EMAIL }}</a>.</p>
 
-  <h2>Ce que nous collectons</h2>
-  <p>Tu peux consulter tout le site sans rien nous communiquer. Les seules données personnelles traitées aujourd'hui sont
-    celles que tu saisis dans le <a href="{% url 'core:contact' %}">formulaire de contact</a> : nom, courriel, objet et
-    message. Elles servent uniquement à te répondre et ne sont jamais vendues ni transmises à des tiers. Cette page sera
-    complétée à l'ouverture des comptes membres.</p>
-  <p>Pour protéger le site contre les attaques, l'adresse IP des tentatives de connexion échouées est conservée 7 jours.</p>
+  <h2>Sans compte</h2>
+  <p>Tu peux consulter tout le site sans rien nous communiquer. Le <a href="{% url 'core:contact' %}">formulaire de
+    contact</a> conserve ton nom, ton courriel et ton message pour te répondre, et rien d'autre. Le bouton « Autour de moi »
+    de la carte utilise ta position dans ton navigateur seulement : elle ne nous est pas envoyée.</p>
 
-  <h2>Durée de conservation</h2>
-  <p>Les messages de contact sont conservés le temps de traiter ta demande, et au plus 24 mois.</p>
+  <h2>Compte membre</h2>
+  <ul>
+    <li><strong>Ce que nous gardons :</strong> ton nom affiché et ton courriel (pour te connecter et te prévenir), ce que tu
+      ajoutes à ton profil (photo, présentation, commune, centres d'intérêt, langues, coordonnées), tes amitiés, les
+      événements que tu publies ou auxquels tu indiques aller, tes invitations, notifications et signalements.</li>
+    <li><strong>Qui voit quoi :</strong> ton profil est visible des membres connectés (ou de tous si tu le choisis) ; tes
+      coordonnées seulement de tes amis par défaut ; ton courriel n'est jamais affiché. Les événements que tu publies sont
+      publics, avec ton nom ou celui de l'organisme que tu indiques.</li>
+    <li><strong>Courriels :</strong> confirmation d'adresse, mot de passe oublié, et, si tu le laisses activé dans tes
+      réglages, les invitations et les changements des événements où tu vas. Jamais de publicité.</li>
+    <li><strong>Finalité et base légale :</strong> faire fonctionner l'agenda et la communauté (exécution du service que tu
+      demandes en créant un compte).</li>
+    <li><strong>Durée :</strong> tant que ton compte existe. Tu peux le supprimer à tout moment depuis tes réglages ; tout est
+      alors effacé, sauf les événements que tu as publiés, qui restent en ligne sans ton nom.</li>
+    <li><strong>Modération :</strong> l'équipe peut lire les signalements, masquer un événement ou désactiver un compte
+      contraire à la <a href="{% url 'core:charter' %}">charte</a>.</li>
+  </ul>
+
+  <h2>Réseaux sociaux</h2>
+  <p>L'équipe peut partager un événement publié sur les comptes Instagram, Facebook, X et Bluesky de Nice-Event, avec un
+    visuel créé à partir de sa photo. Seules les informations de l'événement sont partagées, jamais celles de ton compte.
+    Les boutons de partage du site sont de simples liens : rien n'est chargé chez ces réseaux tant que tu ne cliques pas.</p>
+
+  <h2>Événements externes</h2>
+  <p>Certains événements viennent d'agendas publics (offices de tourisme, associations…) ; ils ne contiennent pas de données
+    personnelles, et renvoient vers leur page d'origine.</p>
+
+  <h2>Sécurité et conservation</h2>
+  <p>Le site est hébergé en France (OVH, Roubaix). L'adresse IP des tentatives de connexion échouées est conservée 7 jours
+    pour bloquer les attaques. Les messages de contact sont gardés le temps de traiter ta demande, et au plus 24 mois. Les
+    sauvegardes de la base sont conservées 30 jours.</p>
 
   <h2>Cookies</h2>
-  <p>Le site ne dépose aucun cookie de mesure d'audience, de publicité ou de réseau social, d'où l'absence de bandeau.
-    Seul existe un cookie technique, exempté de consentement : le jeton de sécurité des formulaires. Ton choix de thème
-    clair ou sombre est enregistré dans ton navigateur et ne nous est pas transmis.</p>
+  <p>Aucun cookie de mesure d'audience, de publicité ou de réseau social, d'où l'absence de bandeau. Seuls existent des
+    cookies techniques, exemptés de consentement : le jeton de sécurité des formulaires et la session des membres connectés.
+    Ton choix de thème clair ou sombre reste dans ton navigateur.</p>
 
   <h2>Tes droits</h2>
   <p>Conformément au RGPD et à la loi Informatique et Libertés, tu peux accéder à tes données, les faire rectifier ou
