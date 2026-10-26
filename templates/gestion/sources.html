@@ -1,0 +1,32 @@
+{% extends "gestion/base.html" %}
+{% block title %}Sources{% endblock %}
+
+{% block content %}
+<div class="g-head-row">
+  <h1 class="g-title">Agendas externes</h1>
+  {% if user.is_superuser %}<a class="btn btn-primary" href="{% url 'gestion:source_new' %}">Ajouter une source</a>{% endif %}
+</div>
+<p class="g-lede">Scannés chaque jour à {{ hours|join:", " }} (heure de Paris, réglable dans Réglages). Seuls le titre, la date, le
+  lieu, le prix et un court extrait sont repris, avec un lien vers la page d'origine ; un événement déjà publié par un membre
+  l'emporte sur sa copie externe. Les animations étalées sur plus de 45 jours sont ignorées (sauf expositions).</p>
+
+<table class="g-table">
+  <thead><tr><th>Source</th><th>Type</th><th>À venir</th><th>Dernier scan</th><th>Compte rendu</th><th></th></tr></thead>
+  <tbody>
+    {% for s in items %}
+    <tr{% if not s.is_active %} class="is-done"{% endif %}>
+      <td>{% if user.is_superuser %}<a href="{% url 'gestion:source_edit' s.pk %}">{{ s.name }}</a>{% else %}{{ s.name }}{% endif %}
+        {% if not s.is_active %}<br><small class="g-help">désactivée</small>{% endif %}</td>
+      <td>{{ s.get_kind_display }}</td>
+      <td>{{ s.n }}</td>
+      <td class="nowrap">{% if s.last_run_at %}{{ s.last_run_at|date:"d/m H:i" }} {% if s.last_ok %}<span class="ok">ok</span>{% else %}<span class="warn">échec</span>{% endif %}{% else %}jamais{% endif %}
+        {% if s.scan_requested %}<br><small class="g-help">scan demandé…</small>{% endif %}</td>
+      <td><small class="g-help">{{ s.last_message|truncatechars:240 }}</small>
+        {% if s.last_empty_runs >= 3 %}<br><small class="warn">Plus rien trouvé depuis {{ s.last_empty_runs }} scans : le site a peut-être changé.</small>{% endif %}</td>
+      <td class="g-actions"><form method="post" action="{% url 'gestion:source_scan' s.pk %}">{% csrf_token %}<button class="btn btn-ghost btn-sm" type="submit">Scanner maintenant</button></form></td>
+    </tr>
+    {% empty %}<tr><td colspan="6">Aucune source pour l'instant.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

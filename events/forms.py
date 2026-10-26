@@ -102,6 +102,7 @@ class EventForm(forms.ModelForm):
         self.user = user
         super().__init__(*args, **kwargs)
         self.fields["categories"].queryset = Category.objects.all()
+        self.fields["price_kind"].choices = [c for c in Event.Price.choices if c[0] != Event.Price.UNKNOWN]
         self.fields["commune"].queryset = communes()
         for name in ("ticket_url", "organizer_url"):
             self.fields[name].assume_scheme = "https"

@@ -9,14 +9,13 @@ class Source(models.Model):
     class Kind(models.TextChoices):
         ICAL = "ical", "Flux iCal (.ics)"
         JSONLD = "jsonld", "Pages avec données schema.org Event (JSON-LD)"
-        RSS = "rss", "Flux RSS / Atom"
         OPENAGENDA = "openagenda", "API OpenAgenda"
 
     name = models.CharField("nom affiché", max_length=120, help_text="Apparaît sur les événements : « via … »")
     slug = models.SlugField(unique=True)
     kind = models.CharField("type", max_length=12, choices=Kind.choices)
     url = models.URLField("adresse", max_length=500,
-                          help_text="Flux iCal/RSS, page listant les événements (JSON-LD), ou identifiant OpenAgenda "
+                          help_text="Flux iCal, page listant les événements (JSON-LD), ou adresse de l'agenda OpenAgenda "
                                     "(https://openagenda.com/agendas/<uid>).")
     website = models.URLField("site de la source", blank=True)
     api_key = EncryptedTextField("clé d'API", blank=True, help_text="OpenAgenda : clé publique du compte.")
@@ -26,9 +25,12 @@ class Source(models.Model):
     default_commune = models.ForeignKey("venues.Commune", null=True, blank=True, on_delete=models.SET_NULL,
                                         verbose_name="commune par défaut",
                                         help_text="Quand la source n'indique pas de lieu reconnaissable.")
+    max_pages = models.PositiveSmallIntegerField("pages de liste à suivre", default=3,
+                                                 help_text="JSON-LD : nombre de pages de la liste parcourues (lien « suivant »).")
     images_allowed = models.BooleanField("reprendre les images", default=False,
                                          help_text="Seulement si la licence de la source le permet (ex. OpenAgenda, DATAtourisme).")
     notes = models.TextField("notes", blank=True)
+    scan_requested = models.BooleanField("scan demandé", default=False, help_text="Traité par la tâche de fond dans la minute.")
 
     last_run_at = models.DateTimeField("dernier scan", null=True, blank=True)
     last_ok = models.BooleanField("dernier scan réussi", default=True)
@@ -36,6 +38,7 @@ class Source(models.Model):
     last_found = models.PositiveIntegerField("trouvés", default=0)
     last_created = models.PositiveIntegerField("nouveaux", default=0)
     last_updated = models.PositiveIntegerField("mis à jour", default=0)
+    last_empty_runs = models.PositiveSmallIntegerField("scans vides d'affilée", default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

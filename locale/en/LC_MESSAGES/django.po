@@ -642,6 +642,10 @@ msgid "Payant"
 msgstr "Paid"
 
 #: events/models.py
+msgid "Prix : voir le site"
+msgstr "Price: see website"
+
+#: events/models.py
 msgid "Prix libre"
 msgstr "Pay what you want"
 
@@ -836,6 +840,10 @@ msgstr "events/<slug:slug>/attend/"
 #: events/urls.py
 msgid "evenements/<slug:slug>/supprimer/"
 msgstr "events/<slug:slug>/delete/"
+
+#: events/urls.py
+msgid "evenements/<slug:slug>/visuel/<str:fmt>.jpg"
+msgstr "events/<slug:slug>/visual/<str:fmt>.jpg"
 
 #: events/urls.py
 msgid "evenements/agenda.ics"
@@ -1736,6 +1744,10 @@ msgstr "Tickets"
 #: templates/events/detail.html
 msgid "Dans le même genre"
 msgstr "More like this"
+
+#: templates/events/detail.html
+msgid "Diffuser"
+msgstr "Promote"
 
 #: templates/events/detail.html
 msgid "En attente de validation par l'équipe : l'événement n'est visible que par toi pour l'instant. C'est le cas du premier événement de chaque compte ; ensuite, tu publies directement."

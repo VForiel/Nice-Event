@@ -70,7 +70,8 @@ class SettingsPageTests(TestCase):
     def post_settings(self, **overrides):
         data = {"smtp_host": "smtp.mail.ovh.net", "smtp_port": 465, "smtp_security": "ssl",
                 "smtp_user": "contact@nice-event.fr", "smtp_password": "", "from_email": "Nice-Event <contact@nice-event.fr>",
-                "contact_email": "contact@nice-event.fr"}
+                "contact_email": "contact@nice-event.fr", "scan_times": "10:00,16:00,22:00", "meta_api_version": "v24.0",
+                "social_signature": "#Nice"}
         data.update(overrides)
         return self.client.post(reverse("gestion:settings"), data)
 

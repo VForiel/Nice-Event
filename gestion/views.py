@@ -30,6 +30,18 @@ from siteconfig.models import ConfigChange, SiteConfig
 log = logging.getLogger(__name__)
 User = get_user_model()
 
+
+def smtp_error_message(exc):
+    """Message compréhensible pour les erreurs d'envoi les plus courantes."""
+    if isinstance(exc, (smtplib.SMTPAuthenticationError, smtplib.SMTPServerDisconnected)):
+        return ("Le serveur a refusé l'identifiant ou le mot de passe (Gmail coupe la connexion dans ce cas). "
+                "Avec Google : identifiant = vrai compte (pas un alias), validation en deux étapes activée et "
+                "mot de passe d'application de 16 lettres.")
+    if isinstance(exc, (socket.timeout, TimeoutError, ConnectionRefusedError)):
+        return "Serveur injoignable : vérifie le nom du serveur, le port et la sécurité (465 = SSL, 587 = STARTTLS)."
+    return f"{exc.__class__.__name__} — {exc}"
+
+
 staff_required = user_passes_test(lambda u: u.is_active and u.is_staff, login_url="community:login")
 superuser_required = user_passes_test(lambda u: u.is_active and u.is_superuser, login_url="community:login")
 
@@ -134,6 +146,127 @@ def event_action(request, pk):
     return back(request, "gestion:events")
 
 
+# Diffusion sur les réseaux ----------------------------------------------------------------------------------------
+
+
+@staff_required
+def diffuse(request, pk):
+    from social.forms import DiffusionForm
+    from social.models import Post
+    from social.service import claim, send
+    from social.visuals import visual_url
+
+    event = get_object_or_404(Event.objects.select_related("venue__commune"), pk=pk)
+    config = SiteConfig.get()
+    form = DiffusionForm(request.POST or None, event=event, config=config)
+    if request.method == "POST" and form.is_valid():
+        data = form.cleaned_data
+        at = data["scheduled_at"] if data["when"] == "later" else timezone.now()
+        posts = [Post.objects.create(event=event, network=n, text=data[f"text_{n}"].strip(), scheduled_at=at,
+                                     created_by=request.user) for n in data["chosen"]]
+        if data["when"] == "now":
+            for post in posts:
+                if claim(post.pk):
+                    send(post)
+            done = [p for p in posts if Post.objects.get(pk=p.pk).status == Post.Status.PUBLISHED]
+            if len(done) == len(posts):
+                messages.success(request, f"Publié sur {', '.join(p.get_network_display() for p in posts)}.")
+            else:
+                messages.warning(request, "Certaines publications ont échoué : détail ci-dessous.")
+        else:
+            messages.success(request, f"Programmé le {timezone.localtime(at):%d/%m à %H:%M} ({len(posts)} réseau(x)).")
+        return redirect("gestion:diffuse", pk=event.pk)
+    return render(request, "gestion/diffuse.html", {
+        "event": event, "form": form, "config": config,
+        "previews": [(fmt, visual_url(event, fmt)) for fmt in ("portrait", "paysage", "story")],
+        "posts": event.posts.select_related("created_by__profile")[:30],
+    })
+
+
+@staff_required
+def posts(request):
+    from social.models import Post
+
+    items = Post.objects.select_related("event", "created_by__profile").order_by("-scheduled_at")
+    page = Paginator(items, 50).get_page(request.GET.get("page"))
+    return render(request, "gestion/posts.html", {"page": page})
+
+
+@staff_required
+@require_POST
+def post_action(request, pk):
+    from social.models import Post
+
+    post = get_object_or_404(Post, pk=pk)
+    action = request.POST.get("action")
+    if action == "cancel" and post.status == Post.Status.SCHEDULED:
+        post.status = Post.Status.CANCELLED
+        post.save(update_fields=["status"])
+    elif action == "retry" and post.status in (Post.Status.FAILED, Post.Status.CANCELLED):
+        post.status, post.attempts, post.scheduled_at = Post.Status.SCHEDULED, 0, timezone.now()
+        post.save(update_fields=["status", "attempts", "scheduled_at"])
+        messages.success(request, "Relancée : la tâche de fond s'en occupe dans la minute.")
+    return back(request, "gestion:posts")
+
+
+@superuser_required
+@require_POST
+def test_network(request, network):
+    from social.networks import check
+
+    config = SiteConfig.get()
+    if not config.network_ready(network):
+        messages.warning(request, "Active le réseau et enregistre ses identifiants avant de le tester.")
+    else:
+        ok, message = check(network, config)
+        (messages.success if ok else messages.error)(request, f"{network.capitalize()} : {message}")
+    return redirect("gestion:settings")
+
+
+# Sources d'événements externes ----------------------------------------------------------------------------------------
+
+
+@staff_required
+def sources(request):
+    from aggregator.models import Source
+
+    return render(request, "gestion/sources.html", {
+        "items": Source.objects.annotate(n=Count("events", filter=Q(events__ends_at__gte=timezone.now()))),
+        "hours": SiteConfig.get().scan_hours(),
+    })
+
+
+@superuser_required
+def source_edit(request, pk=None):
+    from aggregator.forms import SourceForm
+    from aggregator.models import Source
+
+    source = get_object_or_404(Source, pk=pk) if pk else None
+    form = SourceForm(request.POST or None, instance=source)
+    if request.method == "POST":
+        if request.POST.get("delete") and source:
+            source.delete()
+            messages.success(request, "Source supprimée, avec ses événements.")
+            return redirect("gestion:sources")
+        if form.is_valid():
+            source = form.save(commit=False)
+            source.scan_requested = True
+            source.save()
+            messages.success(request, "Source enregistrée : premier scan dans la minute.")
+            return redirect("gestion:sources")
+    return render(request, "gestion/source_form.html", {"form": form, "source": source})
+
+
+@staff_required
+@require_POST
+def source_scan(request, pk):
+    from aggregator.models import Source
+
+    Source.objects.filter(pk=pk).update(scan_requested=True)
+    messages.success(request, "Scan demandé : la tâche de fond s'en charge dans la minute.")
+    return redirect("gestion:sources")
+
+
 # Signalements -----------------------------------------------------------------------------------------------------
 
 
@@ -204,8 +337,10 @@ def settings_view(request):
                 ConfigChange.objects.create(user=request.user, fields=", ".join(changed))
         messages.success(request, "Réglages enregistrés." if changed else "Aucun changement.")
         return redirect("gestion:settings")
+    from social.models import Network
+
     return render(request, "gestion/settings.html", {
-        "form": form,
+        "form": form, "config": config, "networks": Network.choices,
         "test_form": TestEmailForm(initial={"to": request.user.email}),
         "changes": ConfigChange.objects.select_related("user")[:10],
     })
@@ -232,7 +367,7 @@ def test_email(request):
         message.send()
     except (smtplib.SMTPException, OSError, socket.timeout) as exc:
         log.warning("Courriel de test en échec : %s", exc)
-        messages.error(request, f"Échec de l'envoi : {exc.__class__.__name__} — {exc}")
+        messages.error(request, f"Échec de l'envoi : {smtp_error_message(exc)}")
     else:
         if config.smtp_ready:
             messages.success(request, f"Courriel de test envoyé à {form.cleaned_data['to']}. Vérifie aussi les indésirables.")

@@ -1,0 +1,22 @@
+<table class="g-table">
+  <thead><tr><th>Prévue</th><th>Réseau</th>{% if show_event %}<th>Événement</th>{% endif %}<th>État</th><th>Par</th><th></th></tr></thead>
+  <tbody>
+    {% for p in items %}
+    <tr>
+      <td class="nowrap">{{ p.scheduled_at|date:"d/m H:i" }}</td>
+      <td>{{ p.get_network_display }}</td>
+      {% if show_event %}<td><a href="{% url 'gestion:diffuse' p.event.pk %}">{{ p.event.title }}</a></td>{% endif %}
+      <td>{% if p.status == 'published' %}<a class="ok" href="{{ p.external_url }}" target="_blank" rel="noopener">Publiée ↗</a>
+        {% elif p.status == 'failed' %}<span class="warn" title="{{ p.error }}">Échec</span><br><small class="g-help">{{ p.error|truncatechars:160 }}</small>
+        {% else %}{{ p.get_status_display }}{% if p.error %}<br><small class="g-help">{{ p.error|truncatechars:120 }}</small>{% endif %}{% endif %}</td>
+      <td>{{ p.created_by.profile.display_name|default:"" }}</td>
+      <td class="g-actions">
+        <form method="post" action="{% url 'gestion:post_action' p.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+          {% if p.status == 'scheduled' %}<button class="btn btn-ghost btn-sm" type="submit" name="action" value="cancel">Annuler</button>
+          {% elif p.status == 'failed' or p.status == 'cancelled' %}<button class="btn btn-ghost btn-sm" type="submit" name="action" value="retry">Relancer</button>{% endif %}
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

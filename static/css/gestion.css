@@ -48,3 +48,12 @@ a.g-stat:hover { border-color: var(--ink); }
 .nowrap { white-space: nowrap; }
 .g-pages { margin-top: 16px; display: flex; gap: 16px; }
 .gestion .badge-inline { display: inline-block; min-width: 18px; padding: 0 5px; border-radius: 999px; background: var(--corail); color: #fff; font-size: .75rem; line-height: 18px; text-align: center; }
+
+.g-sub { font: 800 1.125rem var(--title); margin-top: 8px; }
+.g-previews { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-start; }
+.g-previews a { display: grid; gap: 4px; color: var(--ink-2); font-size: .875rem; text-decoration: none; }
+.g-previews img { height: 220px; width: auto; border-radius: 6px; border: 1px solid var(--line); }
+.g-networks { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(420px, 100%), 1fr)); gap: 16px; }
+.g-network textarea { width: 100%; font: .9375rem/1.45 var(--text); padding: 10px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); color: var(--ink); }
+.g-network legend .check { font: 800 1.25rem var(--title); align-items: center; }
+.g-head-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }

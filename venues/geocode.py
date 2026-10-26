@@ -5,6 +5,7 @@ formulaire de publication (/api/adresses/) et position des lieux à l'enregistre
 BAN : on y place le lieu au centre de la commune.
 """
 
+import hashlib
 import json
 import logging
 import urllib.parse
@@ -22,7 +23,7 @@ def search(query, citycode="", limit=5):
     query = " ".join(query.split())[:200]
     if len(query) < 3:
         return []
-    key = f"geocode:{citycode}:{limit}:{query.lower()}"
+    key = "geocode:" + hashlib.sha1(f"{citycode}|{limit}|{query.lower()}".encode()).hexdigest()
     cached = cache.get(key)
     if cached is not None:
         return cached

@@ -1,7 +1,9 @@
-Django>=6.1,<6.2
 cryptography>=46
+Django>=6.1,<6.2
 gunicorn>=26
+icalendar>=6
 Markdown>=3.11
 nh3>=0.3
 Pillow>=13
+requests>=2.32
 whitenoise>=6.12

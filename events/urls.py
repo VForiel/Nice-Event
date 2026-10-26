@@ -16,6 +16,7 @@ urlpatterns = [
     path(_("evenements/<slug:slug>/participer/"), views.attend, name="attend"),
     path(_("evenements/<slug:slug>/inviter/"), views.invite, name="invite"),
     path(_("evenements/<slug:slug>.ics"), views.event_ics, name="ics"),
+    path(_("evenements/<slug:slug>/visuel/<str:fmt>.jpg"), views.event_visual, name="visual"),
     path(_("lieux/<slug:slug>/"), views.venue_detail, name="venue"),
     path(_("carte/"), views.map_page, name="map"),
     path(_("carte/evenements.json"), views.map_data, name="map_data"),

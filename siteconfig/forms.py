@@ -3,7 +3,7 @@ from django import forms
 from .models import SiteConfig
 
 # Champs secrets : jamais réaffichés ; vide = on garde la valeur enregistrée, case « effacer » pour la supprimer.
-SECRETS = ["smtp_password"]
+SECRETS = ["smtp_password", "bluesky_app_password", "facebook_page_token", "x_api_secret", "x_access_secret"]
 
 
 class SecretInput(forms.PasswordInput):
@@ -13,12 +13,20 @@ class SecretInput(forms.PasswordInput):
 
 class SiteConfigForm(forms.ModelForm):
     clear_smtp_password = forms.BooleanField(label="Effacer le mot de passe enregistré", required=False)
+    clear_bluesky_app_password = forms.BooleanField(label="Effacer", required=False)
+    clear_facebook_page_token = forms.BooleanField(label="Effacer", required=False)
+    clear_x_api_secret = forms.BooleanField(label="Effacer", required=False)
+    clear_x_access_secret = forms.BooleanField(label="Effacer", required=False)
 
     class Meta:
         model = SiteConfig
         fields = ["smtp_host", "smtp_port", "smtp_security", "smtp_user", "smtp_password", "from_email", "contact_email",
-                  "require_email_confirmation"]
-        widgets = {"smtp_password": SecretInput()}
+                  "require_email_confirmation", "scan_times", "social_signature",
+                  "bluesky_enabled", "bluesky_handle", "bluesky_app_password",
+                  "meta_api_version", "facebook_enabled", "facebook_page_id", "facebook_page_token",
+                  "instagram_enabled", "instagram_user_id",
+                  "x_enabled", "x_api_key", "x_api_secret", "x_access_token", "x_access_secret"]
+        widgets = {name: SecretInput() for name in SECRETS}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

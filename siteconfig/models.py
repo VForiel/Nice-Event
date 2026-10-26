@@ -33,6 +33,34 @@ class SiteConfig(models.Model):
         help_text="Les membres doivent avoir ouvert le lien reçu par courriel avant de publier un événement. "
                   "Le premier événement de chaque compte reste modéré dans tous les cas.")
 
+    # Agendas externes (app aggregator)
+    scan_times = models.CharField("horaires des scans", max_length=60, default="10:00,16:00,22:00",
+                                  help_text="Heures de Paris, séparées par des virgules.")
+
+    # Réseaux sociaux (diffusion depuis /gestion/, app social)
+    social_signature = models.CharField("signature des publications", max_length=200, blank=True,
+                                        default="#Nice #CoteDAzur #NiceEvent",
+                                        help_text="Ajoutée à la fin des textes (hashtags…).")
+    bluesky_enabled = models.BooleanField("Bluesky actif", default=False)
+    bluesky_handle = models.CharField("identifiant Bluesky", max_length=100, blank=True, help_text="Ex. nice-event.bsky.social")
+    bluesky_app_password = EncryptedTextField("mot de passe d'application Bluesky", blank=True,
+                                              help_text="Réglages › Confidentialité et sécurité › Mots de passe d'application.")
+    meta_api_version = models.CharField("version de l'API Graph de Meta", max_length=10, default="v24.0")
+    facebook_enabled = models.BooleanField("Facebook actif", default=False)
+    facebook_page_id = models.CharField("identifiant de la Page Facebook", max_length=40, blank=True)
+    facebook_page_token = EncryptedTextField("jeton d'accès de la Page", blank=True,
+                                             help_text="Jeton de Page longue durée (sert aussi à Instagram).")
+    instagram_enabled = models.BooleanField("Instagram actif", default=False)
+    instagram_user_id = models.CharField("identifiant du compte Instagram professionnel", max_length=40, blank=True,
+                                         help_text="Compte relié à la Page Facebook.")
+    x_enabled = models.BooleanField("X actif", default=False)
+    x_api_key = models.CharField("X : API key", max_length=100, blank=True)
+    x_api_secret = EncryptedTextField("X : API key secret", blank=True)
+    x_access_token = models.CharField("X : access token", max_length=100, blank=True)
+    x_access_secret = EncryptedTextField("X : access token secret", blank=True)
+    social_checked_at = models.DateTimeField("dernière vérification des comptes", null=True, blank=True)
+    social_check = models.JSONField("résultat de la vérification", default=dict, blank=True)
+
     updated_at = models.DateTimeField("modifié le", auto_now=True)
 
     class Meta:
@@ -47,9 +75,30 @@ class SiteConfig(models.Model):
         config, _ = cls.objects.get_or_create(pk=1)
         return config
 
+    def scan_hours(self):
+        hours = []
+        for value in self.scan_times.split(","):
+            value = value.strip()
+            try:
+                h, m = (int(x) for x in value.split(":"))
+            except ValueError:
+                continue
+            if 0 <= h < 24 and 0 <= m < 60:
+                hours.append(f"{h:02d}:{m:02d}")
+        return hours or ["10:00", "16:00", "22:00"]
+
     @property
     def smtp_ready(self):
         return bool(self.smtp_host)
+
+    def network_ready(self, network):
+        """Réseau activé et identifiants saisis."""
+        return bool({
+            "bluesky": self.bluesky_enabled and self.bluesky_handle and self.bluesky_app_password,
+            "facebook": self.facebook_enabled and self.facebook_page_id and self.facebook_page_token,
+            "instagram": self.instagram_enabled and self.instagram_user_id and self.facebook_page_token,
+            "x": self.x_enabled and self.x_api_key and self.x_api_secret and self.x_access_token and self.x_access_secret,
+        }.get(network, False))
 
 
 class ConfigChange(models.Model):

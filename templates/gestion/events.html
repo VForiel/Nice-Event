@@ -31,7 +31,8 @@
           <button class="btn btn-ghost btn-sm" type="submit" name="action" value="feature">{% if e.featured %}Retirer de la sélection{% else %}Mettre en avant{% endif %}</button>
           {% if e.status == 'hidden' %}<button class="btn btn-ghost btn-sm" type="submit" name="action" value="show">Republier</button>
           {% elif e.status == 'published' %}<button class="btn btn-ghost btn-sm" type="submit" name="action" value="hide" data-confirm="Masquer cet événement ?">Masquer</button>{% endif %}
-          {% if not e.source %}<a class="btn btn-ghost btn-sm" href="{% url 'events:edit' e.slug %}">Modifier</a>{% endif %}
+          {% if not e.source %}<a class="btn btn-ghost btn-sm" href="{% url 'events:edit' e.slug %}">Modifier</a>
+          {% if e.status == 'published' %}<a class="btn btn-primary btn-sm" href="{% url 'gestion:diffuse' e.pk %}">Diffuser</a>{% endif %}{% endif %}
         </form>
       </td>
     </tr>

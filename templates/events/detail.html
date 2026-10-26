@@ -101,7 +101,7 @@
 
       <p class="event-tools">
         {% if can_edit %}<a href="{% url 'events:edit' event.slug %}">{% icon "edit" 16 %} {% translate "Modifier" %}</a> · <a href="{% url 'events:delete' event.slug %}">{% translate "Supprimer" %}</a> · {% endif %}
-        {% if user.is_staff %}<a href="{% url 'gestion:events' %}?q={{ event.title|urlencode }}">{% translate "Gestion" %}</a> · {% endif %}
+        {% if user.is_staff and not event.is_external %}<a href="{% url 'gestion:diffuse' event.pk %}">{% translate "Diffuser" %}</a> · {% endif %}
         <a href="{% url 'community:report' 'evenement' event.slug %}">{% translate "Signaler" %}</a>
       </p>
     </aside>

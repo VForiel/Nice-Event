@@ -1,0 +1,50 @@
+{% extends "gestion/base.html" %}
+{% load ne static %}
+{% block title %}Diffuser {{ event.title }}{% endblock %}
+
+{% block content %}
+<p class="g-help"><a href="{% url 'gestion:events' %}">← Événements</a></p>
+<h1 class="g-title">Diffuser « {{ event.title }} »</h1>
+<p class="g-lede">{{ event.local_start|day_short }} · {{ event|hours }} · {{ event.venue.name }}, {{ event.venue.commune.name }}
+  · <a href="{{ event.get_absolute_url }}" target="_blank">voir la fiche</a>
+  {% if event.status != 'published' %} · <span class="warn">pas encore publié sur le site</span>{% endif %}</p>
+
+<section class="g-block">
+  <h2>Visuels</h2>
+  <p class="g-help">{% if event.photo %}Générés à partir de la photo de l'événement.{% else %}Pas de photo : visuel dessiné aux couleurs de la catégorie, avec le résumé.{% endif %}
+    Portrait pour Instagram et Facebook, paysage pour X et Bluesky.</p>
+  <div class="g-previews">
+    {% for fmt, url in previews %}<a href="{{ url }}" target="_blank"><img src="{{ url }}" alt="Visuel {{ fmt }}" loading="lazy"><span>{{ fmt }}</span></a>{% endfor %}
+  </div>
+</section>
+
+<form class="form g-form" method="post" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}<p class="form-error" tabindex="-1" data-form-error>{{ form.non_field_errors|join:" " }}</p>{% endif %}
+  <div class="g-networks">
+    {% for value, label, ready, on, text, limit in form.blocks %}
+    <fieldset class="g-block g-network{% if not ready %} g-block-later{% endif %}">
+      <legend><label class="check">{{ on }} <span>{{ label }}</span></label></legend>
+      {% if not ready %}<p class="g-help">Non configuré : <a href="{% url 'gestion:settings' %}#reseaux">réglages des réseaux</a>.</p>{% endif %}
+      {{ text }}
+      <p class="g-help"><span data-count-for="{{ text.auto_id }}"></span> / {{ limit }}{% if value == 'x' %} (un lien compte pour 23){% endif %}{% if value == 'instagram' %} · lien non cliquable sur Instagram{% endif %}</p>
+      {{ text.errors }}
+    </fieldset>
+    {% endfor %}
+  </div>
+  <fieldset class="g-block">
+    <legend>Quand ?</legend>
+    <div class="choices">{% for radio in form.when %}<label>{{ radio.tag }} {{ radio.choice_label }}</label>{% endfor %}</div>
+    <div class="field">{{ form.scheduled_at.label_tag }}{{ form.scheduled_at }}{{ form.scheduled_at.errors }}</div>
+  </fieldset>
+  <p><button class="btn btn-primary" type="submit">Publier ou programmer</button></p>
+</form>
+
+{% if posts %}
+<section class="g-block">
+  <h2>Historique pour cet événement</h2>
+  {% include "gestion/_posts.html" with items=posts %}
+</section>
+{% endif %}
+<script src="{% static 'js/gestion.js' %}" defer></script>
+{% endblock %}

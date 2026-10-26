@@ -1,0 +1,10 @@
+{% extends "gestion/base.html" %}
+{% block title %}Diffusions{% endblock %}
+
+{% block content %}
+<h1 class="g-title">Diffusions</h1>
+<p class="g-lede">Publications sur les réseaux, envoyées ou programmées. La tâche de fond publie les publications programmées
+  à la minute près ; une erreur réseau est retentée trois fois.</p>
+{% include "gestion/_posts.html" with items=page show_event=True %}
+{% if page.has_other_pages %}<p class="g-pages">{% if page.has_previous %}<a href="?page={{ page.previous_page_number }}">← Plus récentes</a>{% endif %} Page {{ page.number }}/{{ page.paginator.num_pages }} {% if page.has_next %}<a href="?page={{ page.next_page_number }}">Plus anciennes →</a>{% endif %}</p>{% endif %}
+{% endblock %}

@@ -33,13 +33,50 @@
       <p class="help">{{ form.require_email_confirmation.help_text }}</p></div>
   </fieldset>
 
-  <fieldset class="g-block g-block-later">
+  <fieldset class="g-block" id="reseaux">
     <legend>Réseaux sociaux</legend>
-    <p class="g-help">Instagram, Facebook, X et Bluesky : arrivent avec la diffusion des événements (phase 4).</p>
+    <p class="g-help">Diffusion des événements depuis Gestion › Événements › Diffuser. Chaque réseau s'active séparément ;
+      « Tester » vérifie les identifiants enregistrés sans rien publier.{% if config.social_checked_at %} Dernière vérification
+      automatique : {{ config.social_checked_at|date:"d/m H:i" }}.{% endif %}</p>
+    {% include "gestion/_field.html" with field=form.social_signature %}
+
+    <h3 class="g-sub">Bluesky</h3>
+    <div class="g-grid">
+      <div class="field field-check"><label class="check">{{ form.bluesky_enabled }} <span>Actif</span></label></div>
+      {% include "gestion/_field.html" with field=form.bluesky_handle %}
+      {% include "gestion/_field.html" with field=form.bluesky_app_password %}
+      <div class="field field-check"><label class="check">{{ form.clear_bluesky_app_password }} <span>Effacer le mot de passe</span></label></div>
+    </div>
+
+    <h3 class="g-sub">Facebook et Instagram (API Graph de Meta)</h3>
+    <p class="g-help">Une Page Facebook, un compte Instagram professionnel relié à cette Page, et une app sur
+      developers.facebook.com. Le jeton de Page longue durée sert aux deux réseaux.</p>
+    <div class="g-grid">
+      <div class="field field-check"><label class="check">{{ form.facebook_enabled }} <span>Facebook actif</span></label></div>
+      {% include "gestion/_field.html" with field=form.facebook_page_id %}
+      {% include "gestion/_field.html" with field=form.facebook_page_token %}
+      <div class="field field-check"><label class="check">{{ form.clear_facebook_page_token }} <span>Effacer le jeton</span></label></div>
+      <div class="field field-check"><label class="check">{{ form.instagram_enabled }} <span>Instagram actif</span></label></div>
+      {% include "gestion/_field.html" with field=form.instagram_user_id %}
+      {% include "gestion/_field.html" with field=form.meta_api_version %}
+    </div>
+
+    <h3 class="g-sub">X</h3>
+    <p class="g-help">App du portail développeur X avec droits « Read and write » ; clés de l'app et jetons du compte.</p>
+    <div class="g-grid">
+      <div class="field field-check"><label class="check">{{ form.x_enabled }} <span>Actif</span></label></div>
+      {% include "gestion/_field.html" with field=form.x_api_key %}
+      {% include "gestion/_field.html" with field=form.x_api_secret %}
+      {% include "gestion/_field.html" with field=form.x_access_token %}
+      {% include "gestion/_field.html" with field=form.x_access_secret %}
+      <div class="field field-check"><label class="check">{{ form.clear_x_api_secret }} <span>Effacer l'API key secret</span></label>
+        <label class="check">{{ form.clear_x_access_secret }} <span>Effacer l'access token secret</span></label></div>
+    </div>
   </fieldset>
-  <fieldset class="g-block g-block-later">
-    <legend>Sources d'événements externes</legend>
-    <p class="g-help">Agendas scannés à 10 h, 16 h et 22 h : arrivent en phase 5.</p>
+  <fieldset class="g-block">
+    <legend>Agendas externes</legend>
+    <p class="g-help">Les sources se gèrent dans <a href="{% url 'gestion:sources' %}">Gestion › Sources</a>.</p>
+    {% include "gestion/_field.html" with field=form.scan_times %}
   </fieldset>
 
   <p><button class="btn btn-primary" type="submit">Enregistrer</button></p>
@@ -54,6 +91,19 @@
     <button class="btn btn-ghost" type="submit">Envoyer</button>
   </form>
   <p class="g-help">Enregistre d'abord les réglages : le test utilise ceux qui sont en base.</p>
+</section>
+
+<section class="g-block">
+  <h2>Tester les réseaux</h2>
+  <div class="g-inline">
+    {% for network, label in networks %}
+    <form method="post" action="{% url 'gestion:test_network' network %}">{% csrf_token %}
+      <button class="btn btn-ghost" type="submit">{{ label }}</button></form>
+    {% endfor %}
+  </div>
+  {% if config.social_check %}
+  <ul class="g-log">{% for network, r in config.social_check.items %}<li>{{ network }} : <span class="{% if r.ok %}ok{% else %}warn{% endif %}">{{ r.message }}</span></li>{% endfor %}</ul>
+  {% endif %}
 </section>
 
 {% if changes %}

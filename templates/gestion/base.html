@@ -22,6 +22,8 @@
         <a href="{% url 'gestion:dashboard' %}"{% if page == 'dashboard' %} aria-current="page"{% endif %}>Tableau de bord</a>
         <a href="{% url 'gestion:moderation' %}"{% if page == 'moderation' %} aria-current="page"{% endif %}>Modération{% if pending_count %} <span class="badge badge-inline">{{ pending_count }}</span>{% endif %}</a>
         <a href="{% url 'gestion:events' %}"{% if page == 'events' %} aria-current="page"{% endif %}>Événements</a>
+        <a href="{% url 'gestion:posts' %}"{% if page == 'posts' or page == 'diffuse' %} aria-current="page"{% endif %}>Diffusions</a>
+        <a href="{% url 'gestion:sources' %}"{% if 'source' in page %} aria-current="page"{% endif %}>Sources</a>
         <a href="{% url 'gestion:reports' %}"{% if page == 'reports' %} aria-current="page"{% endif %}>Signalements</a>
         <a href="{% url 'gestion:members' %}"{% if page == 'members' %} aria-current="page"{% endif %}>Membres</a>
         {% if user.is_superuser %}<a href="{% url 'gestion:settings' %}"{% if page == 'settings' %} aria-current="page"{% endif %}>Réglages</a>{% endif %}

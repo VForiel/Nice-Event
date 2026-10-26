@@ -9,6 +9,7 @@ from django.db import transaction
 from django.db.models import Count, F, Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy
@@ -187,6 +188,7 @@ def event_detail(request, slug):
         and (event.organizer_id == request.user.pk or request.user.is_staff),
         "jsonld": event_jsonld(event, request.build_absolute_uri(event.photo.url) if event.photo else ""),
         "og_image": og_image_url(request, event),
+        "story_url": reverse("events:visual", args=[event.slug, "story"]) + "?telecharger=1",
         "share_text": share_text(event),
     }
     if request.user.is_authenticated:
@@ -201,9 +203,27 @@ def event_detail(request, slug):
 
 
 def og_image_url(request, event):
-    from django.templatetags.static import static
+    return request.build_absolute_uri(reverse("events:visual", args=[event.slug, "og"]))
 
-    return request.build_absolute_uri(event.photo.url if event.photo else static("img/og-default.png"))
+
+VISUALS = {"og", "portrait", "paysage", "story"}
+
+
+def event_visual(request, slug, fmt):
+    """Visuel généré de l'événement (aperçus de liens, story à télécharger, réseaux)."""
+    from django.http import FileResponse
+
+    from social.visuals import visual_path
+
+    if fmt not in VISUALS:
+        raise Http404
+    event = get_object_or_404(Event.objects.select_related("venue__commune"), slug=slug)
+    visible_or_404(request, event)
+    response = FileResponse(open(visual_path(event, fmt), "rb"), content_type="image/jpeg")
+    response["Cache-Control"] = "public, max-age=3600"
+    if request.GET.get("telecharger"):
+        response["Content-Disposition"] = f'attachment; filename="nice-event-{event.slug}-{fmt}.jpg"'
+    return response
 
 
 def share_text(event):
@@ -277,6 +297,7 @@ def event_published(request, slug):
     event = get_object_or_404(Event, slug=slug, organizer=request.user)
     return render(request, "events/published.html", {
         "event": event, "share_url": request.build_absolute_uri(event.get_absolute_url()), "share_text": share_text(event),
+        "story_url": reverse("events:visual", args=[event.slug, "story"]) + "?telecharger=1",
         "occurrences": Event.objects.filter(series=event.series).count() if event.series else 1,
     })
 

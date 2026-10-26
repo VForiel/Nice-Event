@@ -1,0 +1,28 @@
+{% extends "gestion/base.html" %}
+{% block title %}{% if source %}{{ source.name }}{% else %}Nouvelle source{% endif %}{% endblock %}
+
+{% block content %}
+<p class="g-help"><a href="{% url 'gestion:sources' %}">← Sources</a></p>
+<h1 class="g-title">{% if source %}{{ source.name }}{% else %}Nouvelle source{% endif %}</h1>
+<div class="g-block g-help">
+  <p><b>Flux iCal</b> : adresse d'un fichier .ics (agenda Google public, site associatif…).</p>
+  <p><b>JSON-LD</b> : page qui liste des événements avec des données schema.org (la plupart des offices de tourisme et des
+    billetteries) ; le robot ouvre aussi les pages des événements listés, une par seconde, et respecte robots.txt.</p>
+  <p><b>OpenAgenda</b> : adresse de l'agenda (https://openagenda.com/…/agendas/<i>numéro</i>) et clé d'API gratuite du compte OpenAgenda.</p>
+  <p>Avant d'ajouter un site, vérifie que ses conditions d'utilisation ne l'interdisent pas.</p>
+</div>
+<form class="form g-form" method="post" novalidate>
+  {% csrf_token %}
+  {% if form.errors %}<p class="form-error" tabindex="-1" data-form-error>Rien n'est enregistré : corrige les champs signalés.</p>{% endif %}
+  <div class="g-grid">
+    {% for field in form %}{% if field.name != "notes" and field.name != "clear_api_key" %}
+      {% if field.widget_type == "checkbox" %}<div class="field field-check"><label class="check">{{ field }} <span>{{ field.label|capfirst }}</span></label>{% if field.help_text %}<p class="help">{{ field.help_text }}</p>{% endif %}</div>
+      {% else %}{% include "gestion/_field.html" with field=field %}{% endif %}
+    {% endif %}{% endfor %}
+    {% if source.api_key %}<div class="field field-check"><label class="check">{{ form.clear_api_key }} <span>{{ form.clear_api_key.label }}</span></label></div>{% endif %}
+  </div>
+  {% include "gestion/_field.html" with field=form.notes %}
+  <p class="g-inline"><button class="btn btn-primary" type="submit">Enregistrer et scanner</button>
+    {% if source %}<button class="btn btn-ghost" type="submit" name="delete" value="1" data-confirm="Supprimer cette source et tous ses événements ?">Supprimer</button>{% endif %}</p>
+</form>
+{% endblock %}

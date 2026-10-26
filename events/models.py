@@ -83,6 +83,7 @@ class Event(models.Model):
         FREE = "free", _("Gratuit")
         PAID = "paid", _("Payant")
         PWYW = "pwyw", _("Prix libre")
+        UNKNOWN = "unknown", _("Prix : voir le site")  # événements externes sans prix connu
 
     class Age(models.TextChoices):
         ALL = "all", _("Tout public")
@@ -135,7 +136,7 @@ class Event(models.Model):
     accessible = models.CharField(_("accessible en fauteuil roulant"), max_length=3, choices=Access.choices, blank=True)
 
     # Prix
-    price_kind = models.CharField(_("prix"), max_length=5, choices=Price.choices, default=Price.FREE)
+    price_kind = models.CharField(_("prix"), max_length=7, choices=Price.choices, default=Price.FREE)
     price_min = models.DecimalField(_("prix (à partir de)"), max_digits=7, decimal_places=2, null=True, blank=True)
     price_max = models.DecimalField(_("prix maximum"), max_digits=7, decimal_places=2, null=True, blank=True)
     booking_required = models.BooleanField(_("réservation obligatoire"), default=False)
@@ -267,6 +268,8 @@ class Event(models.Model):
             return _("Gratuit")
         if self.price_kind == self.Price.PWYW:
             return _("Prix libre")
+        if self.price_kind == self.Price.UNKNOWN:
+            return _("Prix : voir le site")
         if self.price_min is None:
             return _("Payant")
         if self.price_max and self.price_max > self.price_min:
