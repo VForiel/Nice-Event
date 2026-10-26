@@ -10,7 +10,7 @@ class SourceForm(forms.ModelForm):
     class Meta:
         model = Source
         fields = ["name", "kind", "url", "website", "api_key", "is_active", "default_category", "default_commune",
-                  "max_pages", "link_pattern", "images_allowed", "notes"]
+                  "max_pages", "link_pattern", "title_pattern", "default_place", "images_allowed", "notes"]
         widgets = {"api_key": forms.PasswordInput(render_value=False, attrs={"autocomplete": "new-password"}),
                    "notes": forms.Textarea(attrs={"rows": 3})}
 
@@ -21,10 +21,16 @@ class SourceForm(forms.ModelForm):
             self.fields["api_key"].help_text = "Enregistrée ; laisser vide pour la conserver."
         self.fields["default_commune"].queryset = self.fields["default_commune"].queryset.order_by("-population")
 
+    def clean_title_pattern(self):
+        return self.clean_regex("title_pattern")
+
     def clean_link_pattern(self):
+        return self.clean_regex("link_pattern")
+
+    def clean_regex(self, name):
         import re
 
-        value = self.cleaned_data["link_pattern"].strip()
+        value = self.cleaned_data[name].strip()
         try:
             re.compile(value)
         except re.error as exc:

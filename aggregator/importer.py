@@ -1,9 +1,12 @@
 """Transforme les événements lus par les connecteurs en événements du site (création, mise à jour, disparition)."""
 
+import hashlib
 import logging
 import math
+import re
 from datetime import timedelta
 
+from django.core.cache import cache
 from django.core.files.base import ContentFile
 from django.utils import timezone
 
@@ -31,9 +34,10 @@ KEYWORDS = [
     ("concert", ["concert", "musique", "jazz", "rock", "world tour", "tournee", "en live", "orchestre", "recital", "chorale", "symphon", "piano", "rap ",
                  "MusicEvent"]),
     ("spectacle", ["theatre", "spectacle", "danse", "opera", "ballet", "cirque", "marionnette", "TheaterEvent",
-                   "DanceEvent"]),
+                   "DanceEvent", "performance"]),
+    ("match", ["competition sportive", "championnat", " match "]),
     ("festival", ["festival", "Festival"]),
-    ("traditions", ["fete ", "halloween", "carnaval", "festin", "feu d artifice", "procession", "fete de", "noel"]),
+    ("traditions", ["fete ", "halloween", "commemoration", "carnaval", "festin", "feu d artifice", "procession", "fete de", "noel"]),
     ("gastronomie", ["degustation", "gastronom", "vin ", "oenolog", "repas", "diner", "food", "FoodEvent"]),
     ("atelier", ["atelier", "stage ", "cours ", "initiation", "masterclass"]),
     ("conference", ["conference", "rencontre", "debat", "table ronde", "lecture", "visite guidee", "EducationEvent"]),
@@ -95,8 +99,8 @@ class Places:
         return default
 
 
-def venue_for(item, commune):
-    name = (place_name(item) or commune.name)[:120]
+def venue_for(item, commune, default_place=""):
+    name = (place_name(item) or default_place or commune.name)[:120]
     address = (item.get("address") or "")[:200]
     venue = Venue.objects.filter(name__iexact=name, commune=commune, address__iexact=address).first()
     if venue:
@@ -150,6 +154,28 @@ def duplicate_of(item, commune, exclude_source):
     return next((e for e in candidates if normalize(e.title) == title), None)
 
 
+SKIP_MEMORY = 7 * 86400
+
+
+def skip_key(source, url):
+    return f"agg:skip:{source.pk}:{hashlib.sha1(url.encode()).hexdigest()}"
+
+
+class Known:
+    """Pages à ne pas retélécharger : vues il y a moins de 20 h, ou écartées (passées, hors zone) depuis moins d'une semaine."""
+
+    def __init__(self, source, fresh):
+        self.source, self.fresh = source, fresh
+
+    def __contains__(self, url):
+        return url in self.fresh or cache.get(skip_key(self.source, url)) is not None
+
+
+def remember_skip(source, item):
+    if source.kind == "jsonld" and item.get("url"):
+        cache.set(skip_key(source, item["url"]), 1, SKIP_MEMORY)
+
+
 def scan(source, fetcher=None):
     """Lit une source et met à jour ses événements ; renvoie le compte rendu et met à jour la source."""
     fetcher = fetcher or Fetcher()
@@ -160,7 +186,7 @@ def scan(source, fetcher=None):
         reader = READERS[source.kind]
         if source.kind == "jsonld":
             fresh = set(source.events.filter(updated_at__gte=now - timedelta(hours=20)).values_list("external_url", flat=True))
-            items, complete = reader(source, fetcher, known_fresh=fresh)
+            items, complete = reader(source, fetcher, known_fresh=Known(source, fresh))
         else:
             items, complete = reader(source, fetcher)
     except (FetchError, ValueError, KeyError) as exc:
@@ -168,6 +194,7 @@ def scan(source, fetcher=None):
         source.save(update_fields=["last_run_at", "last_ok", "last_message"])
         raise
     seen = set()
+    title_filter = re.compile(source.title_pattern) if source.title_pattern else None
     for item in items:
         stats["found"] += 1
         external_id = str(item["id"])[:300]
@@ -175,13 +202,18 @@ def scan(source, fetcher=None):
         if item.get("unchanged"):
             source.events.filter(external_id=external_id).update(missing_since=None, updated_at=now)
             continue
+        if title_filter and not title_filter.search(item.get("title") or ""):
+            stats["skipped"] += 1
+            continue
         start, end = item["start"], item.get("end")
         if not item.get("title") or (end or start) < now or (end and end - start > MAX_SPAN and "expo" not in normalize(item["title"])):
             stats["skipped"] += 1
+            remember_skip(source, item)
             continue
         commune = places.commune(item, source.default_commune)
         if commune is None:
             stats["outside"] += 1
+            remember_skip(source, item)
             continue
         existing = Event.objects.filter(source=source, external_id=external_id).first()
         if existing is None and duplicate_of(item, commune, source):
@@ -193,7 +225,7 @@ def scan(source, fetcher=None):
         event.description = ""  # seul un court extrait est repris ; le détail reste chez la source
         event.external_url = item["url"][:500]
         event.starts_at, event.end, event.all_day = start, end, bool(item.get("all_day"))
-        event.venue = venue_for(item, commune)
+        event.venue = venue_for(item, commune, source.default_place)
         if item.get("free"):
             event.price_kind = Event.Price.FREE
         elif item.get("price"):

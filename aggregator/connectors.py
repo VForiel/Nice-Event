@@ -14,11 +14,14 @@ from urllib.parse import urljoin
 
 from django.utils import timezone
 
+from .fetch import FetchError
+
 from core.markdown import plain
 
 LD_SCRIPT = re.compile(r"<script[^>]+application/ld\+json[^>]*>(.*?)</script>", re.S | re.I)
 NEXT_LINK = re.compile(r"""<link[^>]+rel=["']next["'][^>]*href=["']([^"']+)["']|<a[^>]+rel=["']next["'][^>]*href=["']([^"']+)["']""", re.I)
 EVENT_TYPES = re.compile(r"Event$")
+ONLINE = re.compile(r"\bonline\b|\ben ligne\b|zoom\.us|zoom link|teams\.microsoft|meet\.google|webinar|webinaire|visio")
 
 
 def clean(text):
@@ -72,6 +75,9 @@ def read_ical(source, fetcher):
             end -= timedelta(minutes=1)  # DTEND exclusif pour les journées entières
         geo = component.get("GEO")
         location = clean(component.get("LOCATION", ""))
+        text = f"{component.get('SUMMARY', '')} {component.get('DESCRIPTION', '')}".lower()
+        if not location and not geo and ONLINE.search(text):
+            continue  # événement en ligne (Zoom, Teams…) : rien à faire sur place
         place, _sep, address = location.partition(",")
         items.append({
             "id": str(component.get("UID", "")) or f"{start.isoformat()}-{component.get('SUMMARY')}",
@@ -175,12 +181,18 @@ MAX_DETAILS = 80
 def read_jsonld(source, fetcher, known_fresh=frozenset()):
     """Page de liste : événements décrits directement, ou liste (ItemList) de pages d'événements à ouvrir.
 
-    `known_fresh` : pages d'événements déjà vues il y a peu, qu'on ne retélécharge pas (on les signale juste vues).
+    `known_fresh` : pages d'événements déjà vues il y a peu (ou écartées récemment), qu'on ne retélécharge pas.
     """
     items, seen, detail_urls, page_url = [], set(), [], source.url
     pattern = re.compile(source.link_pattern) if source.link_pattern else None
     for _page in range(max(1, source.max_pages)):
         page = fetcher.get(page_url)
+        if page.lstrip().startswith("["):  # liste de l'API WordPress (/wp-json/wp/v2/<type>) : liens des pages
+            try:
+                detail_urls += [i["link"] for i in json.loads(page) if isinstance(i, dict) and i.get("link")]
+            except ValueError:
+                pass
+            break
         if pattern:
             for href in re.findall(r"""href=["']([^"'#]+)["']""", page):
                 link = urljoin(page_url, html.unescape(href))
@@ -272,4 +284,174 @@ def read_openagenda(source, fetcher):
     return items, True
 
 
-READERS = {"ical": read_ical, "jsonld": read_jsonld, "openagenda": read_openagenda}
+# API WordPress de la Ville de Nice (nice.fr, opera-nice.org : même modèle, champs ACF « event_dates »…) ------------------
+
+WP_SKIP_TYPES = {"permanence", "depistage", "reunion-dinformation", "groupe-de-paroles", "formation"}
+WP_COORDS = re.compile(r"\|(-?\d+\.\d+),(-?\d+\.\d+)")
+WP_PRICE = re.compile(r"(\d+(?:[,.]\d+)?)\s*(?:€|euros?)")
+
+
+def wp_date(day, at):
+    if not day:
+        return None
+    try:
+        when = datetime.strptime(day, "%Y%m%d")
+    except ValueError:
+        return None
+    if at:
+        try:
+            when = datetime.combine(when.date(), time.fromisoformat(at[:8]))
+        except ValueError:
+            pass
+    return timezone.make_aware(when)
+
+
+def wp_place(fetcher, root, place_id):
+    """Lieu de l'API (titre, adresse, coordonnées tirées des liens d'itinéraire), gardé une semaine en cache."""
+    from django.core.cache import cache
+
+    key = f"agg:wp-place:{root}:{place_id}"
+    place = cache.get(key)
+    if place is None:
+        try:
+            data = json.loads(fetcher.get(f"{root}/wp-json/wp/v2/place/{place_id}"))
+        except (ValueError, FetchError):
+            data = {}
+        acf = data.get("acf") or {}
+        address = acf.get("address") or {}
+        coords = WP_COORDS.search(json.dumps(acf.get("route_links") or ""))
+        place = {"place": clean((data.get("title") or {}).get("rendered")), "address": clean(address.get("street_address")),
+                 "city": clean(address.get("city")), "postcode": clean(address.get("postal_code")),
+                 "lat": float(coords.group(1)) if coords else None, "lon": float(coords.group(2)) if coords else None}
+        cache.set(key, place, 7 * 86400)
+    return place
+
+
+def read_wpnice(source, fetcher):
+    root = source.url.split("/wp-json/")[0]
+    endpoint = source.url.split("?")[0]
+    types = {}
+    try:
+        for t in json.loads(fetcher.get(f"{root}/wp-json/wp/v2/event_types", params={"per_page": 100})):
+            types[t["id"]] = t["slug"]
+    except (ValueError, KeyError, TypeError, FetchError):
+        pass
+    now = timezone.now()
+    items = []
+    for page in range(1, max(1, source.max_pages) + 1):
+        try:
+            batch = json.loads(fetcher.get(endpoint, params={
+                "per_page": 100, "page": page, "orderby": "modified", "order": "desc",
+                "_fields": "id,link,title,excerpt,acf,event_types,featured_media"}))
+        except (FetchError, ValueError):
+            break
+        if not isinstance(batch, list) or not batch:
+            break
+        upcoming_in_page = 0
+        for ev in batch:
+            acf = ev.get("acf") or {}
+            if acf.get("archived"):
+                continue
+            slugs = [types.get(t, "") for t in ev.get("event_types") or []]
+            if slugs and all(s in WP_SKIP_TYPES for s in slugs):
+                continue
+            dates = []
+            for d in acf.get("event_dates") or []:
+                start = wp_date(d.get("start_date"), d.get("start_time"))
+                end = wp_date(d.get("end_date") or (d.get("start_date") if d.get("end_time") else None), d.get("end_time"))
+                if start and (end or start) >= now:
+                    dates.append((start, end, d.get("status") or ""))
+            if not dates:
+                continue
+            upcoming_in_page += 1
+            start, end, status = min(dates, key=lambda x: x[0])
+            all_day = not any(d.get("start_time") for d in acf.get("event_dates") or [])
+            place = wp_place(fetcher, root, acf["place"]) if isinstance(acf.get("place"), int) else {}
+            pricing = clean(acf.get("pricing"))
+            price = WP_PRICE.search(pricing)
+            items.append({
+                "id": str(ev["id"]), "url": ev.get("link") or source.website,
+                "title": clean((ev.get("title") or {}).get("rendered")),
+                "description": clean((ev.get("excerpt") or {}).get("rendered")),
+                "start": start, "end": end if end and end > start else None, "all_day": all_day,
+                "place": place.get("place") or clean(acf.get("location")), "address": place.get("address", ""),
+                "city": place.get("city", ""), "postcode": place.get("postcode", ""),
+                "lat": place.get("lat"), "lon": place.get("lon"), "image": "",
+                "free": True if acf.get("free") else None,
+                "price": float(price.group(1).replace(",", ".")) if price and not acf.get("free") else None,
+                "age_min": None, "age_max": None, "keywords": " ".join(s.replace("-", " ") for s in slugs),
+                "cancelled": status in ("canceled", "cancelled"),
+            })
+        if upcoming_in_page < 5:  # les pages suivantes, moins récemment modifiées, sont des archives
+            break
+    return items, False
+
+
+# The Events Calendar (extension WordPress très répandue chez les communes) : API REST publique -------------------------
+
+OCCURRENCE = re.compile(r"/\d{4}-\d{2}-\d{2}/?$")
+
+
+def tribe_date(value, tz):
+    if not value:
+        return None
+    try:
+        naive = datetime.strptime(value[:19], "%Y-%m-%d %H:%M:%S")
+    except ValueError:
+        return None
+    try:
+        from zoneinfo import ZoneInfo
+
+        return naive.replace(tzinfo=ZoneInfo(tz or "Europe/Paris"))
+    except (KeyError, ValueError):
+        return timezone.make_aware(naive)
+
+
+def read_tribe(source, fetcher):
+    """Événements à venir, toutes pages ; une série répétée (une URL par date) ne garde que sa prochaine date."""
+    root = source.url.split("/wp-json/")[0].rstrip("/")
+    endpoint = f"{root}/wp-json/tribe/events/v1/events"
+    today = timezone.localdate().isoformat()
+    series = {}
+    for page in range(1, max(1, source.max_pages) * 4 + 1):
+        try:
+            data = json.loads(fetcher.get(endpoint, params={"per_page": 50, "page": page, "start_date": today},
+                                          check_robots=False))
+        except (FetchError, ValueError):
+            break
+        for ev in data.get("events") or []:
+            venue = ev.get("venue") if isinstance(ev.get("venue"), dict) else {}
+            start = tribe_date(ev.get("start_date"), ev.get("timezone"))
+            if start is None:
+                continue
+            end = tribe_date(ev.get("end_date"), ev.get("timezone"))
+            cost = clean(ev.get("cost"))
+            values = (ev.get("cost_details") or {}).get("values") or []
+            free = True if re.search(r"gratuit|free|libre", cost, re.I) or values == ["0"] else None
+            price = None
+            if not free and values:
+                try:
+                    price = float(str(values[0]).replace(",", "."))
+                except ValueError:
+                    price = None
+            base = OCCURRENCE.sub("/", ev.get("url") or "")
+            item = {
+                "id": base or str(ev.get("id")), "url": ev.get("url") or base,
+                "title": clean(ev.get("title")), "description": clean(ev.get("excerpt")) or clean(ev.get("description")),
+                "start": start, "end": end if end and end > start else None, "all_day": bool(ev.get("all_day")),
+                "place": clean(venue.get("venue")), "address": clean(venue.get("address")), "city": clean(venue.get("city")),
+                "postcode": clean(venue.get("zip")), "lat": _float(venue.get("geo_lat")), "lon": _float(venue.get("geo_lng")),
+                "image": ((ev.get("image") or {}).get("sizes", {}).get("large") or ev.get("image") or {}).get("url", "")
+                if isinstance(ev.get("image"), dict) else "",
+                "free": free, "price": price or None, "age_min": None, "age_max": None,
+                "keywords": " ".join(c.get("name", "") for c in ev.get("categories") or []),
+                "cancelled": False,
+            }
+            if base not in series or start < series[base]["start"]:
+                series[base] = item
+        if page >= int(data.get("total_pages") or 1):
+            break
+    return list(series.values()), True
+
+
+READERS = {"ical": read_ical, "jsonld": read_jsonld, "openagenda": read_openagenda, "wpnice": read_wpnice, "tribe": read_tribe}

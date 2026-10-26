@@ -183,3 +183,73 @@ class RequestedScanTests(TestCase):
         source.refresh_from_db()
         self.assertFalse(source.scan_requested)
         self.assertIsNotNone(source.last_run_at)
+
+
+class ConnectorTests(TestCase):
+    def test_tribe_keeps_next_occurrence_of_series(self):
+        source = Source.objects.create(name="Ville", slug="ville", kind="tribe", url="https://ville.example/",
+                                       default_commune=Commune.objects.get(insee="06128"))
+        def ev(i, d, url):
+            return {"id": i, "url": url, "title": "Yoga au jardin", "excerpt": "<p>Séance douce.</p>",
+                    "start_date": f"{d:%Y-%m-%d} 09:00:00", "end_date": f"{d:%Y-%m-%d} 10:00:00", "timezone": "Europe/Paris",
+                    "all_day": False, "cost": "Gratuit", "cost_details": {"values": []},
+                    "venue": {"venue": "Jardin public", "address": "Place de la Mairie", "city": "Saint-Paul-de-Vence",
+                              "zip": "06570", "geo_lat": "43.69", "geo_lng": "7.12"}, "categories": [{"name": "Bien-être"}]}
+        d1, d2 = day(3), day(10)
+        payload = {"events": [ev(1, d1, f"https://ville.example/agenda/yoga/{d1:%Y-%m-%d}/"),
+                              ev(2, d2, f"https://ville.example/agenda/yoga/{d2:%Y-%m-%d}/")], "total_pages": 1}
+        fetcher = FakeFetcher({"https://ville.example/wp-json/tribe/events/v1/events": json.dumps(payload)})
+        scan(source, fetcher)
+        event = Event.objects.get(source=source)
+        self.assertEqual(event.local_start.date(), d1.date())
+        self.assertEqual((event.price_kind, event.venue.name, event.venue.commune.insee), ("free", "Jardin public", "06128"))
+        self.assertEqual(event.external_id, "https://ville.example/agenda/yoga/")
+
+    def test_wpnice(self):
+        source = Source.objects.create(name="Nice", slug="nice", kind="wpnice", url="https://ville.example/wp-json/wp/v2/events",
+                                       default_commune=Commune.objects.get(insee="06088"))
+        d = day(6)
+        events = [{"id": 7, "link": "https://ville.example/agenda/concert/", "title": {"rendered": "Concert du conservatoire"},
+                   "excerpt": {"rendered": "<p>Élèves et professeurs.</p>"}, "event_types": [261],
+                   "acf": {"event_dates": [{"start_date": f"{d:%Y%m%d}", "start_time": "20:00:00", "end_date": None,
+                                            "end_time": "", "status": ""}], "place": 12, "free": False, "pricing": "Tarif : 12 €"}},
+                  {"id": 8, "link": "https://ville.example/agenda/permanence/", "title": {"rendered": "Permanence"},
+                   "excerpt": {"rendered": ""}, "event_types": [295],
+                   "acf": {"event_dates": [{"start_date": f"{d:%Y%m%d}", "start_time": "09:00:00"}], "place": 12}}]
+        place = {"title": {"rendered": "Auditorium"}, "acf": {"address": {"street_address": "127 avenue de Brancolar",
+                 "postal_code": "06100", "city": "Nice"}, "route_links": [{"url": "x?ti=ADDRESS|43.7262,7.2733&tv=y"}]}}
+        types = [{"id": 261, "slug": "concert"}, {"id": 295, "slug": "permanence"}]
+        fetcher = FakeFetcher({"https://ville.example/wp-json/wp/v2/event_types": json.dumps(types),
+                               "https://ville.example/wp-json/wp/v2/events": json.dumps(events),
+                               "https://ville.example/wp-json/wp/v2/place/12": json.dumps(place)})
+        with mock.patch("django.core.cache.cache.get", return_value=None):
+            scan(source, fetcher)
+        event = Event.objects.get(source=source)
+        self.assertEqual((event.title, event.price_label, event.venue.name), ("Concert du conservatoire", "12 €", "Auditorium"))
+        self.assertEqual((round(event.venue.lat, 4), event.local_start.hour), (43.7262, 20))
+        self.assertIn("concert", [c.slug for c in event.categories.all()])
+
+    def test_title_filter_default_place_and_online_events(self):
+        nice = Commune.objects.get(insee="06088")
+        Venue.objects.create(name="Allianz Riviera", commune=nice, address="", lat=43.705, lon=7.1926, precise=True)
+        source = Source.objects.create(name="Club", slug="club", kind="ical", url="https://c.example/a.ics", default_commune=nice,
+                                       title_pattern=r"^OGC Nice - ", default_place="Allianz Riviera")
+        start = day(5)
+        lines = ["BEGIN:VCALENDAR", "VERSION:2.0"]
+        for uid, title, desc in [("1", "OGC Nice - Lyon", "Ligue 1"), ("2", "Lyon - OGC Nice", "Ligue 1"),
+                                 ("3", "OGC Nice - Webinaire tactique", "Online event on Zoom")]:
+            lines += ["BEGIN:VEVENT", f"UID:{uid}", f"SUMMARY:{title}", f"DESCRIPTION:{desc}",
+                      f"DTSTART:{start.astimezone(UTC):%Y%m%dT%H%M%SZ}", "END:VEVENT"]
+        fetcher = FakeFetcher({"https://c.example/a.ics": "\r\n".join(lines + ["END:VCALENDAR"])})
+        scan(source, fetcher)
+        event = Event.objects.get(source=source)
+        self.assertEqual((event.title, event.venue.name), ("OGC Nice - Lyon", "Allianz Riviera"))
+
+    def test_load_sources_command(self):
+        from django.core.management import call_command
+
+        call_command("load_sources", "--scan")
+        self.assertTrue(Source.objects.filter(slug="ville-de-nice", kind="wpnice", scan_requested=True).exists())
+        self.assertEqual(Source.objects.filter(slug__startswith="meetup-").count(), 17)
+        call_command("load_sources")  # idempotente
+        self.assertEqual(Source.objects.filter(slug="ogc-nice").count(), 1)
