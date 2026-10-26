@@ -16,8 +16,10 @@ from django.conf import settings
 from django.utils import translation
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
+from core.text import without_emoji
+
 FONTS = Path(__file__).resolve().parent / "fonts"
-VERSION = 3  # à incrémenter quand le dessin change : tous les visuels sont régénérés
+VERSION = 4  # à incrémenter quand le dessin change : tous les visuels sont régénérés
 
 FORMATS = {
     "portrait": (1080, 1350),  # Instagram, Facebook
@@ -154,7 +156,7 @@ def labels(event):
             when = day_short(start) + (" – " + day_short(event.local_end) if event.multi_day else " · toute la journée")
         else:
             when = f"{day_short(start)} · {clock(start)}"
-        place = f"{event.venue.name}, {event.venue.commune.name}"
+        place = without_emoji(f"{event.venue.name}, {event.venue.commune.name}")
         extras = []
         if event.english_friendly:
             extras.append("EN friendly")
@@ -237,7 +239,7 @@ def render(event, fmt="portrait"):
         footer = round(110 * scale)
         room = panel[3] - footer - y - round((140 if vertical else 120) * scale)
         sizes = [round(s * scale) for s in ((92, 84, 76, 68, 60, 54) if vertical else (64, 58, 52, 46, 42, 38))]
-        tf, lines = fit(draw, event.title_tr, "title", sizes, x1 - x0, 3, room)
+        tf, lines = fit(draw, without_emoji(event.title_tr), "title", sizes, x1 - x0, 3, room)
         y = draw_lines(draw, (x0, y), lines, tf, text_color) + round(18 * scale)
         draw.text((x0, y), when, font=font("bold", round(36 * scale)), fill=SOLEIL)
         y += round(50 * scale)
@@ -263,7 +265,7 @@ def render(event, fmt="portrait"):
         y = box[3] + round(36 * scale)
         width = (x1 - x0) if vertical else (x1 - x0) * 0.78
         sizes = [round(s * scale) for s in ((168, 150, 134, 118, 104, 92, 82, 72) if vertical else (84, 76, 68, 60, 54, 48))]
-        tf, lines = fit(draw, event.title_tr, "title", sizes, width, 4 if fmt == "story" else 3)
+        tf, lines = fit(draw, without_emoji(event.title_tr), "title", sizes, width, 4 if fmt == "story" else 3)
         y = draw_lines(draw, (x0, y), lines, tf, text_color, 1.0) + round(28 * scale)
         # Encadré date et lieu au-dessus du pied (et de la mention « infos » en story) ; le résumé occupe l'espace restant.
         bf, lf = font("title", round(40 * scale)), font("text", round(30 * scale))
@@ -275,7 +277,7 @@ def render(event, fmt="portrait"):
         line_h = sf.size * 1.32
         room = int((by - y - 24 * scale) // line_h)
         if room > 0:
-            summary_lines = wrap(draw, event.summary_tr, sf, width * 0.92, min(room, 7))
+            summary_lines = wrap(draw, without_emoji(event.summary_tr), sf, width * 0.92, min(room, 7))
             draw_lines(draw, (x0, y), summary_lines, sf, text_color, 1.32)
         draw.rounded_rectangle([x0, by, x0 + bw, by + bh], radius=round(14 * scale), fill=PAPER)
         draw.text((x0 + 28 * scale, by + 18 * scale), when, font=bf, fill=INK)

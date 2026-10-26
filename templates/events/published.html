@@ -15,7 +15,7 @@
     <h1 class="page-title">{% translate "C'est en ligne !" %}</h1>
     <p class="page-lede">{% translate "Maintenant, le plus important : fais-le savoir. Un partage dans un groupe WhatsApp ou une story suffit souvent à remplir une soirée." %}</p>
     {% endif %}
-    {% if occurrences > 1 %}<p class="help">{% blocktranslate count n=occurrences %}{{ n }} date créée.{% plural %}{{ n }} dates créées (une par semaine), modifiables une à une.{% endblocktranslate %}</p>{% endif %}
+    {% if occurrences > 1 %}<p class="help">{% blocktranslate count n=occurrences %}{{ n }} date créée.{% plural %}{{ n }} dates créées, modifiables une à une.{% endblocktranslate %}</p>{% endif %}
     <div class="published-card">{% include "events/_card.html" %}</div>
     <p class="actions">
       <a class="btn btn-ghost" href="{{ event.get_absolute_url }}">{% translate "Voir la page de l'événement" %} {% icon "arrow" 18 %}</a>

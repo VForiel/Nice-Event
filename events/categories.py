@@ -6,7 +6,7 @@ Couleurs : chaise, corail, ocre, soleil, pin, lavande, nuit (classes CSS cat-*, 
 
 CATEGORIES = [
     ("concert", "Concert & musique", "Concerts & music", "🎵", "chaise", "music"),
-    ("soiree", "Soirée & fête", "Nights out & parties", "🪩", "lavande", "party"),
+    ("soiree", "Soirée & fête", "Nights out & parties", "🍸", "lavande", "party"),
     ("spectacle", "Spectacle & théâtre", "Shows & theatre", "🎭", "corail", "show"),
     ("humour", "Humour", "Comedy", "😂", "soleil", "smile"),
     ("cinema", "Cinéma", "Cinema", "🎬", "nuit", "film"),
@@ -23,7 +23,7 @@ CATEGORIES = [
     ("conference", "Conférence & rencontre", "Talks & meetings", "🎤", "nuit", "mic"),
     ("langues", "Échanges linguistiques & international", "Language exchanges & international", "🌍", "chaise", "lang"),
     ("rencontres", "Rencontres en groupe", "Group meetups", "💞", "corail", "meet"),
-    ("networking", "Networking & pro", "Networking & business", "🤝", "nuit", "handshake"),
+    ("networking", "Networking & pro", "Networking & business", "💼", "nuit", "briefcase"),
     ("bien-etre", "Bien-être", "Wellbeing", "🧘", "pin", "leaf"),
     ("solidarite", "Solidarité & bénévolat", "Volunteering & solidarity", "🙌", "ocre", "heart"),
     ("jeux", "Jeux & gaming", "Games & gaming", "🎲", "lavande", "dice"),

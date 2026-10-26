@@ -120,6 +120,11 @@
         <li><a href="{% url 'core:legal' %}">{% translate "Mentions légales" %}</a></li>
         <li><a href="{% url 'core:privacy' %}">{% translate "Confidentialité" %}</a></li>
       </ul>
+      <div class="footer-about">
+        <p class="footer-about-title">{% translate "Qui est derrière ?" %}</p>
+        <p>{% blocktranslate trimmed %}Moi, c'est Vincent Foriel, doctorant en astrophysique à l'Observatoire de la Côte d'Azur (instrumentation, détection d'exoplanètes). Je crée de petits projets comme celui-ci à mes heures perdues, en bonne partie grâce à Claude.{% endblocktranslate %}</p>
+        <a href="https://vincent.foriel.pro" rel="noopener">{% translate "Mon site" %} {% icon "arrow" 14 %}</a>
+      </div>
     </div>
     <div class="wrap footer-bottom">
       <p>© {% now "Y" %} Nice-Event · {% translate "Fait à Nice, sans pub ni traqueur." %}</p>

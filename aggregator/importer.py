@@ -1,6 +1,7 @@
 """Transforme les événements lus par les connecteurs en événements du site (création, mise à jour, disparition)."""
 
 import hashlib
+import html
 import logging
 import math
 import re
@@ -16,7 +17,7 @@ from events.models import Category, Event
 from venues import geocode
 from venues.models import Commune, Venue
 
-from .connectors import READERS
+from .connectors import READERS, page_details, price_from_text
 from .fetch import Fetcher, FetchError
 
 log = logging.getLogger(__name__)
@@ -24,6 +25,8 @@ log = logging.getLogger(__name__)
 MAX_SPAN = timedelta(days=45)  # au-delà, c'est une saison entière (animation hebdomadaire…) : on ne l'affiche pas
 KEEP_PAST = timedelta(days=180)
 SUMMARY = 200
+MAX_DETAIL_PAGES = 40  # pages d'événements ouvertes par scan pour trouver image ou prix (le reste aux scans suivants)
+DETAILS_MEMORY = 14 * 86400
 
 # Mots-clés -> catégorie (texte sans accents) ; les deux premières catégories trouvées sont retenues.
 KEYWORDS = [
@@ -140,7 +143,7 @@ def clean_title(item):
 
 
 def excerpt(text):
-    text = plain(text or "")
+    text = html.unescape(plain(text or ""))  # Markdown réécrit « & » en « &amp; »
     if len(text) <= SUMMARY:
         return text
     return text[: SUMMARY - 1].rsplit(" ", 1)[0].rstrip(",;:.") + "…"
@@ -176,6 +179,22 @@ def remember_skip(source, item):
         cache.set(skip_key(source, item["url"]), 1, SKIP_MEMORY)
 
 
+def details_page(source, item, fetcher):
+    """Image et prix lus sur la page de l'événement ; None si elle n'est pas à ouvrir (déjà essayée, page générale)."""
+    url = item.get("url") or ""
+    if not url.startswith("http") or url.rstrip("/") in {(source.website or "").rstrip("/"), source.url.rstrip("/")}:
+        return None
+    key = f"agg:details:{hashlib.sha1(url.encode()).hexdigest()}"
+    if cache.get(key) is not None:
+        return None
+    cache.set(key, 1, DETAILS_MEMORY)
+    try:
+        return page_details(fetcher.get(url), url)
+    except Exception as exc:  # page en erreur ou interdite par robots.txt : on fait sans
+        log.info("Page %s non lue : %s", url, exc)
+        return {"image": "", "free": None, "price": None}
+
+
 def scan(source, fetcher=None):
     """Lit une source et met à jour ses événements ; renvoie le compte rendu et met à jour la source."""
     fetcher = fetcher or Fetcher()
@@ -194,6 +213,7 @@ def scan(source, fetcher=None):
         source.save(update_fields=["last_run_at", "last_ok", "last_message"])
         raise
     seen = set()
+    budget = {"pages": MAX_DETAIL_PAGES}
     title_filter = re.compile(source.title_pattern) if source.title_pattern else None
     for item in items:
         stats["found"] += 1
@@ -226,6 +246,8 @@ def scan(source, fetcher=None):
         event.external_url = item["url"][:500]
         event.starts_at, event.end, event.all_day = start, end, bool(item.get("all_day"))
         event.venue = venue_for(item, commune, source.default_place)
+        if not item.get("free") and not item.get("price"):
+            item["free"], item["price"] = price_from_text(item.get("description"))
         if item.get("free"):
             event.price_kind = Event.Price.FREE
         elif item.get("price"):
@@ -247,6 +269,19 @@ def scan(source, fetcher=None):
             stats["created"] += 1
         else:
             stats["updated"] += 1
+        wants_image = source.images_allowed and not event.photo and not item.get("image")
+        if (wants_image or event.price_kind == Event.Price.UNKNOWN) and budget["pages"] > 0:
+            details = details_page(source, item, fetcher)
+            if details is not None:
+                budget["pages"] -= 1
+                if wants_image and details["image"]:
+                    item["image"] = details["image"]
+                if event.price_kind == Event.Price.UNKNOWN and (details["free"] or details["price"]):
+                    if details["free"]:
+                        event.price_kind = Event.Price.FREE
+                    else:
+                        event.price_kind, event.price_min = Event.Price.PAID, details["price"]
+                    event.save(update_fields=["price_kind", "price_min"])
         if source.images_allowed and item.get("image") and not event.photo:
             try:
                 data = fetcher.get(item["image"], binary=True)

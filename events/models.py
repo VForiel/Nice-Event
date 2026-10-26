@@ -316,3 +316,20 @@ class Event(models.Model):
     @property
     def is_full(self):
         return self.state == self.State.FULL or bool(self.capacity and self.going_count >= self.capacity)
+
+
+class SavedFilter(models.Model):
+    """Filtre avancé enregistré par un membre (les visiteurs le gardent dans leur navigateur)."""
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="saved_filters")
+    name = models.CharField("nom", max_length=80)
+    rule = models.JSONField("règle")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = "filtre enregistré"
+        constraints = [models.UniqueConstraint(fields=["user", "name"], name="unique_saved_filter")]
+
+    def __str__(self):
+        return self.name

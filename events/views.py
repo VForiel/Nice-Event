@@ -25,9 +25,10 @@ from core.text import normalize
 from venues import geocode
 from venues.models import Commune, Venue, Zone, zone_filter
 
+from . import rules
 from .forms import EventForm
 from .ical import calendar
-from .models import Category, Event
+from .models import Category, Event, SavedFilter
 from .seo import event_jsonld
 
 EVENTS_PER_DAY = 5
@@ -107,6 +108,15 @@ def filtered(request, events):
     elif origin == "externes":
         events = events.external()
         active["source"] = origin
+    hidden = [k for k in params.getlist("masquer") if k]
+    if hidden:
+        events = events.exclude(rules.source_q(hidden))
+        active["masquer"] = hidden
+    rule = rules.parse(params.get("regle"))
+    if rule:
+        events, applied = rules.apply(events, rule)
+        if applied:
+            active["regle"] = params["regle"]
     q = params.get("q", "").strip()
     if q:
         for word in normalize(q).split()[:6]:
@@ -154,10 +164,46 @@ def event_list(request):
     query.pop("page", None)
     return render(request, "events/list.html", {
         "days": by_day(items), "count": len(items), "more": more, "next_page": page + 1, "active": active,
-        "categories": Category.objects.all(), "zones": Zone.choices, "when_choices": WHEN,
-        "communes": Commune.objects.filter(venues__events__isnull=False).distinct().order_by("name"),
-        "query": query.urlencode(), "map_query": query.urlencode(),
+        "query": query.urlencode(), "map_query": query.urlencode(), **filter_context(request),
     })
+
+
+def filter_context(request):
+    """Ce qu'il faut aux filtres (liste et carte) : puces, sources, et la description du filtre avancé pour le JS."""
+    categories = list(Category.objects.all())
+    groups = rules.source_groups()
+    communes = Commune.objects.order_by("name").values("slug", "name", "lat", "lon")
+    spec = {
+        "fields": [[k, str(v)] for k, v in rules.FIELDS],
+        "categorie": [[c.slug, str(c.name_tr)] for c in categories],
+        "zone": [[k, str(v)] for k, v in Zone.choices],
+        "commune": [[c["slug"], c["name"]] for c in communes],
+        "places": [[c["name"], round(c["lat"], 5), round(c["lon"], 5)] for c in communes],
+        "source": [[rules.NICE_EVENT, "Nice-Event"]] + [list(g) for g in groups],
+        "prix": [[k, str(v)] for k, v in Event.Price.choices],
+        "public": [[k, str(v)] for k, v in Event.Age.choices],
+        "quand": [[k, str(v)] for k, v in WHEN],
+        "jour": [[str(k), str(v)] for k, v in rules.WEEKDAYS],
+        "saved": [{"id": f.pk, "name": f.name, "rule": f.rule} for f in SavedFilter.objects.filter(user=request.user)]
+        if request.user.is_authenticated else None,
+        "labels": {
+            "and": _("Toutes ces conditions (ET)"), "or": _("Au moins une de ces conditions (OU)"),
+            "not": _("Sauf"), "notTitle": _("Inverser : garder ce qui ne correspond pas"),
+            "addRule": _("Condition"), "addGroup": _("Groupe"), "remove": _("Retirer"),
+            "apply": _("Appliquer"), "clear": _("Tout effacer"), "save": _("Enregistrer…"),
+            "load": _("Charger"), "delete": _("Supprimer"), "saved": _("Mes filtres enregistrés"),
+            "noSaved": _("Aucun filtre enregistré pour l'instant."),
+            "namePrompt": _("Nom de ce filtre :"), "deleteConfirm": _("Supprimer ce filtre ?"),
+            "empty": _("Aucune condition : ajoute-en une pour commencer."),
+            "search": _("Chercher…"), "from": _("de"), "to": _("à"), "hour": _("h"),
+            "km": _("km autour de"), "here": _("Ma position"), "mapCenter": _("Centre de la carte"),
+            "choosePlace": _("Choisir une commune…"), "euros": _("€ au plus"), "years": _("ans"),
+            "words": _("mots à chercher"), "local": _("Enregistré dans ce navigateur (connecte-toi pour le retrouver partout)."),
+            "error": _("Enregistrement impossible, réessaie."),
+        },
+    }
+    return {"categories": categories, "zones": Zone.choices, "when_choices": WHEN, "source_groups": groups,
+            "hidden_sources": request.GET.getlist("masquer"), "filter_spec": spec}
 
 
 def visible_or_404(request, event):
@@ -256,14 +302,14 @@ def event_new(request):
             first.organizer = request.user
             first.status = Event.Status.PENDING if moderated else Event.Status.PUBLISHED
             form.apply(first)
-            weeks = form.occurrences()
-            if len(weeks) > 1:
+            days = form.occurrences()
+            if len(days) > 1:
                 first.series = uuid.uuid4()
             first.save()
             form.save_m2m()
             Attendance.objects.get_or_create(event=first, user=request.user)
-            for week in weeks[1:]:
-                copy_occurrence(first, timedelta(weeks=week))
+            for day in days[1:]:
+                copy_occurrence(first, day)
         if moderated:
             for staff in staff_users():
                 notify(staff, request.user, Notification.Verb.TO_MODERATE, first)
@@ -277,13 +323,14 @@ def staff_users():
     return get_user_model().objects.filter(is_staff=True, is_active=True)
 
 
-def copy_occurrence(event, delta):
+def copy_occurrence(event, day):
+    """Copie de l'événement le jour donné, à la même heure locale (même après un changement d'heure)."""
     cats = list(event.categories.all())
     copy = Event.objects.get(pk=event.pk)
     copy.pk = None
     copy.slug = ""
-    copy.starts_at = event.starts_at + delta
-    copy.end = event.end + delta if event.end else None
+    copy.starts_at = timezone.make_aware(datetime.combine(day, event.local_start.time()))
+    copy.end = copy.starts_at + (event.end - event.starts_at) if event.end else None
     copy.views = 0
     copy.published_at = None
     copy.save()
@@ -389,8 +436,7 @@ def venue_detail(request, slug):
 def map_page(request):
     query = request.GET.copy()
     return render(request, "events/map.html", {
-        "categories": Category.objects.all(), "when_choices": WHEN, "zones": Zone.choices,
-        "active": filtered(request, Event.objects.none())[1], "data_query": query.urlencode(),
+        "active": filtered(request, Event.objects.none())[1], "data_query": query.urlencode(), **filter_context(request),
     })
 
 
@@ -443,6 +489,33 @@ def event_ics(request, slug):
 def agenda_ics(request):
     events, _active = filtered(request, base_queryset())
     return _ics_response(calendar(events[:1000]), "nice-event.ics")
+
+
+# Filtres avancés enregistrés -------------------------------------------------------------------------------------------
+
+MAX_SAVED_FILTERS = 30
+
+
+@login_required
+@require_POST
+def api_filter_save(request):
+    """Enregistre (ou remplace, à nom égal) un filtre avancé du membre connecté."""
+    name = request.POST.get("name", "").strip()[:80]
+    rule = rules.parse(request.POST.get("rule"))
+    if not name or not rule or len(request.POST["rule"]) > 8000:
+        return JsonResponse({"error": _("Nom ou règle manquant.")}, status=400)
+    mine = SavedFilter.objects.filter(user=request.user)
+    if not mine.filter(name=name).exists() and mine.count() >= MAX_SAVED_FILTERS:
+        return JsonResponse({"error": _("Trente filtres au plus : supprimes-en un.")}, status=400)
+    saved, _created = SavedFilter.objects.update_or_create(user=request.user, name=name, defaults={"rule": rule})
+    return JsonResponse({"id": saved.pk, "name": saved.name, "rule": saved.rule})
+
+
+@login_required
+@require_POST
+def api_filter_delete(request, pk):
+    SavedFilter.objects.filter(user=request.user, pk=pk).delete()
+    return JsonResponse({"ok": True})
 
 
 # Aide à la saisie (appelées par le formulaire de publication) ---------------------------------------------------------

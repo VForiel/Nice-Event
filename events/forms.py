@@ -1,3 +1,4 @@
+import calendar
 from datetime import datetime, time, timedelta
 
 from django import forms
@@ -10,7 +11,9 @@ from venues.models import Commune, Venue
 from .models import Category, Event
 
 MAX_CATEGORIES = 3
-MAX_OCCURRENCES = 26  # répétition hebdomadaire : six mois au plus
+MAX_OCCURRENCES = 60
+MAX_SPAN_DAYS = 366  # répétition : un an au plus (cinq ans pour une répétition annuelle)
+MAX_SPAN_YEARS = 5
 # Emprise des Alpes-Maritimes et de Monaco : une position hors de ce cadre est ignorée (on géocode à nouveau).
 BBOX = (43.40, 6.60, 44.40, 7.75)
 
@@ -34,6 +37,33 @@ class CommuneChoiceField(forms.ModelChoiceField):
         return obj.name
 
 
+def add_months(day, months):
+    """Même jour, n mois plus tard ; le 31 devient le dernier jour des mois plus courts (et le 29 février, le 28)."""
+    index = day.month - 1 + months
+    year, month = day.year + index // 12, index % 12 + 1
+    return day.replace(year=year, month=month, day=min(day.day, calendar.monthrange(year, month)[1]))
+
+
+def repetition(first, until, unit, every=1):
+    """Dates d'un événement répété, de first à until compris : unit = day, week, month ou year."""
+    dates, n = [], 0
+    while len(dates) <= MAX_OCCURRENCES:
+        step = n * every
+        if unit == "day":
+            day = first + timedelta(days=step)
+        elif unit == "week":
+            day = first + timedelta(weeks=step)
+        elif unit == "month":
+            day = add_months(first, step)
+        else:
+            day = add_months(first, 12 * step)
+        if day > until:
+            break
+        dates.append(day)
+        n += 1
+    return dates
+
+
 def communes():
     # Nice et les grandes villes en tête, puis l'ordre alphabétique.
     return Commune.objects.order_by("-population")
@@ -47,8 +77,16 @@ class EventForm(forms.ModelForm):
     end_date = forms.DateField(label=_("Date de fin"), required=False, widget=DateInput(),
                                help_text=_("Seulement si l'événement dure plusieurs jours."))
     end_time = forms.TimeField(label=_("Heure de fin"), required=False, widget=TimeInput())
-    repeat_weekly = forms.BooleanField(label=_("Se répète chaque semaine"), required=False)
-    repeat_until = forms.DateField(label=_("Jusqu'au"), required=False, widget=DateInput())
+    REPEAT = [("none", _("Non")), ("day", _("Tous les jours")), ("week", _("Toutes les semaines")),
+              ("month", _("Tous les mois")), ("year", _("Tous les ans")), ("custom", _("Personnalisée"))]
+    UNITS = [("day", _("jours")), ("week", _("semaines")), ("month", _("mois"))]
+    repeat = forms.ChoiceField(label=_("Répétition"), choices=REPEAT, required=False, widget=forms.RadioSelect,
+                               initial="none")
+    repeat_every = forms.IntegerField(label=_("Tous les"), min_value=1, max_value=99, required=False, initial=2,
+                                      widget=forms.NumberInput(attrs={"min": "1", "max": "99"}))
+    repeat_unit = forms.ChoiceField(label=_("Unité"), choices=UNITS, required=False, initial="week")
+    repeat_until = forms.DateField(label=_("Jusqu'au"), required=False, widget=DateInput(),
+                                   help_text=_("Une date est créée pour chaque répétition, modifiable ensuite une à une."))
 
     venue_id = forms.IntegerField(required=False, widget=forms.HiddenInput)
     venue_name = forms.CharField(label=_("Nom du lieu"), max_length=120,
@@ -119,7 +157,8 @@ class EventForm(forms.ModelForm):
                 "lat": self.instance.venue.lat, "lon": self.instance.venue.lon,
                 "spoken_list": self.instance.spoken_codes,
             })
-            del self.fields["repeat_weekly"], self.fields["repeat_until"]
+            for name in ("repeat", "repeat_every", "repeat_unit", "repeat_until"):
+                del self.fields[name]
         else:
             del self.fields["state"]
             self.initial.setdefault("commune", Commune.objects.filter(insee="06088").values_list("pk", flat=True).first())
@@ -152,12 +191,21 @@ class EventForm(forms.ModelForm):
             if not self.instance.pk and (end or start) < timezone.now():
                 self.add_error("date", _("Cet événement est déjà passé."))
             data["_start"], data["_end"] = start, end
-        if data.get("repeat_weekly"):
+        if data.get("repeat") == "none":
+            data["repeat"] = ""
+        if data.get("repeat"):
             until = data.get("repeat_until")
-            if not until or not date or until <= date:
+            unit, every = self.repeat_rule()
+            if data["repeat"] == "custom" and not data.get("repeat_every"):
+                self.add_error("repeat_every", _("Indique tous les combien l'événement se répète."))
+            elif not until or not date or until <= date:
                 self.add_error("repeat_until", _("Indique jusqu'à quand l'événement se répète."))
-            elif (until - date).days // 7 + 1 > MAX_OCCURRENCES:
-                self.add_error("repeat_until", _("Six mois au plus : republie ensuite si besoin."))
+            elif unit == "year" and until > add_months(date, 12 * MAX_SPAN_YEARS):
+                self.add_error("repeat_until", _("Cinq ans au plus."))
+            elif unit != "year" and (until - date).days > MAX_SPAN_DAYS:
+                self.add_error("repeat_until", _("Un an au plus : republie ensuite si besoin."))
+            elif len(repetition(date, until, unit, every)) > MAX_OCCURRENCES:
+                self.add_error("repeat_until", _("Soixante dates au plus : espace les répétitions ou avance la date de fin."))
         kind = data.get("price_kind")
         low, high = data.get("price_min"), data.get("price_max")
         if kind == Event.Price.PAID and low is None:
@@ -210,9 +258,16 @@ class EventForm(forms.ModelForm):
             event.age_min = event.age_max = None
         return event
 
-    def occurrences(self):
-        """Décalages (en semaines) des occurrences à créer : [0] sans répétition."""
+    def repeat_rule(self):
+        """(unité, intervalle) de la répétition choisie."""
         data = self.cleaned_data
-        if not data.get("repeat_weekly"):
-            return [0]
-        return list(range((data["repeat_until"] - data["date"]).days // 7 + 1))
+        if data.get("repeat") == "custom":
+            return data.get("repeat_unit") or "week", data.get("repeat_every") or 1
+        return data.get("repeat") or "week", 1
+
+    def occurrences(self):
+        """Dates (jours) des occurrences à créer, la première comprise : une seule sans répétition."""
+        data = self.cleaned_data
+        if not data.get("repeat"):
+            return [data["date"]]
+        return repetition(data["date"], data["repeat_until"], *self.repeat_rule())

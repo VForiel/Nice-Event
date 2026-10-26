@@ -92,7 +92,7 @@ class Command(BaseCommand):
                 "name": name, "kind": kind, "url": url, "website": website or url,
                 "default_commune": Commune.objects.get(insee=insee) if insee else None,
                 "default_category": Category.objects.get(slug=category) if category else None,
-                "max_pages": 3, "link_pattern": "", "title_pattern": "", "default_place": "", "images_allowed": False,
+                "max_pages": 3, "link_pattern": "", "title_pattern": "", "default_place": "", "images_allowed": True,
                 "notes": "", **extra,
             }
             if options["scan"]:

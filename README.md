@@ -39,12 +39,21 @@ Site : http://localhost:8000 (anglais sous `/en/`), gestion : `/gestion/`, admin
 ## Publier, modérer
 
 - Tout membre au courriel confirmé peut publier (réglage « courriel confirmé pour publier »). Formulaire en cinq étapes :
-  catégories (3 au plus), dates (répétition hebdomadaire possible, 26 semaines au plus), lieu (suggestions des lieux connus et
+  catégories (3 au plus), dates (répétition chaque jour, semaine, mois, année ou tous les N jours/semaines/mois : un an et 60 dates au plus, cinq ans pour l'annuelle), lieu (suggestions des lieux connus et
   des adresses de la BAN, interrogée par le serveur), prix, âge, langue, organisateur, version anglaise facultative.
 - Le **premier événement** de chaque compte attend la validation de l'équipe (`/gestion/moderation/`) ; validé, le compte
   devient « de confiance » et publie directement. Refus : motif envoyé à l'auteur.
 - Trois signalements de membres différents masquent un événement en attendant l'équipe.
 - Modifier un événement (date, lieu, annulé, reporté) prévient les personnes inscrites.
+
+## Filtres
+
+Agenda et carte partagent les mêmes filtres (`events/_filters.html`) : période, gratuit, EN friendly, famille, « Seulement
+Nice-Event », catégories, zones, et une puce par source (regroupées par nom) pour la masquer (`?masquer=meetup`). Le
+**filtre avancé** (`events/rules.py`, éditeur `static/js/filters.js`) combine des conditions (catégorie, période, jour,
+heure, zone, commune, distance à un point, prix, âge, public, langue, accessibilité, source, mots) en groupes ET / OU,
+chacune inversable (SAUF) ; la règle voyage en JSON dans `?regle=`. Les membres l'enregistrent sur leur compte
+(`SavedFilter`), les visiteurs dans leur navigateur.
 
 ## Carte
 
@@ -76,8 +85,11 @@ bouton « Visuel pour ta story »), mis en cache dans `media/visuels/` et régé
 `/gestion/sources/` : une source par agenda (flux iCal, page JSON-LD, agenda OpenAgenda avec clé d'API). Scans à
 10 h, 16 h et 22 h (réglable), ou à la demande (« Scanner maintenant », traité dans la minute). Le robot s'identifie
 (`NiceEventBot`), respecte robots.txt et fait une pause d'une seconde entre deux pages d'un même site ; il ne reprend que le
-titre, les dates, le lieu, le prix et un extrait de 200 caractères, avec le lien vers la page d'origine (images seulement si
-la licence le permet). Ignorés : événements passés, hors Alpes-Maritimes et Monaco, étalés sur plus de 45 jours (sauf
+titre, les dates, le lieu, le prix, l'image et un extrait de 200 caractères, avec le lien vers la page d'origine. Image et
+prix manquants : lus dans le texte (« 10 € », « entrée libre »), puis sur la page de l'événement (JSON-LD ou og:image ;
+40 pages par scan, chacune une seule fois en 14 jours). Les images refusées par le robots.txt de leur serveur (Meetup) ne
+sont pas reprises ; « reprendre les images » se décoche par source. Textes décodés en UTF-8 même quand l'en-tête annonce
+autre chose, et l'UTF-8 lu comme du Latin-1 (« ApÃ©ro ») est réparé (`core.text.repair`). Ignorés : événements passés, hors Alpes-Maritimes et Monaco, étalés sur plus de 45 jours (sauf
 expositions), doublons d'un événement déjà présent (même titre, même jour, même commune). Disparu d'un flux complet (iCal,
 OpenAgenda) : marqué, puis masqué au bout de 24 h. Supprimés six mois après la fin.
 

@@ -49,9 +49,14 @@
       </div>
       {% include "community/_field.html" with field=form.all_day %}
       {% include "community/_field.html" with field=form.end_date %}
-      {% if form.repeat_weekly %}
-      {% include "community/_field.html" with field=form.repeat_weekly %}
-      <div data-show-if="id_repeat_weekly">{% include "community/_field.html" with field=form.repeat_until %}</div>
+      {% if form.repeat %}
+      {% include "community/_choices.html" with field=form.repeat %}
+      <div class="field{% if form.repeat_every.errors %} has-error{% endif %}" data-show-if-value="repeat:custom">
+        <label for="{{ form.repeat_every.id_for_label }}">{{ form.repeat_every.label }}</label>
+        <span class="inline-fields">{{ form.repeat_every }} <label class="sr" for="{{ form.repeat_unit.id_for_label }}">{{ form.repeat_unit.label }}</label>{{ form.repeat_unit }}</span>
+        {{ form.repeat_every.errors }}
+      </div>
+      <div data-show-if-value="repeat:day,week,month,year,custom">{% include "community/_field.html" with field=form.repeat_until %}</div>
       {% endif %}
     </fieldset>
 

@@ -1,10 +1,13 @@
 """Téléchargements polis : agent identifié, robots.txt respecté, une requête à la fois avec une pause par domaine."""
 
+import re
 import time
 from urllib.parse import urlsplit
 from urllib.robotparser import RobotFileParser
 
 import requests
+
+from core.text import decode
 
 AGENT = "NiceEventBot/1.0 (+https://nice-event.fr/contact/)"
 PAUSE = 1.0  # secondes entre deux requêtes vers un même domaine
@@ -57,4 +60,6 @@ class Fetcher:
             raise FetchError(f"{url} : réponse trop volumineuse")
         if binary:
             return content
-        return content.decode(response.encoding or "utf-8", errors="replace")
+        # requests suppose Latin-1 quand l'en-tête ne précise rien (flux iCal de Meetup…) : accents et emojis cassés.
+        match = re.search(r"charset=[\"']?([\w.-]+)", response.headers.get("Content-Type", ""), re.I)
+        return decode(content, match.group(1) if match else None)

@@ -18,6 +18,7 @@
   var map = L.map(el, { maxBounds: region.pad(0.2), minZoom: 8, maxZoom: 18, zoomControl: true, attributionControl: true })
     .setView([43.705, 7.262], 12);
   map.attributionControl.setPrefix(false);
+  window.neMap = map; // filtre avancé : « centre de la carte »
 
   var base = null;
   function setBase() {

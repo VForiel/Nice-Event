@@ -223,9 +223,10 @@ code { font-size: .9em; background: var(--paper-2); padding: .1em .35em; border-
 
 .hero { padding: clamp(40px, 7vw, 96px) 0 clamp(36px, 5vw, 64px); }
 .hero-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 56px); align-items: end; }
-.hero-title { margin: 14px 0 20px; font-size: clamp(2.75rem, 7vw, 5.5rem); letter-spacing: -.04em; line-height: .98; }
+.hero-title { margin: 0 0 20px; font-size: clamp(2.75rem, 7vw, 5.5rem); letter-spacing: -.04em; line-height: .98; }
 .hero-title em { font-style: normal; color: var(--chaise); }
 .hero-title .q { color: var(--corail); }
+.hero-side { display: grid; gap: 22px; }
 .hero-lede { font-size: clamp(1.0625rem, 1.6vw, 1.25rem); color: var(--ink-2); max-width: 40ch; }
 .soon { border: 2px solid var(--ink); border-radius: var(--radius); padding: 22px; background: var(--soleil); color: var(--soleil-ink);
   display: grid; gap: 10px; justify-items: start; }
@@ -297,5 +298,9 @@ code { font-size: .9em; background: var(--paper-2); padding: .1em .35em; border-
 .footer-pitch { display: grid; gap: 12px; max-width: 42ch; color: var(--on-night-2); }
 .footer-pitch img { height: 40px; width: auto; }
 .footer-mail { font: 800 1.25rem var(--title); }
+.footer-about { display: grid; gap: 6px; max-width: 34ch; align-content: start; color: var(--on-night-2); font-size: .9375rem; }
+.footer-about p { margin: 0; }
+.footer-about-title { font-weight: 800; color: var(--on-night); }
+.footer-about a { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; }
 .footer-links { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; align-content: start; }
 .footer-bottom { margin-top: 36px; padding-top: 18px; border-top: 1px solid rgb(255 255 255 / .12); color: var(--on-night-2); font-size: .9375rem; }

@@ -442,6 +442,10 @@ msgid "Choisir…"
 msgstr "Choose…"
 
 #: events/forms.py
+msgid "Cinq ans au plus."
+msgstr "Five years at most."
+
+#: events/forms.py
 msgid "Commence à taper : des adresses te sont proposées."
 msgstr "Start typing: addresses will be suggested."
 
@@ -494,6 +498,10 @@ msgid "Indique les deux âges."
 msgstr "Give both ages."
 
 #: events/forms.py
+msgid "Indique tous les combien l'événement se répète."
+msgstr "Say how often the event repeats."
+
+#: events/forms.py
 msgid "Jusqu'au"
 msgstr "Until"
 
@@ -518,28 +526,80 @@ msgid "Nom du lieu"
 msgstr "Venue name"
 
 #: events/forms.py
+msgid "Non"
+msgstr "No"
+
+#: events/forms.py
+msgid "Personnalisée"
+msgstr "Custom"
+
+#: events/forms.py
 msgid "Programme, déroulé, infos pratiques… Mise en forme Markdown possible."
 msgstr "Programme, schedule, practical info… Markdown formatting allowed."
 
 #: events/forms.py
-msgid "Se répète chaque semaine"
-msgstr "Repeats every week"
+msgid "Répétition"
+msgstr "Repeat"
 
 #: events/forms.py
 msgid "Seulement si l'événement dure plusieurs jours."
 msgstr "Only if the event lasts several days."
 
 #: events/forms.py
-msgid "Six mois au plus : republie ensuite si besoin."
-msgstr "Six months at most: post again later if needed."
+msgid "Soixante dates au plus : espace les répétitions ou avance la date de fin."
+msgstr "Sixty dates at most: space out the repeats or choose an earlier end date."
+
+#: events/forms.py
+msgid "Tous les"
+msgstr "Every"
+
+#: events/forms.py
+msgid "Tous les ans"
+msgstr "Every year"
+
+#: events/forms.py
+msgid "Tous les jours"
+msgstr "Every day"
+
+#: events/forms.py
+msgid "Tous les mois"
+msgstr "Every month"
+
+#: events/forms.py
+msgid "Toutes les semaines"
+msgstr "Every week"
 
 #: events/forms.py
 msgid "Trois catégories au plus."
 msgstr "Three categories at most."
 
 #: events/forms.py
+msgid "Un an au plus : republie ensuite si besoin."
+msgstr "One year at most: publish again later if needed."
+
+#: events/forms.py
+msgid "Une date est créée pour chaque répétition, modifiable ensuite une à une."
+msgstr "A date is created for each repeat; each one can then be edited on its own."
+
+#: events/forms.py
 msgid "Une à trois."
 msgstr "One to three."
+
+#: events/forms.py
+msgid "Unité"
+msgstr "Unit"
+
+#: events/forms.py
+msgid "jours"
+msgstr "days"
+
+#: events/forms.py
+msgid "mois"
+msgstr "months"
+
+#: events/forms.py
+msgid "semaines"
+msgstr "weeks"
 
 #: events/ical.py
 msgid "ANNULÉ : %(title)s"
@@ -628,10 +688,6 @@ msgstr "Hidden"
 #: events/models.py
 msgid "Nom de l'asso, du bar, de la salle… Vide : ton nom."
 msgstr "Name of the club, bar, venue… Empty: your name."
-
-#: events/models.py
-msgid "Non"
-msgstr "No"
 
 #: events/models.py
 msgid "Oui"
@@ -801,6 +857,86 @@ msgstr "minimum age"
 msgid "état"
 msgstr "status"
 
+#: events/rules.py
+msgid "Accessible en fauteuil"
+msgstr "Wheelchair accessible"
+
+#: events/rules.py
+msgid "Adapté à l'âge"
+msgstr "Suitable for age"
+
+#: events/rules.py
+msgid "Catégorie"
+msgstr "Category"
+
+#: events/rules.py
+msgid "Contient les mots"
+msgstr "Contains the words"
+
+#: events/rules.py
+msgid "EN friendly"
+msgstr "EN friendly"
+
+#: events/rules.py
+msgid "Jour de la semaine"
+msgstr "Day of the week"
+
+#: events/rules.py
+msgid "Prix"
+msgstr "Price"
+
+#: events/rules.py
+msgid "Prix maximum"
+msgstr "Maximum price"
+
+#: events/rules.py
+msgid "Public"
+msgstr "Audience"
+
+#: events/rules.py
+msgid "Période"
+msgstr "When"
+
+#: events/rules.py
+msgid "Source"
+msgstr "Source"
+
+#: events/rules.py
+msgid "Zone"
+msgstr "Area"
+
+#: events/rules.py
+msgid "dimanche"
+msgstr "Sunday"
+
+#: events/rules.py
+msgid "jeudi"
+msgstr "Thursday"
+
+#: events/rules.py
+msgid "lundi"
+msgstr "Monday"
+
+#: events/rules.py
+msgid "mardi"
+msgstr "Tuesday"
+
+#: events/rules.py
+msgid "mercredi"
+msgstr "Wednesday"
+
+#: events/rules.py
+msgid "samedi"
+msgstr "Saturday"
+
+#: events/rules.py
+msgid "vendredi"
+msgstr "Friday"
+
+#: events/rules.py
+msgid "À proximité de"
+msgstr "Near"
+
 #: events/urls.py
 msgid "carte/"
 msgstr "map/"
@@ -870,8 +1006,28 @@ msgid "7 prochains jours"
 msgstr "Next 7 days"
 
 #: events/views.py
+msgid "Appliquer"
+msgstr "Apply"
+
+#: events/views.py
+msgid "Au moins une de ces conditions (OU)"
+msgstr "At least one of these conditions (OR)"
+
+#: events/views.py
+msgid "Aucun filtre enregistré pour l'instant."
+msgstr "No saved filters yet."
+
+#: events/views.py
+msgid "Aucune condition : ajoute-en une pour commencer."
+msgstr "No conditions yet: add one to start."
+
+#: events/views.py
 msgid "Ce week-end"
 msgstr "This weekend"
+
+#: events/views.py
+msgid "Centre de la carte"
+msgstr "Map centre"
 
 #: events/views.py
 msgid "Cet événement est annulé."
@@ -882,16 +1038,116 @@ msgid "Cet événement est passé."
 msgstr "This event is over."
 
 #: events/views.py
+msgid "Charger"
+msgstr "Load"
+
+#: events/views.py
+msgid "Chercher…"
+msgstr "Search…"
+
+#: events/views.py
+msgid "Choisir une commune…"
+msgstr "Choose a town…"
+
+#: events/views.py
+msgid "Condition"
+msgstr "Condition"
+
+#: events/views.py
 msgid "Désolé, c'est complet."
 msgstr "Sorry, it's sold out."
+
+#: events/views.py
+msgid "Enregistrement impossible, réessaie."
+msgstr "Could not save, please try again."
+
+#: events/views.py
+msgid "Enregistrer…"
+msgstr "Save…"
+
+#: events/views.py
+msgid "Enregistré dans ce navigateur (connecte-toi pour le retrouver partout)."
+msgstr "Saved in this browser (log in to get it on all your devices)."
+
+#: events/views.py
+msgid "Groupe"
+msgstr "Group"
+
+#: events/views.py
+msgid "Inverser : garder ce qui ne correspond pas"
+msgstr "Invert: keep what does not match"
 
 #: events/views.py
 msgid "Invitation envoyée."
 msgstr "Invitation sent."
 
 #: events/views.py
+msgid "Ma position"
+msgstr "My location"
+
+#: events/views.py
+msgid "Mes filtres enregistrés"
+msgstr "My saved filters"
+
+#: events/views.py
+msgid "Nom de ce filtre :"
+msgstr "Name of this filter:"
+
+#: events/views.py
+msgid "Nom ou règle manquant."
+msgstr "Missing name or rule."
+
+#: events/views.py
+msgid "Retirer"
+msgstr "Remove"
+
+#: events/views.py
+msgid "Sauf"
+msgstr "Not"
+
+#: events/views.py
+msgid "Supprimer"
+msgstr "Delete"
+
+#: events/views.py
+msgid "Supprimer ce filtre ?"
+msgstr "Delete this filter?"
+
+#: events/views.py
+msgid "Tout effacer"
+msgstr "Clear all"
+
+#: events/views.py
+msgid "Toutes ces conditions (ET)"
+msgstr "All of these conditions (AND)"
+
+#: events/views.py
+msgid "Trente filtres au plus : supprimes-en un."
+msgstr "Thirty filters at most: delete one first."
+
+#: events/views.py
 msgid "Tu as déjà publié beaucoup d'événements aujourd'hui, réessaie demain."
 msgstr "You've already posted lots of events today, try again tomorrow."
+
+#: events/views.py
+msgid "ans"
+msgstr "years old"
+
+#: events/views.py
+msgid "de"
+msgstr "from"
+
+#: events/views.py
+msgid "h"
+msgstr ":00"
+
+#: events/views.py
+msgid "km autour de"
+msgstr "km around"
+
+#: events/views.py
+msgid "mots à chercher"
+msgstr "words to look for"
 
 #: events/views.py
 msgid "Événement mis à jour."
@@ -900,6 +1156,14 @@ msgstr "Event updated."
 #: events/views.py
 msgid "Événement supprimé."
 msgstr "Event deleted."
+
+#: events/views.py
+msgid "à"
+msgstr "to"
+
+#: events/views.py
+msgid "€ au plus"
+msgstr "€ at most"
 
 #: templates/404.html
 msgid "Cette page n'existe pas, ou plus."
@@ -1008,12 +1272,20 @@ msgid "Mes amis"
 msgstr "My friends"
 
 #: templates/base.html
+msgid "Moi, c'est Vincent Foriel, doctorant en astrophysique à l'Observatoire de la Côte d'Azur (instrumentation, détection d'exoplanètes). Je crée de petits projets comme celui-ci à mes heures perdues, en bonne partie grâce à Claude."
+msgstr "I'm Vincent Foriel, a PhD student in astrophysics at the Observatoire de la Côte d'Azur (instrumentation, exoplanet detection). I build small projects like this one in my spare time, largely thanks to Claude."
+
+#: templates/base.html
 msgid "Mon compte"
 msgstr "My account"
 
 #: templates/base.html
 msgid "Mon profil"
 msgstr "My profile"
+
+#: templates/base.html
+msgid "Mon site"
+msgstr "My website"
 
 #: templates/base.html
 msgid "Navigation principale"
@@ -1038,6 +1310,10 @@ msgstr "Post an event"
 #: templates/base.html
 msgid "Que faire à Nice et sur la Côte d'Azur"
 msgstr "What's on in Nice and on the French Riviera"
+
+#: templates/base.html
+msgid "Qui est derrière ?"
+msgstr "Who's behind this?"
 
 #: templates/base.html
 msgid "Réglages"
@@ -1574,10 +1850,6 @@ msgid "La sélection de l'équipe"
 msgstr "Team's picks"
 
 #: templates/core/home.html
-msgid "Nice · Côte d'Azur · Monaco"
-msgstr "Nice · French Riviera · Monaco"
-
-#: templates/core/home.html
 msgid "Publie le tien !"
 msgstr "Post yours!"
 
@@ -1624,24 +1896,52 @@ msgid "Rien pour l'instant…"
 msgstr "Nothing yet…"
 
 #: templates/events/_filters.html
-msgid "Autres agendas"
-msgstr "Other calendars"
-
-#: templates/events/_filters.html
 msgid "Catégories, zones, sources"
 msgstr "Categories, areas, sources"
+
+#: templates/events/_filters.html
+msgid "Combine des conditions (catégorie, âge, lieu, distance, source, prix…) avec ET, OU et SAUF, puis enregistre la règle pour la retrouver."
+msgstr "Combine conditions (category, age, place, distance, source, price…) with AND, OR and NOT, then save the rule to use it again."
 
 #: templates/events/_filters.html
 msgid "Effacer les filtres"
 msgstr "Clear filters"
 
 #: templates/events/_filters.html
-msgid "Publiés par les membres"
-msgstr "Posted by members"
+msgid "Filtre avancé"
+msgstr "Advanced filter"
+
+#: templates/events/_filters.html
+msgid "Le filtre avancé a besoin de JavaScript."
+msgstr "The advanced filter needs JavaScript."
 
 #: templates/events/_filters.html
 msgid "Quand"
 msgstr "When"
+
+#: templates/events/_filters.html
+msgid "Seulement Nice-Event"
+msgstr "Only Nice-Event"
+
+#: templates/events/_filters.html
+msgid "Seulement les autres agendas"
+msgstr "Only other calendars"
+
+#: templates/events/_filters.html
+msgid "Seulement les événements publiés sur Nice-Event, sans ceux des autres agendas"
+msgstr "Only events published on Nice-Event, without those from other calendars"
+
+#: templates/events/_filters.html
+msgid "Sources"
+msgstr "Sources"
+
+#: templates/events/_filters.html
+msgid "Touche une source pour la masquer ou la réafficher."
+msgstr "Tap a source to hide or show it."
+
+#: templates/events/_filters.html
+msgid "actif"
+msgstr "on"
 
 #: templates/events/_share.html
 msgid "Copier le lien"
@@ -1700,10 +2000,6 @@ msgstr "Edit it instead"
 #: templates/events/delete.html
 msgid "Si l'événement n'a simplement pas lieu, mieux vaut le marquer « annulé » en le modifiant : les personnes inscrites seront prévenues."
 msgstr "If the event simply isn't happening, better mark it “cancelled” by editing it: people going will be notified."
-
-#: templates/events/delete.html
-msgid "Supprimer"
-msgstr "Delete"
 
 #: templates/events/delete.html
 msgid "Supprimer l'événement"
@@ -1943,9 +2239,9 @@ msgstr "via"
 
 #: templates/events/published.html
 msgid "%(n)s date créée."
-msgid_plural "%(n)s dates créées (une par semaine), modifiables une à une."
+msgid_plural "%(n)s dates créées, modifiables une à une."
 msgstr[0] "%(n)s date created."
-msgstr[1] "%(n)s dates created (one a week), each editable separately."
+msgstr[1] "%(n)s dates created, each can be edited on its own."
 
 #: templates/events/published.html
 msgid "Bravo"

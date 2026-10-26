@@ -104,7 +104,7 @@ class PublishTests(Base):
         self.client.force_login(self.alice)
         start = timezone.localdate() + timedelta(days=2)
         self.client.post(reverse("events:new"), self.form_data(
-            date=start.isoformat(), repeat_weekly="on", repeat_until=(start + timedelta(weeks=3)).isoformat()))
+            date=start.isoformat(), repeat="week", repeat_until=(start + timedelta(weeks=3)).isoformat()))
         series = Event.objects.filter(title="Apéro jazz").order_by("starts_at")
         self.assertEqual(series.count(), 4)
         self.assertEqual(len({e.series for e in series}), 1)

@@ -17,6 +17,7 @@ from django.utils import timezone
 from .fetch import FetchError
 
 from core.markdown import plain
+from core.text import repair
 
 LD_SCRIPT = re.compile(r"<script[^>]+application/ld\+json[^>]*>(.*?)</script>", re.S | re.I)
 NEXT_LINK = re.compile(r"""<link[^>]+rel=["']next["'][^>]*href=["']([^"']+)["']|<a[^>]+rel=["']next["'][^>]*href=["']([^"']+)["']""", re.I)
@@ -25,7 +26,8 @@ ONLINE = re.compile(r"\bonline\b|\ben ligne\b|zoom\.us|zoom link|teams\.microsof
 
 
 def clean(text):
-    return re.sub(r"\s+", " ", html.unescape(plain(str(text or "")))).strip()
+    """Texte brut sur une ligne, entités HTML décodées et encodage cassé réparé (certaines sources sont en double UTF-8)."""
+    return re.sub(r"\s+", " ", repair(html.unescape(plain(str(text or ""))))).strip()
 
 
 def as_datetime(value):
@@ -50,6 +52,40 @@ def as_datetime(value):
     if timezone.is_naive(dt):
         dt = timezone.make_aware(dt)
     return dt, False
+
+
+PRICE = re.compile(r"(?<![\d,.])(\d{1,4}(?:[,.]\d{1,2})?)\s*(?:€|euros?\b|EUR\b)|€\s*(\d{1,4}(?:[,.]\d{1,2})?)", re.I)
+FREE = re.compile(r"\b(?:entr[ée]e (?:libre|gratuite)|acc[eè]s (?:libre|gratuit)|gratuit(?:e)? pour tous|free (?:entry|admission)|"
+                  r"admission (?:is )?free|[ée]v[ée]nement gratuit)\b", re.I)
+OG_IMAGE = re.compile(r"""<meta[^>]+(?:property|name)=["'](?:og:image|twitter:image)(?::src)?["'][^>]*content=["']([^"']+)["']"""
+                      r"""|<meta[^>]+content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)["']""", re.I)
+
+
+def price_from_text(text):
+    """(gratuit ?, prix) lus dans un texte libre : « Entrée libre », « Tarif : 10€ », « inscription 30 euros »."""
+    text = text or ""
+    if FREE.search(text):
+        return True, None
+    prices = [float((a or b).replace(",", ".")) for a, b in PRICE.findall(text)]
+    prices = [p for p in prices if 0 < p < 2000]
+    return None, (min(prices) if prices else None)
+
+
+def page_details(page, url):
+    """Image et prix d'une page d'événement : données JSON-LD si présentes, sinon balises og:image et texte."""
+    found = {"image": "", "free": None, "price": None}
+    for node in ld_blocks(page):
+        if is_event(node):
+            event = ld_event(node, url) or {}
+            found.update({k: event.get(k) for k in ("image", "free", "price") if event.get(k) not in (None, "")})
+            break
+    if not found["image"]:
+        match = OG_IMAGE.search(page)
+        if match:
+            found["image"] = html.unescape(match.group(1) or match.group(2))
+    if found["image"]:
+        found["image"] = urljoin(url, found["image"])
+    return found
 
 
 def first(value):
@@ -79,6 +115,12 @@ def read_ical(source, fetcher):
         if not location and not geo and ONLINE.search(text):
             continue  # événement en ligne (Zoom, Teams…) : rien à faire sur place
         place, _sep, address = location.partition(",")
+        free, price = price_from_text(str(component.get("DESCRIPTION", "")))
+        image = ""
+        for key in ("IMAGE", "ATTACH"):
+            for value in component.get(key, []) if isinstance(component.get(key), list) else [component.get(key)]:
+                if value and re.search(r"\.(?:jpe?g|png|webp)(?:\?|$)", str(value), re.I):
+                    image = image or str(value)
         items.append({
             "id": str(component.get("UID", "")) or f"{start.isoformat()}-{component.get('SUMMARY')}",
             "url": str(component.get("URL", "")) or source.website or source.url,
@@ -87,7 +129,7 @@ def read_ical(source, fetcher):
             "start": start, "end": end, "all_day": all_day,
             "place": place.strip(), "address": address.strip(), "city": "", "postcode": "",
             "lat": geo.latitude if geo else None, "lon": geo.longitude if geo else None,
-            "image": "", "free": None, "price": None, "age_min": None, "age_max": None,
+            "image": image, "free": free, "price": price, "age_min": None, "age_max": None,
             "keywords": " ".join(str(c) for c in (component.get("CATEGORIES").cats if component.get("CATEGORIES") else [])),
             "cancelled": str(component.get("STATUS", "")).upper() == "CANCELLED",
         })
@@ -145,7 +187,7 @@ def ld_event(node, page_url):
         address = {"streetAddress": address}
     geo = location.get("geo") or {}
     offers = first(node.get("offers")) or {}
-    price = offers.get("price") if isinstance(offers, dict) else None
+    price = (offers.get("price") or offers.get("lowPrice")) if isinstance(offers, dict) else None
     try:
         price = float(str(price).replace(",", ".")) if price not in (None, "") else None
     except ValueError:
@@ -327,6 +369,31 @@ def wp_place(fetcher, root, place_id):
     return place
 
 
+WP_MEDIA_PER_SCAN = 60  # requêtes d'images par scan : les suivantes attendent le prochain scan
+
+
+def wp_media(fetcher, root, media_id, budget):
+    """Adresse de l'image mise en avant (taille moyenne-grande si elle existe), gardée un mois en cache."""
+    from django.core.cache import cache
+
+    if not media_id:
+        return ""
+    key = f"agg:wp-media:{root}:{media_id}"
+    url = cache.get(key)
+    if url is None:
+        if budget[0] <= 0:
+            return ""
+        budget[0] -= 1
+        try:
+            data = json.loads(fetcher.get(f"{root}/wp-json/wp/v2/media/{media_id}", params={"_fields": "source_url,media_details"}))
+            sizes = (data.get("media_details") or {}).get("sizes") or {}
+            url = next((sizes[s]["source_url"] for s in ("large", "medium_large", "full") if s in sizes), data.get("source_url") or "")
+        except (ValueError, FetchError, KeyError, TypeError, AttributeError):
+            url = ""
+        cache.set(key, url, 30 * 86400)
+    return url
+
+
 def read_wpnice(source, fetcher):
     root = source.url.split("/wp-json/")[0]
     endpoint = source.url.split("?")[0]
@@ -338,6 +405,7 @@ def read_wpnice(source, fetcher):
         pass
     now = timezone.now()
     items = []
+    media_budget = [WP_MEDIA_PER_SCAN]
     for page in range(1, max(1, source.max_pages) + 1):
         try:
             batch = json.loads(fetcher.get(endpoint, params={
@@ -376,9 +444,10 @@ def read_wpnice(source, fetcher):
                 "start": start, "end": end if end and end > start else None, "all_day": all_day,
                 "place": place.get("place") or clean(acf.get("location")), "address": place.get("address", ""),
                 "city": place.get("city", ""), "postcode": place.get("postcode", ""),
-                "lat": place.get("lat"), "lon": place.get("lon"), "image": "",
+                "lat": place.get("lat"), "lon": place.get("lon"),
+                "image": wp_media(fetcher, root, ev.get("featured_media"), media_budget) if source.images_allowed else "",
                 "free": True if acf.get("free") else None,
-                "price": float(price.group(1).replace(",", ".")) if price and not acf.get("free") else None,
+                "price": float(price.group(1).replace(",", ".")) if price and not acf.get("free") and float(price.group(1).replace(",", ".")) > 0 else None,
                 "age_min": None, "age_max": None, "keywords": " ".join(s.replace("-", " ") for s in slugs),
                 "cancelled": status in ("canceled", "cancelled"),
             })

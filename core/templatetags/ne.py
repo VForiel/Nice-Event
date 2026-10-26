@@ -43,7 +43,7 @@ ICONS = {
     "linkedin": '<rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M8 10.5V17M8 7.3v.2M12 17v-3.8a2.2 2.2 0 0 1 4.4 0V17M12 10.5V17"/>',
     # Catégories (mêmes tracés que la maquette design/maquette.html)
     "music": '<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
-    "party": '<circle cx="12" cy="11" r="7"/><path d="M5 11h14M12 4c2.5 2 2.5 12 0 14M12 4c-2.5 2-2.5 12 0 14M12 18v3"/>',
+    "party": '<path d="M4 4h13l-6.5 8z"/><path d="M10.5 12v8M7 20h7"/><path d="M7.2 7.5h6.6"/><path d="M17 4l3-2"/><path d="M19.5 9.5v3M18 11h3"/>',
     "sea": '<circle cx="17" cy="6" r="3"/><path d="M2 15c2.5-2 4.5-2 7 0s4.5 2 7 0 4.5-2 6 0M2 20c2.5-2 4.5-2 7 0s4.5 2 7 0 4.5-2 6 0"/>',
     "hike": '<path d="M2 20l7-11 4 6 3-4 6 9z"/><path d="M8 11l2 2 2-1"/>',
     "food": '<path d="M8 3h8l-1 7a3 3 0 0 1-6 0z"/><path d="M12 13v8M8 21h8"/>',
@@ -62,11 +62,11 @@ ICONS = {
     "frame": '<rect x="3.5" y="4" width="17" height="16" rx="1.5"/><path d="M6.5 16.5l4-5 3 3.5 2-2 2 3.5"/><circle cx="15.5" cy="8.5" r="1.3"/>',
     "tent": '<path d="M3 20h18M12 4l-8 16M12 4l8 16M12 4v16M12 13l-3 7M12 13l3 7"/>',
     "confetti": '<path d="M4 20l4.5-12 7.5 7.5z"/><path d="M14 4v2M19 9h2M17 6l1.5-1.5M12 9c1-1 1.5-2.5 1-4M15 12c1-1 2.5-1.5 4-1"/>',
-    "run": '<circle cx="15" cy="4.5" r="2"/><path d="M6 20l3.5-5 3 2 1-5.5 3 2.5 2.5-.5M13.5 11.5l-4-1.5-3 3M9.5 15l-2 1.5"/>',
+    "run": '<circle cx="15.5" cy="4" r="2"/><path d="M13.5 8l-3 5.5"/><path d="M10.5 13.5l3.5 2.5-1.5 5"/><path d="M10.5 13.5l-2.5 3H4"/><path d="M7 10.5l3-2.5h3.5l2.5 3 3 .5"/>',
     "stadium": '<ellipse cx="12" cy="9" rx="9" ry="4"/><path d="M3 9v6c0 2.2 4 4 9 4s9-1.8 9-4V9"/><path d="M8 12.6V18M16 12.6V18"/>',
-    "brush": '<path d="M14.5 4.5l5 5L11 18l-5-5z"/><path d="M6 13c-2 0-3 1.5-3 3 0 1.5-1 2.5-1 2.5s4 1 6-1c1-1 1-2.5-.5-3.5"/>',
+    "brush": '<path d="M11 10l3 3"/><path d="M6.5 21A3.5 3.5 0 1 0 3 17.5a2.62 2.62 0 0 1-.708 1.792A1 1 0 0 0 3 21z"/><path d="M9.969 17.031L21.378 5.624a1 1 0 0 0-3.002-3.002L6.967 14.031"/>',
     "mic": '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/>',
-    "handshake": '<path d="M3 11l4-4 3 1 3-2 4 1 4 4M7 7v8l4 4c.8.8 2 .8 2.8 0l4.2-4.2M10 12.5l2.5 2.5M12.5 10.5L15 13"/>',
+    "briefcase": '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8.5 7V5a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v2"/><path d="M3 12.5h18M12 11.5v2"/>',
     "leaf": '<path d="M5 19c0-8 5-13 15-14-1 10-6 15-14 15"/><path d="M5 19c3-4 6-7 10-9"/>',
     "dice": '<rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor"/><circle cx="15" cy="15" r="1" fill="currentColor"/><circle cx="15" cy="9" r="1" fill="currentColor"/><circle cx="9" cy="15" r="1" fill="currentColor"/>',
     "filter": '<path d="M4 6h16M7 12h10M10 18h4"/>',
@@ -173,7 +173,7 @@ def toggle_param(context, name, value):
     values = query.getlist(name)
     if value in values:
         values.remove(value)
-    elif name == "categorie":
+    elif name in ("categorie", "masquer"):
         values.append(value)
     else:
         values = [value]

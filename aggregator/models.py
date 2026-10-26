@@ -40,8 +40,9 @@ class Source(models.Model):
                   "(ex. ^OGC Nice - pour les seuls matchs à domicile).")
     default_place = models.CharField("lieu par défaut", max_length=120, blank=True,
                                      help_text="Quand la source n'indique pas de lieu (calendrier de matchs, Meetup…).")
-    images_allowed = models.BooleanField("reprendre les images", default=False,
-                                         help_text="Seulement si la licence de la source le permet (ex. OpenAgenda, DATAtourisme).")
+    images_allowed = models.BooleanField("reprendre les images", default=True,
+                                         help_text="Image de l'événement (flux, ou page de l'événement à défaut). "
+                                                   "À décocher si la source s'y oppose.")
     notes = models.TextField("notes", blank=True)
     scan_requested = models.BooleanField("scan demandé", default=False, help_text="Traité par la tâche de fond dans la minute.")
 
