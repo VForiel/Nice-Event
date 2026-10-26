@@ -322,3 +322,21 @@ compte développeur X (si l'offre te convient), clé OpenAgenda.
 | Domaine | nice-event.fr chez OVH, enregistrement A vers VPS1 fait ; mail contact@nice-event.fr sur le Zimbra OVH |
 | Éditeur du site | Vincent Foriel |
 | Ajouts | carte interactive (`/carte/`, marqueurs emoji) et invitation au partage sur chaque fiche |
+
+## 15. Suivi (26/10/2026)
+
+| Phase | État |
+|---|---|
+| 0. Identité | Fait : piste A « la chaise bleue », palette Riviera, Bricolage Grotesque + Atkinson Hyperlegible Next |
+| 1. Socle | En ligne : Django 6.1, Docker sur VPS1, réglages en base (SMTP chiffré), sauvegardes |
+| 1 bis. AJC06 | Déployé : SMTP, validation des comptes, HelloAsso et hébergeur réglables dans `/gestion/reglages/` |
+| 2. Événements | En ligne : publication en cinq étapes, lieux géocodés, répétition, filtres, recherche, iCal, JSON-LD, partage, carte |
+| 3. Communauté | En ligne : comptes, confirmation d'adresse, profils, amis, « J'y vais », invitations, notifications, signalements |
+| 4. Visuels et réseaux | En ligne : visuels générés (4 formats), diffusion programmable ; reste à saisir les identifiants des comptes |
+| 5. Agrégation | En ligne : iCal, JSON-LD, OpenAgenda ; deux sources actives (AJC06, office de tourisme Nice Côte d'Azur) |
+| 6. Lancement | Fait : charte et conditions, confidentialité complète, poids des pages vérifié (~270 Ko, aucun domaine tiers), restauration d'une sauvegarde testée |
+
+Écarts par rapport au plan : le fond de carte est extrait en local (`scripts/extract_tiles.py`) puis copié sur VPS1, plutôt
+que téléchargé sur le serveur par un outil externe ; le connecteur RSS est abandonné (les flux RSS ne donnent pas les dates
+des événements) ; DATAtourisme n'est pas branché (demande un compte et un flux configurés chez eux, possible via OpenAgenda
+ou JSON-LD selon les sources).
