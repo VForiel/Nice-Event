@@ -1,0 +1,40 @@
+{% load static ne %}<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>{% block title %}Gestion{% endblock %} · Nice-Event</title>
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  <link rel="stylesheet" href="{% static 'css/gestion.css' %}">
+  <script nonce="{{ csp_nonce }}">try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+  <script src="{% static 'js/site.js' %}" defer></script>
+</head>
+<body class="gestion">
+  <header class="g-header">
+    <div class="wrap g-header-inner">
+      <a class="brand" href="{% url 'gestion:dashboard' %}">
+        <img src="{% static 'img/logo-mark.svg' %}" alt="" width="36" height="36"><span>Gestion</span>
+      </a>
+      <nav class="g-nav" aria-label="Gestion">
+        {% with page=request.resolver_match.url_name %}
+        <a href="{% url 'gestion:dashboard' %}"{% if page == 'dashboard' %} aria-current="page"{% endif %}>Tableau de bord</a>
+        {% if user.is_superuser %}<a href="{% url 'gestion:settings' %}"{% if page == 'settings' %} aria-current="page"{% endif %}>Réglages</a>{% endif %}
+        <a href="{% url 'admin:index' %}">Admin Django</a>
+        <a href="{% url 'core:home' %}">Voir le site</a>
+        {% endwith %}
+      </nav>
+      <form method="post" action="{% url 'admin:logout' %}">{% csrf_token %}<button class="btn btn-ghost btn-sm" type="submit">Se déconnecter</button></form>
+    </div>
+  </header>
+  {% if messages %}
+  <div class="wrap flash" role="status">
+    {% for message in messages %}<p class="flash-item flash-{{ message.level_tag }}">{{ message }}</p>{% endfor %}
+  </div>
+  {% endif %}
+  <main class="wrap g-main">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

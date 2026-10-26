@@ -1,0 +1,7 @@
+Django>=6.1,<6.2
+cryptography>=46
+gunicorn>=26
+Markdown>=3.11
+nh3>=0.3
+Pillow>=13
+whitenoise>=6.12

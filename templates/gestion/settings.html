@@ -1,0 +1,61 @@
+{% extends "gestion/base.html" %}
+{% block title %}Réglages{% endblock %}
+
+{% block content %}
+<h1 class="g-title">Réglages du site</h1>
+<p class="g-lede">Ces réglages remplacent le fichier <code>.env</code> : ils s'appliquent immédiatement. Les mots de passe et
+  jetons sont chiffrés en base et ne sont jamais réaffichés.</p>
+
+<form class="form g-form" method="post" novalidate>
+  {% csrf_token %}
+  {% if form.errors %}<p class="form-error" tabindex="-1" data-form-error>Rien n'est enregistré : corrige les champs signalés.</p>{% endif %}
+  {{ form.non_field_errors }}
+
+  <fieldset class="g-block">
+    <legend>Courriel</legend>
+    <p class="g-help">Pour contact@nice-event.fr (Zimbra OVH) : serveur <code>smtp.mail.ovh.net</code>, port 465, SSL/TLS,
+      identifiant = adresse complète.</p>
+    <div class="g-grid">
+      {% include "gestion/_field.html" with field=form.smtp_host %}
+      {% include "gestion/_field.html" with field=form.smtp_port %}
+      {% include "gestion/_field.html" with field=form.smtp_security %}
+      {% include "gestion/_field.html" with field=form.smtp_user %}
+      {% include "gestion/_field.html" with field=form.smtp_password %}
+      <div class="field field-check"><label class="check">{{ form.clear_smtp_password }} <span>{{ form.clear_smtp_password.label }}</span></label></div>
+      {% include "gestion/_field.html" with field=form.from_email %}
+      {% include "gestion/_field.html" with field=form.contact_email %}
+    </div>
+  </fieldset>
+
+  <fieldset class="g-block g-block-later">
+    <legend>Réseaux sociaux</legend>
+    <p class="g-help">Instagram, Facebook, X et Bluesky : arrivent avec la diffusion des événements (phase 4).</p>
+  </fieldset>
+  <fieldset class="g-block g-block-later">
+    <legend>Sources d'événements externes</legend>
+    <p class="g-help">Agendas scannés à 10 h, 16 h et 22 h : arrivent en phase 5.</p>
+  </fieldset>
+
+  <p><button class="btn btn-primary" type="submit">Enregistrer</button></p>
+</form>
+
+<section class="g-block">
+  <h2>Tester l'envoi</h2>
+  <form class="g-inline" method="post" action="{% url 'gestion:test_email' %}">
+    {% csrf_token %}
+    <label for="{{ test_form.to.id_for_label }}">{{ test_form.to.label }}</label>
+    {{ test_form.to }}
+    <button class="btn btn-ghost" type="submit">Envoyer</button>
+  </form>
+  <p class="g-help">Enregistre d'abord les réglages : le test utilise ceux qui sont en base.</p>
+</section>
+
+{% if changes %}
+<section class="g-block">
+  <h2>Dernières modifications</h2>
+  <ul class="g-log">
+    {% for c in changes %}<li><time>{{ c.changed_at|date:"d/m/Y H:i" }}</time> · {{ c.user|default:"?" }} · {{ c.fields }}</li>{% endfor %}
+  </ul>
+</section>
+{% endif %}
+{% endblock %}

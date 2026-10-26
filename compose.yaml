@@ -1,0 +1,32 @@
+# Production sur VPS1 : le reverse proxy Caddy partagé (~/reverse-proxy) joint le site par le réseau « proxy ».
+# web : le site (gunicorn) ; worker : tâches planifiées (sauvegarde, puis publications programmées et scans).
+# Les deux partagent la base SQLite et les médias (volume data) ; les sauvegardes vont dans ./backups sur l'hôte.
+services:
+  web:
+    build: .
+    image: nice-event
+    container_name: nice-event_web
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - data:/data
+      - ./backups:/backups
+    networks: [proxy]
+
+  worker:
+    image: nice-event
+    container_name: nice-event_worker
+    restart: unless-stopped
+    env_file: .env
+    command: ["python", "manage.py", "worker"]
+    depends_on: [web]
+    volumes:
+      - data:/data
+      - ./backups:/backups
+
+volumes:
+  data:
+
+networks:
+  proxy:
+    external: true

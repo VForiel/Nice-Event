@@ -1,0 +1,11 @@
+# Nice-Event (~/Nice-Event) : copié dans ~/reverse-proxy/sites/ sur VPS1. En-têtes de sécurité (CSP, HSTS…) posés par Django.
+nice-event.fr {
+	encode zstd gzip
+	request_body {
+		max_size 15MB
+	}
+	reverse_proxy nice-event_web:8000
+}
+www.nice-event.fr {
+	redir https://nice-event.fr{uri} permanent
+}

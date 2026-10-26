@@ -1,0 +1,9 @@
+.venv
+.git
+db.sqlite3*
+media
+staticfiles
+**/__pycache__
+.env
+/backups/
+design

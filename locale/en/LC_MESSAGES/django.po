@@ -1,0 +1,274 @@
+# Traduction anglaise du site Nice-Event. Générée et compilée par scripts/i18n.py.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: core/forms.py
+msgid "C'est à propos de"
+msgstr "It's about"
+
+#: core/forms.py
+msgid "J'accepte que Nice-Event utilise ces informations pour me répondre, et pour rien d'autre."
+msgstr "I agree that Nice-Event may use this information to reply to me, and for nothing else."
+
+#: core/forms.py
+msgid "Laisser vide"
+msgstr "Leave empty"
+
+#: core/forms.py
+msgid "Ton courriel"
+msgstr "Your email"
+
+#: core/forms.py
+msgid "Ton message"
+msgstr "Your message"
+
+#: core/forms.py
+msgid "Ton nom"
+msgstr "Your name"
+
+#: core/images.py
+msgid "Image illisible ou trop grande. Essaie en JPEG ou PNG."
+msgstr "Unreadable or oversized image. Try a JPEG or PNG."
+
+#: core/images.py
+msgid "Image trop grande (40 mégapixels maximum)."
+msgstr "Image too large (40 megapixels maximum)."
+
+#: core/images.py
+msgid "Image trop lourde (12 Mo maximum)."
+msgstr "Image too heavy (12 MB maximum)."
+
+#: core/models.py
+msgid "Autre chose"
+msgstr "Something else"
+
+#: core/models.py
+msgid "Un partenariat, une source d'événements à ajouter"
+msgstr "A partnership, an event source to add"
+
+#: core/models.py
+msgid "Un problème avec un événement"
+msgstr "A problem with an event"
+
+#: core/models.py
+msgid "Une question"
+msgstr "A question"
+
+#: core/urls.py
+msgid "confidentialite/"
+msgstr "privacy/"
+
+#: core/urls.py
+msgid "mentions-legales/"
+msgstr "legal-notice/"
+
+#: core/views.py
+msgid "Concert & musique"
+msgstr "Concerts & music"
+
+#: core/views.py
+msgid "Famille & enfants"
+msgstr "Family & kids"
+
+#: core/views.py
+msgid "Gastronomie"
+msgstr "Food & drink"
+
+#: core/views.py
+msgid "Marché & brocante"
+msgstr "Markets & flea markets"
+
+#: core/views.py
+msgid "Mer & plage"
+msgstr "Sea & beach"
+
+#: core/views.py
+msgid "Message envoyé. On te répond dès que possible."
+msgstr "Message sent. We'll get back to you as soon as we can."
+
+#: core/views.py
+msgid "Plein air & rando"
+msgstr "Outdoors & hiking"
+
+#: core/views.py
+msgid "Rencontres en groupe"
+msgstr "Group meetups"
+
+#: core/views.py
+msgid "Soirée & fête"
+msgstr "Nights out & parties"
+
+#: core/views.py
+msgid "Spectacle & théâtre"
+msgstr "Shows & theatre"
+
+#: core/views.py
+msgid "Trop de messages envoyés depuis cette connexion, réessaie dans une heure."
+msgstr "Too many messages sent from this connection, please try again in an hour."
+
+#: core/views.py
+msgid "Échanges linguistiques"
+msgstr "Language exchanges"
+
+#: templates/404.html
+msgid "Cette page n'existe pas, ou plus."
+msgstr "This page doesn't exist, or no longer does."
+
+#: templates/404.html
+msgid "Erreur 404"
+msgstr "Error 404"
+
+#: templates/404.html
+msgid "Page introuvable"
+msgstr "Page not found"
+
+#: templates/404.html
+msgid "Perdu sur la Prom' ?"
+msgstr "Lost on the Prom?"
+
+#: templates/404.html
+msgid "Retour à l'accueil"
+msgstr "Back to the home page"
+
+#: templates/base.html
+msgid "Agenda"
+msgstr "What's on"
+
+#: templates/base.html
+msgid "Aller au contenu"
+msgstr "Skip to content"
+
+#: templates/base.html
+msgid "Annonce"
+msgstr "Announcement"
+
+#: templates/base.html
+msgid "Changer de thème"
+msgstr "Switch theme"
+
+#: templates/base.html
+msgid "Confidentialité"
+msgstr "Privacy"
+
+#: templates/base.html
+msgid "Contact"
+msgstr "Contact"
+
+#: templates/base.html
+msgid "En savoir plus"
+msgstr "Learn more"
+
+#: templates/base.html
+msgid "Fait à Nice, sans pub ni traqueur."
+msgstr "Made in Nice, no ads, no trackers."
+
+#: templates/base.html
+msgid "Gestion"
+msgstr "Admin"
+
+#: templates/base.html
+msgid "L'agenda participatif de Nice et de la Côte d'Azur."
+msgstr "The community events calendar for Nice and the French Riviera."
+
+#: templates/base.html
+msgid "L'agenda participatif de Nice et de sa région : concerts, soirées, randos, ateliers, rencontres… Publie ton événement, trouve quoi faire ce soir."
+msgstr "The community events calendar for Nice and around: concerts, parties, hikes, workshops, meetups… Post your event, find something to do tonight."
+
+#: templates/base.html
+msgid "L'agenda que tout le monde peut remplir, de Menton à Cannes et jusqu'à l'arrière-pays."
+msgstr "The events calendar anyone can add to, from Menton to Cannes and up into the hills."
+
+#: templates/base.html
+msgid "Masquer l'annonce"
+msgstr "Hide announcement"
+
+#: templates/base.html
+msgid "Mentions légales"
+msgstr "Legal notice"
+
+#: templates/base.html
+msgid "Menu"
+msgstr "Menu"
+
+#: templates/base.html
+msgid "Navigation principale"
+msgstr "Main navigation"
+
+#: templates/base.html
+msgid "Nice-Event — que faire à Nice ?"
+msgstr "Nice-Event — what's on in Nice?"
+
+#: templates/base.html
+msgid "Nice-Event, accueil"
+msgstr "Nice-Event, home"
+
+#: templates/base.html
+msgid "Publier un événement"
+msgstr "Post an event"
+
+#: templates/base.html
+msgid "Que faire à Nice et sur la Côte d'Azur"
+msgstr "What's on in Nice and on the French Riviera"
+
+#: templates/base.html
+msgid "Thème clair / sombre"
+msgstr "Light / dark theme"
+
+#: templates/core/contact.html
+msgid "Détails dans la <a href=\"%(url)s\">politique de confidentialité</a>."
+msgstr "Details in the <a href=\"%(url)s\">privacy policy</a>."
+
+#: templates/core/contact.html
+msgid "Envoyer"
+msgstr "Send"
+
+#: templates/core/contact.html
+msgid "Le message n'est pas parti : vérifie les champs signalés."
+msgstr "Your message wasn't sent: please check the highlighted fields."
+
+#: templates/core/contact.html
+msgid "Par courriel"
+msgstr "By email"
+
+#: templates/core/contact.html
+msgid "Une question, un événement à signaler, un agenda à ajouter à nos sources, une idée pour le site : on lit tout."
+msgstr "A question, an event to report, a calendar to add to our sources, an idea for the site: we read everything."
+
+#: templates/core/contact.html
+msgid "Écrire à Nice-Event : une question, un problème avec un événement, une source d'événements à ajouter."
+msgstr "Write to Nice-Event: a question, a problem with an event, an event source to add."
+
+#: templates/core/contact.html
+msgid "Écris-nous"
+msgstr "Write to us"
+
+#: templates/core/home.html
+msgid "Bientôt"
+msgstr "Coming soon"
+
+#: templates/core/home.html
+msgid "Concerts, apéros, randos, ateliers, rencontres : l'agenda que tout le monde peut remplir, de Menton à Cannes."
+msgstr "Concerts, drinks, hikes, workshops, meetups: the events calendar anyone can add to, from Menton to Cannes."
+
+#: templates/core/home.html
+msgid "Envie de…"
+msgstr "In the mood for…"
+
+#: templates/core/home.html
+msgid "Le site ouvre ses portes très vite."
+msgstr "The site opens very soon."
+
+#: templates/core/home.html
+msgid "Nice · Côte d'Azur · Monaco"
+msgstr "Nice · French Riviera · Monaco"
+
+#: templates/core/home.html
+msgid "Publication d'événements, carte, comptes membres et agenda partagé arrivent dans les prochaines semaines. Une idée, une question, un événement à signaler ?"
+msgstr "Event posting, the map, member accounts and the shared calendar are coming in the next few weeks. An idea, a question, an event to tell us about?"
+
+#: templates/core/home.html
+msgid "Qu'est-ce qu'on fait à <em>Nice</em> ce&nbsp;soir&nbsp;<span class=\"q\">?</span>"
+msgstr "What's on in <em>Nice</em> tonight<span class=\"q\">?</span>"

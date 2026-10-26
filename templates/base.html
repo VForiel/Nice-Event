@@ -1,0 +1,100 @@
+{% load static i18n ne %}<!doctype html>
+{% get_current_language as LANG %}
+<html lang="{{ LANG }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Nice-Event{% endblock %}{% block title_suffix %} · {% translate "Que faire à Nice et sur la Côte d'Azur" %}{% endblock %}</title>
+  <meta name="description" content="{% block description %}{% translate "L'agenda participatif de Nice et de sa région : concerts, soirées, randos, ateliers, rencontres… Publie ton événement, trouve quoi faire ce soir." %}{% endblock %}">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#fbf6ec" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0d1626" media="(prefers-color-scheme: dark)">
+  <meta property="og:site_name" content="Nice-Event">
+  <meta property="og:locale" content="{% if LANG == 'en' %}en_GB{% else %}fr_FR{% endif %}">
+  <meta property="og:title" content="{% block og_title %}{% translate "Nice-Event — que faire à Nice ?" %}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}{% translate "L'agenda participatif de Nice et de la Côte d'Azur." %}{% endblock %}">
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta property="og:url" content="{{ SITE_URL }}{{ request.path }}">
+  {% block og_image %}<meta property="og:image" content="{{ SITE_URL }}{% static 'img/og-default.png' %}">{% endblock %}
+  <link rel="canonical" href="{{ SITE_URL }}{{ request.path }}">
+  <link rel="alternate" hreflang="fr" href="{{ SITE_URL }}{% lang_url 'fr' %}">
+  <link rel="alternate" hreflang="en" href="{{ SITE_URL }}{% lang_url 'en' %}">
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
+  <link rel="preload" href="{% static 'fonts/bricolage-grotesque-latin-standard-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{% static 'fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  <script nonce="{{ csp_nonce }}">try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+  <script src="{% static 'js/site.js' %}" defer></script>
+  {% block head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  <a class="skip" href="#contenu">{% translate "Aller au contenu" %}</a>
+
+  {% if announcement %}
+  <div class="announce announce-{{ announcement.tone }}" data-announce="{{ announcement.pk }}-{{ announcement.created_at|date:'U' }}" role="region" aria-label="{% translate "Annonce" %}">
+    <span>{{ announcement.message_tr }}</span>
+    {% if announcement.link_url %}<a href="{{ announcement.link_url }}">{{ announcement.link_label_tr|default:_("En savoir plus") }} {% icon "arrow" 14 %}</a>{% endif %}
+    <button class="announce-close" type="button" data-announce-close aria-label="{% translate "Masquer l'annonce" %}">{% icon "close" 16 %}</button>
+  </div>
+  {% endif %}
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="{% url 'core:home' %}" aria-label="{% translate "Nice-Event, accueil" %}">
+        <img src="{% static 'img/logo.svg' %}" alt="" width="216" height="40" class="brand-light">
+        <img src="{% static 'img/logo-dark.svg' %}" alt="" width="216" height="40" class="brand-dark">
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav">
+        <span class="when-closed">{% icon "menu" 22 %}</span><span class="when-open">{% icon "close" 22 %}</span>
+        <span class="sr">{% translate "Menu" %}</span>
+      </button>
+      <nav id="nav" class="nav" aria-label="{% translate "Navigation principale" %}">
+        <a href="{% url 'core:home' %}#bientot">{% translate "Agenda" %}</a>
+        <a href="{% url 'core:contact' %}"{% if request.resolver_match.url_name == 'contact' %} aria-current="page"{% endif %}>{% translate "Contact" %}</a>
+        <div class="nav-tools">
+          {% if LANG == 'en' %}
+          <a class="lang-switch" href="{% lang_url 'fr' %}" hreflang="fr" lang="fr" title="Version française">FR</a>
+          {% else %}
+          <a class="lang-switch" href="{% lang_url 'en' %}" hreflang="en" lang="en" title="English version">EN</a>
+          {% endif %}
+          <button class="theme-toggle" type="button" aria-label="{% translate "Changer de thème" %}" title="{% translate "Thème clair / sombre" %}">
+            <span class="when-light">{% icon "moon" 18 %}</span><span class="when-dark">{% icon "sun" 18 %}</span>
+          </button>
+          {% if user.is_staff %}<a class="btn btn-ghost btn-sm" href="{% url 'gestion:dashboard' %}">{% translate "Gestion" %}</a>{% endif %}
+        </div>
+        <a class="btn btn-primary nav-cta" href="{% url 'core:home' %}#bientot">{% icon "plus" 18 %} {% translate "Publier un événement" %}</a>
+      </nav>
+    </div>
+  </header>
+
+  {% if messages %}
+  <div class="wrap flash" role="status">
+    {% for message in messages %}<p class="flash-item flash-{{ message.level_tag }}">{% if message.level_tag == "success" or message.level_tag == "info" %}{% icon "check" 18 %} {% endif %}{{ message }}</p>{% endfor %}
+  </div>
+  {% endif %}
+
+  <main id="contenu">
+    {% block content %}{% endblock %}
+  </main>
+
+  <div class="stripe" aria-hidden="true"></div>
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <div class="footer-pitch">
+        <img src="{% static 'img/logo-dark.svg' %}" alt="Nice-Event" width="216" height="40">
+        <p>{% translate "L'agenda que tout le monde peut remplir, de Menton à Cannes et jusqu'à l'arrière-pays." %}</p>
+        <a class="footer-mail" href="mailto:{{ CONTACT_EMAIL }}">{{ CONTACT_EMAIL }}</a>
+      </div>
+      <ul class="footer-links">
+        <li><a href="{% url 'core:contact' %}">{% translate "Contact" %}</a></li>
+        <li><a href="{% url 'core:legal' %}">{% translate "Mentions légales" %}</a></li>
+        <li><a href="{% url 'core:privacy' %}">{% translate "Confidentialité" %}</a></li>
+      </ul>
+    </div>
+    <div class="wrap footer-bottom">
+      <p>© {% now "Y" %} Nice-Event · {% translate "Fait à Nice, sans pub ni traqueur." %}</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nice-Event — identité (phase 0)</title>
+<style>
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  font-stretch: 75% 100%;
+  src: url("fonts/bricolage-grotesque-latin-standard-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  font-stretch: 75% 100%;
+  src: url("fonts/bricolage-grotesque-latin-ext-standard-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+2020, U+20A0-20AB,
+    U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url("fonts/atkinson-hyperlegible-next-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url("fonts/atkinson-hyperlegible-next-latin-ext-wght-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+20A0-20AB, U+20AD-20C0;
+}
+
+/* Palette « Riviera » : bleu des chaises de la Promenade, façades du Vieux-Nice (corail, ocre),
+   soleil, pins parasols, une lavande pour la nuit ; papier chaud et encre bleu nuit. */
+:root {
+  --paper: #fbf6ec;
+  --paper-2: #f3ebdc;
+  --card: #fffdf8;
+  --ink: #12233f;
+  --ink-2: #4f5b6e;
+  --line: #e4d9c6;
+  --chaise: #1f6fd1;
+  --chaise-soft: #dfeafb;
+  --corail: #e4573d;
+  --corail-soft: #fbe1da;
+  --ocre: #e09a2c;
+  --ocre-soft: #f9ead0;
+  --soleil: #ffc83d;
+  --soleil-ink: #2a1f00;
+  --pin: #2c7a55;
+  --pin-soft: #dcefe4;
+  --lavande: #7559d4;
+  --lavande-soft: #e9e3fa;
+  --on-color: #ffffff;
+  --radius: 8px;
+  --title: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --text: "Atkinson Hyperlegible Next", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0d1626; --paper-2: #121e33; --card: #16233b; --ink: #f3efe6; --ink-2: #aab3c2; --line: #263552;
+    --chaise: #6aa8f0; --chaise-soft: #1a3358; --corail: #f07a62; --corail-soft: #43231f; --ocre: #f0b456;
+    --ocre-soft: #3d2f17; --pin: #5fbf8d; --pin-soft: #17392a; --lavande: #a08cf0; --lavande-soft: #2c2650;
+    --on-color: #0d1626;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0d1626; --paper-2: #121e33; --card: #16233b; --ink: #f3efe6; --ink-2: #aab3c2; --line: #263552;
+  --chaise: #6aa8f0; --chaise-soft: #1a3358; --corail: #f07a62; --corail-soft: #43231f; --ocre: #f0b456;
+  --ocre-soft: #3d2f17; --pin: #5fbf8d; --pin-soft: #17392a; --lavande: #a08cf0; --lavande-soft: #2c2650;
+  --on-color: #0d1626;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 17px/1.55 var(--text); }
+h1, h2, h3, .title { font-family: var(--title); font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; margin: 0; }
+a { color: var(--chaise); }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px); }
+.doc-section { padding: 56px 0; border-top: 1px solid var(--line); }
+.doc-section > .wrap > h2 { font-size: 15px; font-family: var(--text); font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--ink-2); margin-bottom: 24px; }
+.note { color: var(--ink-2); max-width: 70ch; margin: -12px 0 28px; }
+.theme-switch { position: fixed; right: 16px; bottom: 16px; z-index: 10; font: 600 14px var(--text); padding: 10px 14px;
+  border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); color: var(--ink); cursor: pointer; }
+
+/* ---------- Logos ---------- */
+.logos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 20px; }
+.logo-card { border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); overflow: hidden; }
+.logo-card header { padding: 14px 18px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between;
+  align-items: baseline; gap: 12px; }
+.logo-card header b { font-family: var(--title); font-size: 20px; }
+.logo-card header span { color: var(--ink-2); font-size: 14px; }
+.logo-stage { display: grid; place-items: center; padding: 36px 20px; }
+.logo-stage.night { background: #12233f; }
+.logo-stage.color { background: var(--chaise); }
+.logo-row { display: flex; gap: 16px; align-items: center; justify-content: center; padding: 18px; border-top: 1px solid var(--line); }
+.logo-row .avatar { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: var(--paper-2); }
+.logo-row .fav { width: 32px; height: 32px; }
+.logo-row .fav16 { width: 16px; height: 16px; }
+.logo-card p { margin: 0; padding: 0 18px 18px; color: var(--ink-2); font-size: 15px; }
+
+.lockup { display: flex; align-items: center; gap: 12px; }
+.lockup svg { width: 56px; height: 56px; flex: none; }
+.wordmark { font-family: var(--title); font-weight: 800; font-size: 38px; letter-spacing: -0.035em; line-height: 1; color: #12233f; }
+.wordmark i { font-style: normal; color: #e4573d; }
+.night .wordmark { color: #fbf6ec; }
+.night .wordmark i { color: #ffc83d; }
+.color .wordmark { color: #ffffff; }
+.color .wordmark i { color: #ffc83d; }
+
+/* ---------- Palette ---------- */
+.swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.swatch { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--card); }
+.swatch div { height: 84px; }
+.swatch p { margin: 0; padding: 10px 12px; font-size: 14px; }
+.swatch p b { display: block; font-size: 15px; }
+.type-specimen { display: grid; grid-template-columns: 1.3fr 1fr; gap: 24px; margin-top: 28px; }
+.type-specimen .box { border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; background: var(--card); }
+.type-specimen .big { font-family: var(--title); font-weight: 800; font-size: 54px; letter-spacing: -0.03em; line-height: 0.95; }
+.type-specimen .cond { font-family: var(--title); font-weight: 700; font-stretch: 75%; font-size: 30px; text-transform: uppercase; letter-spacing: 0.01em; margin-top: 10px; }
+.type-specimen small { display: block; color: var(--ink-2); margin-top: 12px; font-size: 14px; }
+
+/* ---------- Site ---------- */
+.site { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--paper); }
+.site-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 24px;
+  border-bottom: 1px solid var(--line); background: var(--card); flex-wrap: wrap; }
+.site-header .lockup svg { width: 36px; height: 36px; }
+.site-header .wordmark { font-size: 26px; color: var(--ink); }
+.site-header .wordmark i { color: var(--corail); }
+.site-nav { display: flex; gap: 20px; align-items: center; font-weight: 600; font-size: 16px; flex-wrap: wrap; }
+.site-nav a { color: var(--ink); text-decoration: none; }
+.btn { display: inline-flex; align-items: center; gap: 8px; font: 700 16px var(--text); padding: 11px 18px; border-radius: var(--radius);
+  border: 1px solid transparent; text-decoration: none; cursor: pointer; }
+.btn-primary { background: var(--corail); color: #fff; }
+.btn-ghost { border-color: var(--line); color: var(--ink); background: var(--card); }
+.btn-chaise { background: var(--chaise); color: var(--on-color); }
+
+.hero { padding: 56px 24px 40px; display: grid; grid-template-columns: 1.4fr 1fr; gap: 32px; align-items: end; }
+.hero h1 { font-size: clamp(44px, 6.4vw, 84px); letter-spacing: -0.04em; }
+.hero h1 em { font-style: normal; color: var(--chaise); }
+.hero h1 .q { color: var(--corail); }
+.hero p { font-size: 19px; color: var(--ink-2); margin: 18px 0 0; max-width: 46ch; }
+.hero-side { display: grid; gap: 12px; }
+.search { display: flex; border: 2px solid var(--ink); border-radius: var(--radius); background: var(--card); overflow: hidden; }
+.search input { flex: 1; border: 0; background: transparent; font: 17px var(--text); padding: 14px 16px; color: var(--ink); min-width: 0; }
+.search button { border: 0; background: var(--ink); color: var(--paper); font: 700 16px var(--text); padding: 0 18px; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { font: 700 15px var(--text); padding: 7px 13px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+.chip.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* Bandeau rayé façon store de plage, en séparateur */
+.stripe { height: 10px; background: repeating-linear-gradient(90deg, var(--chaise) 0 28px, var(--paper) 28px 56px); border-block: 1px solid var(--line); }
+
+.cats { padding: 32px 24px; }
+.cats h2, .agenda h2 { font-size: 32px; margin-bottom: 16px; }
+.cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.cat { border-radius: var(--radius); padding: 14px; min-height: 92px; display: flex; flex-direction: column; justify-content: space-between;
+  font: 700 16px/1.2 var(--text); color: var(--ink); border: 1px solid transparent; }
+.cat svg { width: 28px; height: 28px; }
+.cat small { font-weight: 400; color: var(--ink-2); font-size: 13px; }
+.c-chaise { background: var(--chaise-soft); } .c-chaise svg { color: var(--chaise); }
+.c-corail { background: var(--corail-soft); } .c-corail svg { color: var(--corail); }
+.c-ocre { background: var(--ocre-soft); } .c-ocre svg { color: var(--ocre); }
+.c-pin { background: var(--pin-soft); } .c-pin svg { color: var(--pin); }
+.c-lavande { background: var(--lavande-soft); } .c-lavande svg { color: var(--lavande); }
+
+.agenda { padding: 8px 24px 40px; }
+.day { display: flex; align-items: baseline; gap: 12px; margin: 26px 0 12px; }
+.day b { font-family: var(--title); font-size: 24px; }
+.day span { color: var(--ink-2); }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 16px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; }
+.card .pic { aspect-ratio: 16 / 9; position: relative; }
+.card .pic .when { position: absolute; left: 10px; top: 10px; background: var(--card); color: var(--ink); border-radius: 6px;
+  padding: 6px 9px; font: 800 14px/1.1 var(--title); text-align: center; }
+.card .pic .when small { display: block; font: 700 11px var(--text); text-transform: uppercase; letter-spacing: 0.06em; color: var(--corail); }
+.card .body { padding: 14px 16px 16px; display: grid; gap: 8px; }
+.card h3 { font-size: 22px; letter-spacing: -0.02em; }
+.meta { color: var(--ink-2); font-size: 15px; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag { font: 700 13px var(--text); padding: 3px 9px; border-radius: 999px; }
+.tag-free { background: var(--pin); color: var(--on-color); }
+.tag-price { background: var(--paper-2); color: var(--ink); }
+.tag-en { background: var(--chaise); color: var(--on-color); }
+.tag-cat { background: var(--corail-soft); color: var(--ink); }
+.tag-ext { background: transparent; border: 1px dashed var(--ink-2); color: var(--ink-2); }
+.going { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ink-2); }
+.going .faces { display: flex; }
+.going .faces span { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--card); margin-left: -6px; }
+.going .faces span:first-child { margin-left: 0; }
+
+/* Illustrations dessinées des visuels génériques (placeholders) */
+.art { position: absolute; inset: 0; overflow: hidden; }
+.art svg { width: 100%; height: 100%; display: block; }
+
+/* ---------- Fiche + partage ---------- */
+.detail { display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; padding: 28px 24px 36px; }
+.detail h1 { font-size: clamp(36px, 5vw, 58px); letter-spacing: -0.035em; margin: 10px 0 14px; }
+.facts { display: grid; gap: 10px; border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; background: var(--card); }
+.fact { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; }
+.fact svg { width: 22px; height: 22px; color: var(--chaise); margin-top: 2px; }
+.fact b { display: block; }
+.fact span { color: var(--ink-2); font-size: 15px; }
+.share { border: 2px solid var(--ink); border-radius: var(--radius); padding: 18px; background: var(--soleil); color: var(--soleil-ink); }
+.share h3 { font-size: 28px; }
+.share p { margin: 6px 0 14px; }
+.share-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.share-grid a { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 6px; border-radius: 6px; background: #fffdf8;
+  color: #12233f; font: 700 14px var(--text); text-decoration: none; border: 1px solid #12233f; }
+.share .native { width: 100%; margin-bottom: 8px; justify-content: center; background: #12233f; color: #fbf6ec; }
+.share .story { width: 100%; margin-top: 8px; justify-content: center; background: transparent; color: #12233f; border: 1px dashed #12233f; }
+
+/* ---------- Carte ---------- */
+.map { position: relative; height: 460px; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: #cfe3f4; }
+.map svg.base { position: absolute; inset: 0; width: 100%; height: 100%; }
+.pin-m { position: absolute; transform: translate(-50%, -100%); display: grid; place-items: center; width: 40px; height: 48px; }
+.pin-m .b { width: 40px; height: 40px; border-radius: 50% 50% 50% 4px; transform: rotate(-45deg); position: absolute; top: 0;
+  border: 2px solid #fff; box-shadow: 0 1px 0 rgba(0,0,0,.25); }
+.pin-m .e { position: relative; top: -4px; font-size: 22px; line-height: 1; }
+.cluster { position: absolute; transform: translate(-50%, -50%); width: 44px; height: 44px; border-radius: 50%; background: #12233f; color: #fbf6ec;
+  display: grid; place-items: center; font: 800 16px var(--title); border: 3px solid #fff; }
+.popup { position: absolute; width: 270px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+  box-shadow: 0 6px 18px rgba(18, 35, 63, .18); }
+.popup .pic { height: 96px; position: relative; }
+.popup .body { padding: 12px 14px 14px; display: grid; gap: 6px; }
+.popup h3 { font-size: 19px; }
+.map-filters { position: absolute; left: 12px; top: 12px; right: 12px; display: flex; gap: 6px; flex-wrap: wrap; }
+.map-attrib { position: absolute; right: 6px; bottom: 4px; font-size: 11px; color: #4f5b6e; background: rgba(255,255,255,.8); padding: 0 4px; border-radius: 3px; }
+
+/* ---------- Visuels réseaux ---------- */
+.socials { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
+.post { width: 360px; aspect-ratio: 4 / 5; position: relative; border-radius: 6px; overflow: hidden; background: #12233f; color: #fbf6ec;
+  font-family: var(--text); flex: none; }
+.post .photo { position: absolute; inset: 0 0 38% 0; }
+.post .panel { position: absolute; left: 0; right: 0; bottom: 0; height: 42%; background: #12233f; padding: 18px 20px; display: grid; align-content: start; gap: 6px; }
+.post .cat-pill { position: absolute; left: 20px; top: -16px; background: #e4573d; color: #fff; font: 800 13px var(--text);
+  padding: 6px 11px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.06em; }
+.post h4 { font: 800 30px/1 var(--title); letter-spacing: -0.03em; margin: 8px 0 0; }
+.post .line { font-size: 15px; color: #c9d1dd; }
+.post .bottom { position: absolute; left: 20px; right: 20px; bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
+.post .bottom .lockup svg { width: 26px; height: 26px; }
+.post .bottom .wordmark { font-size: 19px; color: #fbf6ec; }
+.post .bottom .wordmark i { color: #ffc83d; }
+.post .price { background: #ffc83d; color: #2a1f00; font: 800 15px var(--title); padding: 5px 10px; border-radius: 6px; }
+.post.generic { background: #e4573d; }
+.post.generic .gen-art { position: absolute; inset: 0; }
+.post.generic .gen-text { position: absolute; left: 24px; right: 24px; top: 64px; }
+.post.generic .gen-text .kicker { font: 800 13px var(--text); text-transform: uppercase; letter-spacing: 0.08em; background: #12233f; color: #fbf6ec;
+  display: inline-block; padding: 6px 10px; border-radius: 999px; }
+.post.generic h4 { font-size: 40px; color: #fff; margin-top: 14px; }
+.post.generic .desc { font-size: 17px; line-height: 1.4; margin-top: 12px; color: #fff; max-width: 28ch; }
+.post.generic .when-box { position: absolute; left: 24px; bottom: 64px; background: #fbf6ec; color: #12233f; border-radius: 8px; padding: 10px 14px;
+  font: 800 20px/1.15 var(--title); }
+.post.generic .when-box small { display: block; font: 600 14px var(--text); color: #4f5b6e; }
+
+@media (max-width: 860px) {
+  .hero, .detail, .type-specimen { grid-template-columns: 1fr; }
+  .post { width: 100%; max-width: 360px; }
+  .wordmark { font-size: 30px; }
+  .lockup svg { width: 44px; height: 44px; }
+  .share-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+<button class="theme-switch" type="button" id="theme">Thème clair / sombre</button>
+
+<!-- Symboles des trois pistes, réutilisés partout dans la page -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Piste 1 : la chaise bleue de la Promenade, de profil, sous le soleil -->
+    <symbol id="logo-chaise" viewBox="0 0 64 64">
+      <circle cx="45" cy="15" r="9" fill="#ffc83d"/>
+      <g fill="none" stroke="#1f6fd1" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 9 L21 37 L16 56"/>
+        <path d="M21 37 L46 34 L50 56"/>
+        <path d="M18.5 26 C27 23 37 23 46 25 L46 34"/>
+      </g>
+      <path d="M4 60.5 q5 -3.2 10 0 t10 0 t10 0 t10 0 t10 0 t10 0" fill="none" stroke="#e4573d" stroke-width="3" stroke-linecap="round"/>
+    </symbol>
+    <!-- Piste 2 : l'épingle dont la tête est un soleil, sur la courbe de la Baie des Anges -->
+    <symbol id="logo-pin" viewBox="0 0 64 64">
+      <path d="M5 50 Q32 62 59 50" fill="none" stroke="#1f6fd1" stroke-width="4.5" stroke-linecap="round"/>
+      <path d="M32 58 C27 50 13 38 13 24.5 A19 19 0 0 1 51 24.5 C51 38 37 50 32 58 Z" fill="#e4573d"/>
+      <circle cx="32" cy="24.5" r="8.5" fill="#ffc83d"/>
+      <g stroke="#ffc83d" stroke-width="2.6" stroke-linecap="round">
+        <path d="M32 9.5 v2.5"/><path d="M32 37 v2.5"/><path d="M17 24.5 h2.5"/><path d="M44.5 24.5 h2.5"/>
+        <path d="M21.4 13.9 l1.8 1.8"/><path d="M40.8 33.3 l1.8 1.8"/><path d="M21.4 35.1 l1.8 -1.8"/><path d="M40.8 15.7 l1.8 -1.8"/>
+      </g>
+    </symbol>
+    <!-- Piste 3 : monogramme N·E sur tuile bleu chaise, le point est un soleil -->
+    <symbol id="logo-ne" viewBox="0 0 64 64">
+      <rect x="2" y="2" width="60" height="60" rx="14" fill="#1f6fd1"/>
+      <path d="M9 46 V18 h6.2 L24.5 34 V18 h5.8 v28 h-6 L14.8 30 v16 Z" fill="#fff"/>
+      <circle cx="35.2" cy="41.8" r="4.3" fill="#ffc83d"/>
+      <path d="M40.5 18 h14 v5.4 h-8 v5.8 h7.2 v5.2 h-7.2 v6.2 h8.2 V46 H40.5 Z" fill="#fff"/>
+    </symbol>
+
+    <!-- Pictogrammes de catégories (trait 2 px, dessinés pour Nice-Event) -->
+    <symbol id="i-music" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></g></symbol>
+    <symbol id="i-party" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="11" r="7"/><path d="M5 11h14M12 4c2.5 2 2.5 12 0 14M12 4c-2.5 2-2.5 12 0 14M12 18v3"/></g></symbol>
+    <symbol id="i-sea" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="17" cy="6" r="3"/><path d="M2 15c2.5-2 4.5-2 7 0s4.5 2 7 0 4.5-2 6 0M2 20c2.5-2 4.5-2 7 0s4.5 2 7 0 4.5-2 6 0"/></g></symbol>
+    <symbol id="i-hike" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20l7-11 4 6 3-4 6 9z"/><path d="M8 11l2 2 2-1"/></g></symbol>
+    <symbol id="i-food" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8l-1 7a3 3 0 0 1-6 0z"/><path d="M12 13v8M8 21h8"/></g></symbol>
+    <symbol id="i-lang" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h9v7H8l-4 3z"/><path d="M13 9h7v7l-3-2h-4"/></g></symbol>
+    <symbol id="i-meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M3 20c0-3 2-5 5-5s5 2 5 5M11 20c0-3 2-5 5-5s5 2 5 5"/></g></symbol>
+    <symbol id="i-show" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18M5 4v16M19 4v16M5 4c0 6 7 6 7 0 0 6 7 6 7 0"/><path d="M3 20h18"/></g></symbol>
+    <symbol id="i-market" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18l-2 11H5z"/><path d="M8 9l2-5M16 9l-2-5"/></g></symbol>
+    <symbol id="i-kids" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="7"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="6.5" r="2.5"/><path d="M9.5 15.5c1.5 1.3 3.5 1.3 5 0"/></g></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></g></symbol>
+    <symbol id="i-place" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></g></symbol>
+    <symbol id="i-euro" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6a7 7 0 1 0 0 12M4 10h9M4 14h9"/></g></symbol>
+    <symbol id="i-people" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/></g></symbol>
+  </defs>
+</svg>
+
+<section class="doc-section" style="border-top:0">
+  <div class="wrap">
+    <h2>Nice-Event · phase 0 · identité visuelle</h2>
+    <p class="note">Maquette statique pour choisir le logo et valider la direction : palette « Riviera », titres en
+      Bricolage Grotesque, texte en Atkinson Hyperlegible Next (deux polices libres, servies par le site).
+      Contenus d'exemple fictifs. Le bouton en bas à droite bascule clair / sombre.</p>
+  </div>
+</section>
+
+<!-- ============ 1. LOGOS ============ -->
+<section class="doc-section">
+  <div class="wrap">
+    <h2>1 · Trois pistes de logo</h2>
+    <div class="logos">
+      <article class="logo-card">
+        <header><b>A · La chaise bleue</b><span>emblème de la Promenade</span></header>
+        <div class="logo-stage"><div class="lockup"><svg><use href="#logo-chaise"/></svg><span class="wordmark">nice-event<i>.fr</i></span></div></div>
+        <div class="logo-stage night"><div class="lockup"><svg><use href="#logo-chaise"/></svg><span class="wordmark">nice-event<i>.fr</i></span></div></div>
+        <div class="logo-row">
+          <span class="avatar"><svg width="44" height="44"><use href="#logo-chaise"/></svg></span>
+          <svg class="fav"><use href="#logo-chaise"/></svg><svg class="fav16"><use href="#logo-chaise"/></svg>
+        </div>
+        <p>Le plus niçois : tout le monde reconnaît la chaise. Message « installe-toi, profite ». Un peu moins lisible en 16 px.</p>
+      </article>
+      <article class="logo-card">
+        <header><b>B · Le repère soleil</b><span>épingle + Baie des Anges</span></header>
+        <div class="logo-stage"><div class="lockup"><svg><use href="#logo-pin"/></svg><span class="wordmark">nice-event<i>.fr</i></span></div></div>
+        <div class="logo-stage night"><div class="lockup"><svg><use href="#logo-pin"/></svg><span class="wordmark">nice-event<i>.fr</i></span></div></div>
+        <div class="logo-row">
+          <span class="avatar"><svg width="44" height="44"><use href="#logo-pin"/></svg></span>
+          <svg class="fav"><use href="#logo-pin"/></svg><svg class="fav16"><use href="#logo-pin"/></svg>
+        </div>
+        <p>Dit immédiatement « où sortir ». Se marie avec la carte (même famille que les marqueurs). Le plus lisible en petit.</p>
+      </article>
+      <article class="logo-card">
+        <header><b>C · Le monogramme N·E</b><span>tuile façon affiche</span></header>
+        <div class="logo-stage"><div class="lockup"><svg><use href="#logo-ne"/></svg><span class="wordmark">nice-event<i>.fr</i></span></div></div>
+        <div class="logo-stage color"><div class="lockup"><svg><use href="#logo-ne"/></svg><span class="wordmark">nice-event<i>.fr</i></span></div></div>
+        <div class="logo-row">
+          <span class="avatar"><svg width="44" height="44"><use href="#logo-ne"/></svg></span>
+          <svg class="fav"><use href="#logo-ne"/></svg><svg class="fav16"><use href="#logo-ne"/></svg>
+        </div>
+        <p>Le plus « marque » et le plus solide en avatar de réseau social, mais le moins évocateur de Nice.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. PALETTE ============ -->
+<section class="doc-section">
+  <div class="wrap">
+    <h2>2 · Palette et typographies</h2>
+    <div class="swatches">
+      <div class="swatch"><div style="background:#1f6fd1"></div><p><b>Bleu chaise</b>#1f6fd1 · accent principal, liens</p></div>
+      <div class="swatch"><div style="background:#e4573d"></div><p><b>Corail Vieux-Nice</b>#e4573d · bouton « Publier »</p></div>
+      <div class="swatch"><div style="background:#ffc83d"></div><p><b>Soleil</b>#ffc83d · mises en avant, partage</p></div>
+      <div class="swatch"><div style="background:#e09a2c"></div><p><b>Ocre</b>#e09a2c · culture, marchés</p></div>
+      <div class="swatch"><div style="background:#2c7a55"></div><p><b>Pin parasol</b>#2c7a55 · plein air, « Gratuit »</p></div>
+      <div class="swatch"><div style="background:#7559d4"></div><p><b>Lavande</b>#7559d4 · soirées, jeux</p></div>
+      <div class="swatch"><div style="background:#12233f"></div><p><b>Bleu nuit</b>#12233f · encre, fonds sombres</p></div>
+      <div class="swatch"><div style="background:#fbf6ec"></div><p><b>Papier</b>#fbf6ec · fond clair</p></div>
+    </div>
+    <div class="type-specimen">
+      <div class="box">
+        <div class="big">On sort ce soir ?<br>Concert, apéro, rando.</div>
+        <div class="cond">Ce week-end à Nice · Gratuit · EN friendly</div>
+        <small>Bricolage Grotesque, 800 (titres) et largeur 75 % (étiquettes, bandeaux) · OFL</small>
+      </div>
+      <div class="box">
+        <p style="margin:0">Atkinson Hyperlegible Next est dessinée pour la lisibilité : chaque lettre se distingue
+          (I, l, 1 ; O, 0), ce qui aide les personnes malvoyantes et celles qui lisent le français comme seconde langue.</p>
+        <small>Atkinson Hyperlegible Next, 400 / 700 (texte courant, formulaires) · OFL</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. ACCUEIL ============ -->
+<section class="doc-section">
+  <div class="wrap">
+    <h2>3 · Accueil (avec la piste B pour l'exemple)</h2>
+    <div class="site">
+      <header class="site-header">
+        <div class="lockup"><svg><use href="#logo-pin"/></svg><span class="wordmark">nice-event<i>.fr</i></span></div>
+        <nav class="site-nav">
+          <a href="#">Agenda</a><a href="#">Carte</a><a href="#">Catégories</a><a href="#">EN</a>
+          <a class="btn btn-ghost" href="#">Connexion</a>
+          <a class="btn btn-primary" href="#">+ Publier un événement</a>
+        </nav>
+      </header>
+
+      <div class="hero">
+        <div>
+          <h1>Qu'est-ce qu'on fait à <em>Nice</em> ce&nbsp;soir&nbsp;<span class="q">?</span></h1>
+          <p>Concerts, apéros, randos, ateliers, rencontres : l'agenda que tout le monde peut remplir, de Menton à Cannes.</p>
+        </div>
+        <div class="hero-side">
+          <form class="search" onsubmit="return false"><input placeholder="Jazz, brocante, yoga, Antibes…"><button>Chercher</button></form>
+          <div class="chips">
+            <span class="chip on">Ce soir</span><span class="chip">Demain</span><span class="chip">Ce week-end</span>
+            <span class="chip">Gratuit</span><span class="chip">EN friendly</span><span class="chip">En famille</span>
+          </div>
+        </div>
+      </div>
+      <div class="stripe"></div>
+
+      <div class="cats">
+        <h2>Envie de…</h2>
+        <div class="cat-grid">
+          <a class="cat c-chaise"><svg><use href="#i-music"/></svg>Concert &amp; musique<small>42 à venir</small></a>
+          <a class="cat c-lavande"><svg><use href="#i-party"/></svg>Soirée &amp; fête<small>28 à venir</small></a>
+          <a class="cat c-chaise"><svg><use href="#i-sea"/></svg>Mer &amp; plage<small>9 à venir</small></a>
+          <a class="cat c-pin"><svg><use href="#i-hike"/></svg>Plein air &amp; rando<small>17 à venir</small></a>
+          <a class="cat c-corail"><svg><use href="#i-food"/></svg>Gastronomie<small>21 à venir</small></a>
+          <a class="cat c-chaise"><svg><use href="#i-lang"/></svg>Échanges linguistiques<small>8 à venir</small></a>
+          <a class="cat c-corail"><svg><use href="#i-meet"/></svg>Rencontres en groupe<small>6 à venir</small></a>
+          <a class="cat c-ocre"><svg><use href="#i-market"/></svg>Marché &amp; brocante<small>14 à venir</small></a>
+          <a class="cat c-corail"><svg><use href="#i-show"/></svg>Spectacle &amp; théâtre<small>19 à venir</small></a>
+          <a class="cat c-ocre"><svg><use href="#i-kids"/></svg>Famille &amp; enfants<small>11 à venir</small></a>
+        </div>
+      </div>
+
+      <div class="agenda">
+        <h2>Bientôt</h2>
+        <div class="day"><b>Ce soir</b><span>vendredi 30 octobre</span></div>
+        <div class="cards">
+          <article class="card">
+            <div class="pic"><div class="art"><svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice"><rect width="320" height="180" fill="#1f6fd1"/><circle cx="250" cy="52" r="30" fill="#ffc83d"/><path d="M0 120 q40 -18 80 0 t80 0 t80 0 t80 0 V180 H0Z" fill="#12233f"/><path d="M0 140 q40 -18 80 0 t80 0 t80 0 t80 0" fill="none" stroke="#fbf6ec" stroke-width="3"/><g fill="none" stroke="#fbf6ec" stroke-width="4" stroke-linecap="round"><path d="M70 40v46"/><path d="M70 40l26-6v44"/><circle cx="62" cy="86" r="8"/><circle cx="88" cy="78" r="8"/></g></svg></div>
+              <span class="when"><small>ven.</small>19:30</span></div>
+            <div class="body">
+              <div class="tags"><span class="tag tag-cat">Concert</span><span class="tag tag-free">Gratuit</span><span class="tag tag-en">EN friendly</span></div>
+              <h3>Apéro jazz face à la mer</h3>
+              <div class="meta">Plage du Castel · Nice</div>
+              <div class="going"><span class="faces"><span style="background:#e4573d"></span><span style="background:#2c7a55"></span><span style="background:#7559d4"></span></span>3 amis y vont · 27 inscrit·es</div>
+            </div>
+          </article>
+          <article class="card">
+            <div class="pic"><div class="art"><svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice"><rect width="320" height="180" fill="#e4573d"/><g fill="#fbf6ec"><circle cx="100" cy="80" r="22"/><circle cx="160" cy="70" r="22"/><circle cx="220" cy="80" r="22"/></g><path d="M50 180c0-36 22-58 50-58s50 22 50 58M110 180c0-40 22-64 50-64s50 24 50 64M170 180c0-36 22-58 50-58s50 22 50 58" fill="#12233f"/><circle cx="268" cy="34" r="14" fill="#ffc83d"/></svg></div>
+              <span class="when"><small>ven.</small>20:00</span></div>
+            <div class="body">
+              <div class="tags"><span class="tag tag-cat">Rencontres en groupe</span><span class="tag tag-price">25 €</span></div>
+              <h3>Dîner à 6 inconnu·es — 25-35 ans</h3>
+              <div class="meta">Vieux-Nice · réservation obligatoire</div>
+              <div class="going">12 / 18 places</div>
+            </div>
+          </article>
+          <article class="card">
+            <div class="pic"><div class="art"><svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice"><rect width="320" height="180" fill="#e09a2c"/><path d="M0 180 L0 110 L60 70 L110 100 L170 40 L240 105 L320 60 V180Z" fill="#2c7a55"/><path d="M170 40 L195 63 L182 60 L170 72 L158 60 L146 63Z" fill="#fbf6ec"/><circle cx="70" cy="40" r="18" fill="#ffc83d"/></svg></div>
+              <span class="when"><small>ven.</small>21:00</span></div>
+            <div class="body">
+              <div class="tags"><span class="tag tag-cat">Cinéma</span><span class="tag tag-price">6,50 €</span><span class="tag tag-ext">via Cinémathèque</span></div>
+              <h3>Ciné-club : montagnes du Mercantour</h3>
+              <div class="meta">Cinémathèque de Nice · externe ↗</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. FICHE + PARTAGE ============ -->
+<section class="doc-section">
+  <div class="wrap">
+    <h2>4 · Fiche événement et invitation au partage</h2>
+    <div class="site">
+      <div class="detail">
+        <div>
+          <div class="tags"><span class="tag tag-cat">Échanges linguistiques</span><span class="tag tag-free">Gratuit</span><span class="tag tag-en">EN friendly</span></div>
+          <h1>Language café du jeudi</h1>
+          <p style="margin:0 0 18px;color:var(--ink-2)">Proposé par <a href="#">Riviera Tandem</a> · 34 personnes y vont</p>
+          <div class="facts">
+            <div class="fact"><svg><use href="#i-cal"/></svg><div><b>Jeudi 5 novembre · 19:00 – 22:00</b><span>Chaque jeudi jusqu'au 17 décembre · Ajouter au calendrier</span></div></div>
+            <div class="fact"><svg><use href="#i-place"/></svg><div><b>Le Comptoir, 12 rue Bonaparte, Nice</b><span>Port Lympia · Itinéraire ↗ · accessible PMR</span></div></div>
+            <div class="fact"><svg><use href="#i-euro"/></svg><div><b>Gratuit</b><span>Une consommation conseillée · sans réservation</span></div></div>
+            <div class="fact"><svg><use href="#i-people"/></svg><div><b>18 ans et plus · International</b><span>Accessible sans parler français · FR, EN, IT, ES</span></div></div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+            <a class="btn btn-chaise" href="#">J'y vais</a><a class="btn btn-ghost" href="#">Inviter des amis</a>
+          </div>
+        </div>
+        <aside>
+          <div class="share">
+            <h3>Fais tourner !</h3>
+            <p>Plus on est, plus on rit. Partage l'événement à tes amis et sur tes réseaux.</p>
+            <a class="btn native" href="#">Partager…</a>
+            <div class="share-grid">
+              <a href="#">WhatsApp</a><a href="#">Messenger</a><a href="#">Facebook</a>
+              <a href="#">Bluesky</a><a href="#">X</a><a href="#">LinkedIn</a>
+              <a href="#">Telegram</a><a href="#">Courriel</a><a href="#">Copier le lien</a>
+            </div>
+            <a class="btn story" href="#">Visuel pour ta story Instagram ↓</a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. CARTE ============ -->
+<section class="doc-section">
+  <div class="wrap">
+    <h2>5 · Carte des événements</h2>
+    <p class="note">Fond de carte servi par le site (extrait OpenStreetMap). Marqueur = emoji de la catégorie dans une
+      pastille à sa couleur ; les événements proches se regroupent ; un clic ouvre l'aperçu.</p>
+    <div class="map">
+      <svg class="base" viewBox="0 0 1000 460" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <rect width="1000" height="460" fill="#cfe3f4"/>
+        <path d="M0 0 H1000 V170 C900 180 860 230 780 250 C700 270 640 240 560 280 C480 320 420 300 340 330 C260 360 180 340 100 380 C60 400 30 420 0 430 Z" fill="#efe9dc"/>
+        <g fill="none" stroke="#fff" stroke-width="5"><path d="M0 300 C200 250 400 220 600 200 S900 140 1000 120"/><path d="M380 0 C400 120 430 220 470 300"/><path d="M640 0 C650 80 660 180 700 250"/></g>
+        <g fill="none" stroke="#e4d9c6" stroke-width="2"><path d="M0 200 C300 170 600 120 1000 60"/><path d="M200 0 L260 330"/><path d="M820 0 L800 240"/></g>
+        <g fill="#d5e8d4"><ellipse cx="560" cy="90" rx="90" ry="40"/><ellipse cx="180" cy="120" rx="70" ry="34"/></g>
+        <text x="620" y="380" fill="#7aa3c7" font-family="Bricolage Grotesque" font-weight="700" font-size="22" font-style="italic">Baie des Anges</text>
+      </svg>
+      <div class="map-filters"><span class="chip on">Ce week-end</span><span class="chip">Gratuit</span><span class="chip">EN friendly</span><span class="chip">Toutes catégories ▾</span></div>
+      <div class="pin-m" style="left:47%;top:66%"><span class="b" style="background:#1f6fd1"></span><span class="e">🎵</span></div>
+      <div class="pin-m" style="left:55%;top:58%"><span class="b" style="background:#e4573d"></span><span class="e">💞</span></div>
+      <div class="pin-m" style="left:62%;top:52%;outline:3px solid #12233f;outline-offset:2px;border-radius:50%"><span class="b" style="background:#1f6fd1"></span><span class="e">🌍</span></div>
+      <div class="pin-m" style="left:36%;top:44%"><span class="b" style="background:#e09a2c"></span><span class="e">🧺</span></div>
+      <div class="pin-m" style="left:58%;top:24%"><span class="b" style="background:#2c7a55"></span><span class="e">🥾</span></div>
+      <div class="pin-m" style="left:25%;top:72%"><span class="b" style="background:#7559d4"></span><span class="e">🪩</span></div>
+      <div class="cluster" style="left:84%;top:30%">12</div>
+      <div class="popup" style="left:calc(62% + 28px);top:calc(52% - 150px)">
+        <div class="pic"><div class="art"><svg viewBox="0 0 270 96" preserveAspectRatio="xMidYMid slice"><rect width="270" height="96" fill="#1f6fd1"/><path d="M40 30h70v34H76l-22 16v-16H40z" fill="#fbf6ec"/><path d="M120 46h70v34h-14v14l-20-14h-36z" fill="#ffc83d"/></svg></div></div>
+        <div class="body">
+          <div class="tags"><span class="tag tag-free">Gratuit</span><span class="tag tag-en">EN friendly</span></div>
+          <h3>Language café du jeudi</h3>
+          <div class="meta">Jeu. 5 nov. · 19:00 · Port Lympia</div>
+          <a class="btn btn-chaise" href="#" style="justify-content:center">Voir l'événement</a>
+        </div>
+      </div>
+      <span class="map-attrib">© OpenStreetMap</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. VISUELS RÉSEAUX ============ -->
+<section class="doc-section">
+  <div class="wrap">
+    <h2>6 · Visuels générés pour les réseaux (4:5)</h2>
+    <p class="note">À gauche avec la photo de l'événement ; à droite sans photo : visuel dessiné de la catégorie
+      et résumé incorporé. Rendu final généré par le serveur (Pillow) sur le même modèle.</p>
+    <div class="socials">
+      <div class="post">
+        <div class="photo"><div class="art"><svg viewBox="0 0 360 280" preserveAspectRatio="xMidYMid slice"><rect width="360" height="280" fill="#3d7fc0"/><rect y="150" width="360" height="130" fill="#2a5f96"/><circle cx="270" cy="70" r="40" fill="#ffd979"/><path d="M0 170 q45 -12 90 0 t90 0 t90 0 t90 0" fill="none" stroke="#cfe3f4" stroke-width="3"/><g fill="#12233f"><rect x="40" y="200" width="70" height="80"/><circle cx="75" cy="190" r="16"/><rect x="200" y="196" width="70" height="84"/><circle cx="235" cy="186" r="16"/></g><text x="12" y="26" fill="#fff" font-size="12" font-family="Atkinson Hyperlegible Next" opacity=".75">(photo de l'événement)</text></svg></div></div>
+        <div class="panel">
+          <span class="cat-pill">Concert</span>
+          <h4>Apéro jazz face à la mer</h4>
+          <div class="line">Ven. 30 oct. · 19:30 · Plage du Castel, Nice</div>
+          <div class="line">EN friendly · tout public</div>
+        </div>
+        <div class="bottom"><div class="lockup"><svg><use href="#logo-pin"/></svg><span class="wordmark">nice-event<i>.fr</i></span></div><span class="price">Gratuit</span></div>
+      </div>
+
+      <div class="post generic">
+        <div class="gen-art"><svg viewBox="0 0 360 450" preserveAspectRatio="xMidYMid slice"><rect width="360" height="450" fill="#e4573d"/><circle cx="300" cy="70" r="120" fill="#ef7a5f"/><g fill="#12233f" opacity=".9"><circle cx="262" cy="292" r="24"/><circle cx="318" cy="284" r="24"/><path d="M214 400c0-46 20-74 48-74s48 28 48 74M270 400c0-50 20-80 48-80s48 30 48 80"/></g><circle cx="320" cy="34" r="16" fill="#ffc83d"/></svg></div>
+        <div class="gen-text">
+          <span class="kicker">Rencontres en groupe</span>
+          <h4>Dîner à 6 inconnu·es</h4>
+          <p class="desc">Six personnes, une table au Vieux-Nice, et des questions pour briser la glace. 25–35 ans.</p>
+        </div>
+        <div class="when-box">Ven. 30 oct. · 20:00<small>Vieux-Nice · 25 €</small></div>
+        <div class="bottom"><div class="lockup"><svg><use href="#logo-pin"/></svg><span class="wordmark">nice-event<i>.fr</i></span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.getElementById("theme").addEventListener("click", () => {
+    const root = document.documentElement;
+    const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    root.dataset.theme = dark ? "light" : "dark";
+  });
+</script>
+</body>
+</html>

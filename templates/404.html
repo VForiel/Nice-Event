@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load i18n ne %}
+{% block title %}{% translate "Page introuvable" %}{% endblock %}
+
+{% block content %}
+<div class="wrap page">
+  <p class="kicker">{% translate "Erreur 404" %}</p>
+  <h1 class="page-title">{% translate "Perdu sur la Prom' ?" %}</h1>
+  <p class="page-lede">{% translate "Cette page n'existe pas, ou plus." %}</p>
+  <p class="actions"><a class="btn btn-primary" href="{% url 'core:home' %}">{% translate "Retour à l'accueil" %} {% icon "arrow" 18 %}</a></p>
+</div>
+{% endblock %}

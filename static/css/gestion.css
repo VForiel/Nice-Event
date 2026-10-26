@@ -1,0 +1,30 @@
+/* Espace de gestion : même palette que le site, mise en page plus dense. */
+
+.g-header { background: var(--card); border-bottom: 1px solid var(--line); }
+.g-header-inner { display: flex; align-items: center; gap: 20px; min-height: 64px; flex-wrap: wrap; }
+.g-header .brand { gap: 10px; font: 800 1.25rem var(--title); color: var(--ink); text-decoration: none; margin-right: 0; }
+.g-header .brand img { height: 36px; }
+.g-nav { display: flex; gap: 4px; margin-right: auto; flex-wrap: wrap; }
+.g-nav a { padding: .45em .7em; border-radius: var(--radius); color: var(--ink); font-weight: 700; text-decoration: none; }
+.g-nav a:hover { background: var(--paper-2); }
+.g-nav a[aria-current="page"] { background: var(--ink); color: var(--paper); }
+.g-main { padding-top: 28px; padding-bottom: 64px; }
+.g-title { font-size: clamp(1.75rem, 4vw, 2.5rem); margin-bottom: 10px; }
+.g-lede { color: var(--ink-2); max-width: 75ch; margin-bottom: 24px; }
+.g-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 16px; margin-top: 20px; }
+.g-card, .g-block { border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); padding: 18px 20px; display: grid; gap: 10px; align-content: start; }
+.g-card h2, .g-block h2 { font-size: 1.25rem; }
+.g-block { margin: 0 0 18px; }
+.g-block legend { font: 800 1.25rem var(--title); padding: 0 6px; margin-left: -6px; }
+.g-block-later { opacity: .7; }
+.g-help { color: var(--ink-2); font-size: .9375rem; }
+.g-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 16px; align-items: start; }
+.g-form { margin-bottom: 28px; }
+.field-check { align-self: center; }
+.g-inline { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.g-inline input { width: auto; flex: 1 1 260px; }
+.g-table { width: 100%; border-collapse: collapse; font-size: .9375rem; }
+.g-table th, .g-table td { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--line); }
+.g-log { margin: 0; padding-left: 1.2em; color: var(--ink-2); font-size: .9375rem; }
+.ok { color: var(--pin); font-weight: 700; }
+.warn { color: var(--corail-ink); font-weight: 700; }

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64.0 64.0" role="img" aria-label="Nice-Event"><title>Nice-Event</title>
+<rect width="64" height="64" fill="#fbf6ec"/><g transform="translate(10 9) scale(.69)"><circle cx="45" cy="15" r="9" fill="#ffc83d"/>
+<g fill="none" stroke="#1f6fd1" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M14 9 L21 37 L16 56"/><path d="M21 37 L46 34 L50 56"/><path d="M18.5 26 C27 23 37 23 46 25 L46 34"/>
+</g>
+<path d="M4 60.5 q5 -3.2 10 0 t10 0 t10 0 t10 0 t10 0 t10 0" fill="none" stroke="#e4573d" stroke-width="3" stroke-linecap="round"/></g>
+</svg>

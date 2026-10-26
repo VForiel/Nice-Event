@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Mentions légales{% endblock %}
+
+{% block content %}
+<header class="page-head">
+  <div class="wrap">
+    <h1 class="page-title">Mentions légales</h1>
+  </div>
+</header>
+<div class="wrap page-body prose">
+  <h2>Éditeur</h2>
+  <p>Le site nice-event.fr est édité à titre non professionnel par {{ LEGAL_PUBLISHER }}, directeur de la publication.
+    Conformément à l'article 6, III, 2 de la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie
+    numérique, ses coordonnées personnelles ont été communiquées à l'hébergeur. Contact :
+    <a href="mailto:{{ CONTACT_EMAIL }}">{{ CONTACT_EMAIL }}</a>.</p>
+
+  <h2>Hébergeur</h2>
+  <p>{{ LEGAL_HOST }}</p>
+
+  <h2>Contenus publiés par les utilisateurs</h2>
+  <p>Les événements et profils sont publiés sous la responsabilité de leurs auteurs. Nice-Event agit comme hébergeur de
+    ces contenus : tout contenu manifestement illicite peut être signalé depuis la page concernée ou à
+    <a href="mailto:{{ CONTACT_EMAIL }}">{{ CONTACT_EMAIL }}</a> ; il est alors examiné et retiré promptement s'il y a lieu.</p>
+  <p>Les événements externes affichés sur le site proviennent d'agendas publics ; seuls leur titre, leur date, leur lieu
+    et un court extrait sont repris, avec un lien vers la page d'origine.</p>
+
+  <h2>Propriété intellectuelle</h2>
+  <p>Le logo, l'identité visuelle et le code du site appartiennent à leur auteur. Les polices Bricolage Grotesque et
+    Atkinson Hyperlegible Next sont distribuées sous licence SIL Open Font License. Fonds de carte © contributeurs
+    OpenStreetMap.</p>
+</div>
+{% endblock %}

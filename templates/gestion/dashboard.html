@@ -1,0 +1,40 @@
+{% extends "gestion/base.html" %}
+{% block title %}Tableau de bord{% endblock %}
+
+{% block content %}
+<h1 class="g-title">Bonjour {{ user.first_name|default:user.username }}</h1>
+
+<div class="g-cards">
+  <section class="g-card">
+    <h2>Courriel</h2>
+    {% if config.smtp_ready %}
+    <p class="ok">Serveur réglé : {{ config.smtp_host }}</p>
+    {% else %}
+    <p class="warn">Aucun serveur SMTP : les courriels ne partent pas (ils s'affichent dans les journaux).</p>
+    {% endif %}
+    {% if user.is_superuser %}<p><a href="{% url 'gestion:settings' %}">Réglages du courriel</a></p>{% endif %}
+  </section>
+
+  <section class="g-card">
+    <h2>Messages de contact</h2>
+    <p>{{ unread }} non traité{{ unread|pluralize }}.</p>
+    <p><a href="{% url 'admin:core_contactmessage_changelist' %}?handled__exact=0">Les lire</a></p>
+  </section>
+
+  <section class="g-card">
+    <h2>Tâches planifiées</h2>
+    <table class="g-table">
+      <thead><tr><th>Tâche</th><th>Dernier passage</th><th>État</th></tr></thead>
+      <tbody>
+        {% for name, run in jobs %}
+        <tr>
+          <td>{{ name }}</td>
+          <td>{% if run.last_started %}{{ run.last_started|date:"d/m H:i" }}{% else %}jamais{% endif %}</td>
+          <td>{% if not run %}—{% elif run.last_ok %}<span class="ok">ok</span>{% else %}<span class="warn" title="{{ run.last_message }}">échec</span>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+</div>
+{% endblock %}

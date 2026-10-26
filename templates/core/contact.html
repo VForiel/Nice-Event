@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load i18n ne %}
+{% block title %}{% translate "Contact" %}{% endblock %}
+{% block description %}{% translate "Écrire à Nice-Event : une question, un problème avec un événement, une source d'événements à ajouter." %}{% endblock %}
+
+{% block content %}
+<header class="page-head">
+  <div class="wrap">
+    <p class="kicker">{% translate "Contact" %}</p>
+    <h1 class="page-title">{% translate "Écris-nous" %}</h1>
+    <p class="page-lede">{% translate "Une question, un événement à signaler, un agenda à ajouter à nos sources, une idée pour le site : on lit tout." %}</p>
+  </div>
+</header>
+
+<div class="wrap contact-grid">
+  <form class="form" method="post" novalidate>
+    {% csrf_token %}
+    {% if form.errors %}<p class="form-error" tabindex="-1" data-form-error>{% translate "Le message n'est pas parti : vérifie les champs signalés." %}</p>{% endif %}
+    {{ form.non_field_errors }}
+    <div class="field">
+      <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+      {{ form.name }}{{ form.name.errors }}
+    </div>
+    <div class="field">
+      <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+      {{ form.email }}{{ form.email.errors }}
+    </div>
+    <div class="field">
+      <fieldset>
+        <legend>{{ form.subject.label }}</legend>
+        <div class="choices">{% for radio in form.subject %}<label>{{ radio.tag }} {{ radio.choice_label }}</label>{% endfor %}</div>
+      </fieldset>
+      {{ form.subject.errors }}
+    </div>
+    <div class="field">
+      <label for="{{ form.message.id_for_label }}">{{ form.message.label }}</label>
+      {{ form.message }}{{ form.message.errors }}
+    </div>
+    <div class="hp" aria-hidden="true"><label for="{{ form.website.id_for_label }}">{{ form.website.label }}</label>{{ form.website }}</div>
+    <div class="field">
+      {% url 'core:privacy' as privacy_url %}
+      <label class="check">{{ form.consent }} <span>{{ form.consent.label }} {% blocktranslate trimmed with url=privacy_url %}
+        Détails dans la <a href="{{ url }}">politique de confidentialité</a>.
+      {% endblocktranslate %}</span></label>
+      {{ form.consent.errors }}
+    </div>
+    <div><button class="btn btn-primary" type="submit">{% icon "mail" 18 %} {% translate "Envoyer" %}</button></div>
+  </form>
+
+  <aside class="contact-aside">
+    <h2>{% translate "Par courriel" %}</h2>
+    <a class="big-mail" href="mailto:{{ CONTACT_EMAIL }}">{{ CONTACT_EMAIL }}</a>
+  </aside>
+</div>
+{% endblock %}

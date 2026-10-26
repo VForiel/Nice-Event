@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Legal notice{% endblock %}
+
+{% block content %}
+<header class="page-head">
+  <div class="wrap">
+    <h1 class="page-title">Legal notice</h1>
+  </div>
+</header>
+<div class="wrap page-body prose">
+  <h2>Publisher</h2>
+  <p>nice-event.fr is published on a non-professional basis by {{ LEGAL_PUBLISHER }}, publication director.
+    In accordance with article 6, III, 2 of French law no. 2004-575 of 21 June 2004 (LCEN), the publisher's personal
+    details have been provided to the host. Contact: <a href="mailto:{{ CONTACT_EMAIL }}">{{ CONTACT_EMAIL }}</a>.</p>
+
+  <h2>Host</h2>
+  <p>{{ LEGAL_HOST }}</p>
+
+  <h2>User content</h2>
+  <p>Events and profiles are published under the responsibility of their authors. Nice-Event hosts this content: any
+    manifestly unlawful content can be reported from the page concerned or to
+    <a href="mailto:{{ CONTACT_EMAIL }}">{{ CONTACT_EMAIL }}</a>; it is then reviewed and promptly removed where appropriate.</p>
+  <p>External events shown on the site come from public calendars; only their title, date, venue and a short excerpt
+    are reproduced, with a link to the original page.</p>
+
+  <h2>Intellectual property</h2>
+  <p>The logo, visual identity and code of the site belong to their author. The Bricolage Grotesque and Atkinson
+    Hyperlegible Next typefaces are released under the SIL Open Font License. Map data © OpenStreetMap contributors.</p>
+</div>
+{% endblock %}

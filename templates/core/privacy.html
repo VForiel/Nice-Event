@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Confidentialité{% endblock %}
+
+{% block content %}
+<header class="page-head">
+  <div class="wrap">
+    <h1 class="page-title">Confidentialité</h1>
+    <p class="page-lede">Version courte : pas de publicité, pas de mesure d'audience, pas de cookie tiers, aucune ressource
+      chargée chez Google, Meta ou ailleurs. Nous ne gardons que ce que tu nous écris.</p>
+  </div>
+</header>
+<div class="wrap page-body prose">
+  <h2>Responsable du traitement</h2>
+  <p>{{ LEGAL_PUBLISHER }}, éditeur du site. Contact : <a href="mailto:{{ CONTACT_EMAIL }}">{{ CONTACT_EMAIL }}</a>.</p>
+
+  <h2>Ce que nous collectons</h2>
+  <p>Tu peux consulter tout le site sans rien nous communiquer. Les seules données personnelles traitées aujourd'hui sont
+    celles que tu saisis dans le <a href="{% url 'core:contact' %}">formulaire de contact</a> : nom, courriel, objet et
+    message. Elles servent uniquement à te répondre et ne sont jamais vendues ni transmises à des tiers. Cette page sera
+    complétée à l'ouverture des comptes membres.</p>
+  <p>Pour protéger le site contre les attaques, l'adresse IP des tentatives de connexion échouées est conservée 7 jours.</p>
+
+  <h2>Durée de conservation</h2>
+  <p>Les messages de contact sont conservés le temps de traiter ta demande, et au plus 24 mois.</p>
+
+  <h2>Cookies</h2>
+  <p>Le site ne dépose aucun cookie de mesure d'audience, de publicité ou de réseau social, d'où l'absence de bandeau.
+    Seul existe un cookie technique, exempté de consentement : le jeton de sécurité des formulaires. Ton choix de thème
+    clair ou sombre est enregistré dans ton navigateur et ne nous est pas transmis.</p>
+
+  <h2>Tes droits</h2>
+  <p>Conformément au RGPD et à la loi Informatique et Libertés, tu peux accéder à tes données, les faire rectifier ou
+    effacer, t'opposer à leur traitement ou en demander la portabilité en écrivant à
+    <a href="mailto:{{ CONTACT_EMAIL }}">{{ CONTACT_EMAIL }}</a>. Nous répondons dans un délai d'un mois au plus.</p>
+  <p>Si tu estimes que nous ne respectons pas ces engagements, tu peux saisir la CNIL :
+    <a href="https://www.cnil.fr/fr/plaintes" rel="noopener">cnil.fr/fr/plaintes</a>.</p>
+</div>
+{% endblock %}

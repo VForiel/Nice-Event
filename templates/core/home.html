@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load i18n ne %}
+{% block title %}Nice-Event{% endblock %}
+{% block body_class %}page-home{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="kicker">{% translate "Nice · Côte d'Azur · Monaco" %}</p>
+      <h1 class="hero-title">{% blocktranslate trimmed %}Qu'est-ce qu'on fait à <em>Nice</em> ce&nbsp;soir&nbsp;<span class="q">?</span>{% endblocktranslate %}</h1>
+      <p class="hero-lede">{% translate "Concerts, apéros, randos, ateliers, rencontres : l'agenda que tout le monde peut remplir, de Menton à Cannes." %}</p>
+    </div>
+    <div class="hero-side" id="bientot">
+      <div class="soon">
+        <p class="soon-kicker">{% translate "Bientôt" %}</p>
+        <p class="soon-title">{% translate "Le site ouvre ses portes très vite." %}</p>
+        <p>{% translate "Publication d'événements, carte, comptes membres et agenda partagé arrivent dans les prochaines semaines. Une idée, une question, un événement à signaler ?" %}</p>
+        <a class="btn btn-primary" href="{% url 'core:contact' %}">{% icon "mail" 18 %} {% translate "Écris-nous" %}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stripe" aria-hidden="true"></div>
+
+<section class="section">
+  <div class="wrap">
+    <h2 class="section-title">{% translate "Envie de…" %}</h2>
+    <ul class="cat-grid">
+      {% for icon_name, tone, label in categories %}
+      <li class="cat cat-{{ tone }}">{% icon icon_name 28 %}<span>{{ label }}</span></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endblock %}

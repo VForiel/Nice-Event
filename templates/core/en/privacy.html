@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Privacy{% endblock %}
+
+{% block content %}
+<header class="page-head">
+  <div class="wrap">
+    <h1 class="page-title">Privacy</h1>
+    <p class="page-lede">Short version: no ads, no analytics, no third-party cookies, nothing loaded from Google, Meta or
+      anywhere else. We only keep what you write to us.</p>
+  </div>
+</header>
+<div class="wrap page-body prose">
+  <h2>Data controller</h2>
+  <p>{{ LEGAL_PUBLISHER }}, publisher of the site. Contact: <a href="mailto:{{ CONTACT_EMAIL }}">{{ CONTACT_EMAIL }}</a>.</p>
+
+  <h2>What we collect</h2>
+  <p>You can browse the whole site without giving us anything. The only personal data processed today is what you enter
+    in the <a href="{% url 'core:contact' %}">contact form</a>: name, email, subject and message. It is used only to reply
+    to you and is never sold or shared. This page will be updated when member accounts open.</p>
+  <p>To protect the site against attacks, the IP address of failed login attempts is kept for 7 days.</p>
+
+  <h2>Retention</h2>
+  <p>Contact messages are kept while we handle your request, and for 24 months at most.</p>
+
+  <h2>Cookies</h2>
+  <p>The site sets no analytics, advertising or social media cookies, hence no cookie banner. The only cookie is a
+    technical one, exempt from consent: the form security token. Your light or dark theme choice is stored in your
+    browser and never sent to us.</p>
+
+  <h2>Your rights</h2>
+  <p>Under the GDPR you may access, correct or erase your data, object to its processing or ask for a copy by writing to
+    <a href="mailto:{{ CONTACT_EMAIL }}">{{ CONTACT_EMAIL }}</a>. We answer within one month.</p>
+  <p>You may also lodge a complaint with the French data protection authority (CNIL):
+    <a href="https://www.cnil.fr/fr/plaintes" rel="noopener">cnil.fr/fr/plaintes</a>.</p>
+</div>
+{% endblock %}

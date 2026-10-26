@@ -1,0 +1,5 @@
+-r requirements.txt
+# Génération du logo (scripts/build_logo.py)
+fonttools
+brotli
+uharfbuzz
