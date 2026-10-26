@@ -21,6 +21,7 @@ def requested():
     done = []
     for source in Source.objects.filter(scan_requested=True):
         Source.objects.filter(pk=source.pk).update(scan_requested=False)
+        source.scan_requested = False
         try:
             done.append(f"{source.name} : {scan(source)}")
         except Exception as exc:

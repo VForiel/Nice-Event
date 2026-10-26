@@ -171,3 +171,15 @@ class TitleTests(TestCase):
         item = {"title": "Concert de piano solo avec Thierry Jam Place de l’Eglise Saorge", "place": "Place de l'Eglise", "city": "Saorge"}
         self.assertEqual(clean_title(item), "Concert de piano solo avec Thierry Jam")
         self.assertEqual(clean_title({"title": "Nice Jazz Festival", "place": "Nice", "city": "Nice"}), "Nice Jazz Festival")
+
+
+class RequestedScanTests(TestCase):
+    def test_flag_is_cleared_after_on_demand_scan(self):
+        from django.core.management import call_command
+
+        source = Source.objects.create(name="Asso", slug="asso", kind="ical", url="https://exemple.org/a.ics", scan_requested=True)
+        with mock.patch("aggregator.importer.Fetcher", return_value=FakeFetcher({"https://exemple.org/a.ics": ics([])})):
+            call_command("worker", run="scan-a-la-demande")
+        source.refresh_from_db()
+        self.assertFalse(source.scan_requested)
+        self.assertIsNotNone(source.last_run_at)

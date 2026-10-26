@@ -234,7 +234,9 @@ def scan(source, fetcher=None):
     source.last_message = (f"{stats['found']} trouvés, {stats['created']} nouveaux, {stats['updated']} mis à jour, "
                            f"{stats['duplicates']} doublons, {stats['outside']} hors zone, {stats['skipped']} ignorés "
                            f"(passés ou trop longs) ; {fetcher.count} requêtes.")
-    source.save()
+    # Seulement les champs du compte rendu : ne pas réécrire une demande de scan posée ou effacée entre-temps.
+    source.save(update_fields=["last_empty_runs", "last_run_at", "last_ok", "last_found", "last_created",
+                               "last_updated", "last_message"])
     return source.last_message
 
 
