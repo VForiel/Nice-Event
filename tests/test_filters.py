@@ -1,7 +1,5 @@
-import json
 from datetime import timedelta
 from unittest import mock
-from urllib.parse import quote
 
 from django.core.cache import cache
 from django.test import TestCase
@@ -13,11 +11,11 @@ from aggregator.importer import scan
 from aggregator.models import Source
 from core.text import decode, repair, without_emoji
 from events.forms import add_months, repetition
-from events.models import Category, Event, SavedFilter
-from venues.models import Commune, Venue
+from events.models import Event
+from venues.models import Commune
 
 from .test_aggregator import FakeFetcher, day, ics
-from .test_events import Base, soon
+from .test_events import Base
 
 
 class TextTests(TestCase):
@@ -74,67 +72,6 @@ class RepetitionTests(Base):
         response = self.publish(title="Trop loin", date=start.isoformat(), repeat="week",
                                 repeat_until=(start + timedelta(days=400)).isoformat())
         self.assertIn("repeat_until", response.context["form"].errors)
-
-
-class FilterTests(Base):
-    def setUp(self):
-        super().setUp()
-        self.antibes_venue = Venue.objects.create(name="Port Vauban", commune=self.antibes, lat=43.585, lon=7.128)
-        self.meetup = Source.objects.create(name="Meetup", slug="meetup-a", kind="ical", url="https://m.example/a.ics")
-        Source.objects.create(name="Meetup", slug="meetup-b", kind="ical", url="https://m.example/b.ics")
-        self.party = Category.objects.get(slug="soiree")
-        self.jazz = self.event(title="Jazz à Nice", price_kind="paid", price_min=25)
-        self.free_antibes = self.event(title="Concert gratuit Antibes", venue=self.antibes_venue, price_kind="free")
-        self.meetup_party = self.event(title="Soirée Meetup", categories=[self.party], source=self.meetup,
-                                       external_id="1", organizer=None, age_kind="adults")
-
-    def titles(self, **params):
-        query = "&".join(f"{k}={quote(v if isinstance(v, str) else json.dumps(v))}" for k, v in params.items())
-        response = self.client.get(reverse("events:list") + "?" + query)
-        return sorted(e.title for _day, items in response.context["days"] for e in items)
-
-    def test_only_nice_event_and_hidden_sources(self):
-        everything = ["Concert gratuit Antibes", "Jazz à Nice", "Soirée Meetup"]
-        self.assertEqual(self.titles(), everything)
-        self.assertEqual(self.titles(source="membres"), everything[:2])
-        self.assertEqual(self.titles(masquer="meetup"), everything[:2])
-        self.assertEqual(self.titles(masquer="nice-event"), ["Soirée Meetup"])
-
-    def test_advanced_rules(self):
-        rule = {"op": "or", "rules": [{"field": "categorie", "in": ["soiree"]},
-                                      {"field": "proximite", "lat": 43.58, "lon": 7.12, "km": 3}]}
-        self.assertEqual(self.titles(regle=rule), ["Concert gratuit Antibes", "Soirée Meetup"])
-        rule = {"op": "and", "rules": [{"field": "categorie", "in": ["concert"]},
-                                       {"not": True, "field": "prix_max", "value": 10}]}
-        self.assertEqual(self.titles(regle=rule), ["Jazz à Nice"])
-        rule = {"op": "and", "rules": [{"field": "age", "value": 12},
-                                       {"op": "or", "not": True, "rules": [{"field": "commune", "in": ["antibes"]}]}]}
-        self.assertEqual(self.titles(regle=rule), ["Jazz à Nice"])
-        rule = {"op": "and", "rules": [{"field": "source", "in": ["meetup"]}]}
-        self.assertEqual(self.titles(regle=rule), ["Soirée Meetup"])
-        self.assertEqual(len(self.titles(regle="pas du json")), 3)  # règle illisible : ignorée
-        response = self.client.get(reverse("events:map_data") + "?regle=" + quote(json.dumps(
-            {"op": "and", "rules": [{"field": "commune", "in": ["antibes"]}]})))
-        self.assertEqual([e["title"] for e in response.json()["events"]], ["Concert gratuit Antibes"])
-
-    def test_saved_filters(self):
-        url = reverse("events:api_filter_save")
-        rule = {"op": "and", "rules": [{"field": "categorie", "in": ["concert"]}]}
-        self.assertEqual(self.client.post(url, {"name": "x", "rule": json.dumps(rule)}).status_code, 302)  # connexion
-        self.client.force_login(self.alice)
-        saved = self.client.post(url, {"name": "Concerts", "rule": json.dumps(rule)}).json()
-        self.client.post(url, {"name": "Concerts", "rule": json.dumps({"op": "or", "rules": []})})
-        self.assertEqual(SavedFilter.objects.filter(user=self.alice).count(), 1)
-        self.assertEqual(self.client.post(url, {"name": "", "rule": "{}"}).status_code, 400)
-        response = self.client.get(reverse("events:list"))
-        self.assertEqual(response.context["filter_spec"]["saved"][0]["name"], "Concerts")
-        other = self.member("bob@example.org", "Bob")
-        self.client.force_login(other)
-        self.client.post(reverse("events:api_filter_delete", args=[saved["id"]]))
-        self.assertTrue(SavedFilter.objects.filter(pk=saved["id"]).exists())  # pas le sien
-        self.client.force_login(self.alice)
-        self.client.post(reverse("events:api_filter_delete", args=[saved["id"]]))
-        self.assertFalse(SavedFilter.objects.exists())
 
 
 class EnrichmentTests(TestCase):

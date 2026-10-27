@@ -12,6 +12,7 @@ class Source(models.Model):
         OPENAGENDA = "openagenda", "API OpenAgenda"
         WPNICE = "wpnice", "API WordPress de la Ville de Nice (nice.fr, Opéra de Nice)"
         TRIBE = "tribe", "API The Events Calendar (sites WordPress de nombreuses communes)"
+        AJC06 = "ajc06", "Flux de l'AJC06 (sorties des membres publiées sur Nice-Event)"
 
     name = models.CharField("nom affiché", max_length=120, help_text="Apparaît sur les événements : « via … »")
     slug = models.SlugField(unique=True)

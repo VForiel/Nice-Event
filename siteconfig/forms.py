@@ -3,7 +3,8 @@ from django import forms
 from .models import SiteConfig
 
 # Champs secrets : jamais réaffichés ; vide = on garde la valeur enregistrée, case « effacer » pour la supprimer.
-SECRETS = ["smtp_password", "bluesky_app_password", "facebook_page_token", "x_api_secret", "x_access_secret"]
+SECRETS = ["smtp_password", "bluesky_app_password", "facebook_page_token", "x_api_secret", "x_access_secret",
+           "telegram_bot_token"]
 
 
 class SecretInput(forms.PasswordInput):
@@ -17,6 +18,7 @@ class SiteConfigForm(forms.ModelForm):
     clear_facebook_page_token = forms.BooleanField(label="Effacer", required=False)
     clear_x_api_secret = forms.BooleanField(label="Effacer", required=False)
     clear_x_access_secret = forms.BooleanField(label="Effacer", required=False)
+    clear_telegram_bot_token = forms.BooleanField(label="Effacer", required=False)
 
     class Meta:
         model = SiteConfig
@@ -25,7 +27,8 @@ class SiteConfigForm(forms.ModelForm):
                   "bluesky_enabled", "bluesky_handle", "bluesky_app_password",
                   "meta_api_version", "facebook_enabled", "facebook_page_id", "facebook_page_token",
                   "instagram_enabled", "instagram_user_id",
-                  "x_enabled", "x_api_key", "x_api_secret", "x_access_token", "x_access_secret"]
+                  "x_enabled", "x_api_key", "x_api_secret", "x_access_token", "x_access_secret",
+                  "telegram_bot_name", "telegram_bot_token"]
         widgets = {name: SecretInput() for name in SECRETS}
 
     def __init__(self, *args, **kwargs):

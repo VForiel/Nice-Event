@@ -197,6 +197,7 @@ class Notification(models.Model):
         REJECTED = "rejected", "événement refusé"
         CHANGED = "changed", "événement modifié, reporté ou annulé"
         TO_MODERATE = "to_moderate", "événement à modérer (équipe)"
+        ALERT = "alert", "nouvel événement pour une alerte"
 
     recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="notifications")
     actor = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE, related_name="+")

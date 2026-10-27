@@ -29,6 +29,6 @@
     <button class="btn btn-ghost map-locate" type="button" data-locate>{% icon "pin" 18 %} {% translate "Autour de moi" %}</button>
     <p class="map-status" data-map-status role="status"></p>
   </div>
-  <p class="wrap map-alt">{% translate "La carte ne s'affiche pas ?" %} <a href="{% url 'events:list' %}{% if data_query %}?{{ data_query }}{% endif %}">{% translate "Voir la liste des événements" %}</a></p>
+  <p class="wrap map-alt">{% translate "La carte ne s'affiche pas ?" %} <a href="{% url 'events:list' %}{% if data_query %}?{{ data_query }}{% endif %}" data-keep-query>{% translate "Voir la liste des événements" %}</a></p>
 </div>
 {% endblock %}

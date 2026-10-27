@@ -1,47 +1,132 @@
 {% load i18n ne static %}
-<form class="filters" method="get" action="{{ action }}" role="search">
+{# Barre de filtres de l'agenda et de la carte : OU à l'intérieur d'un menu, ET entre les menus. Mise à jour sans recharger (filterbar.js). #}
+<form class="filterbar" method="get" action="{{ action }}" role="search" data-filterbar data-geocode="{% url 'events:api_geocode' %}">
   <div class="search">
     <label class="sr" for="id_q">{% translate "Rechercher" %}</label>
-    <input id="id_q" type="search" name="q" value="{{ active.q|default:'' }}" placeholder="{% translate "Jazz, brocante, yoga, Antibes…" %}">
-    {% for name, value in request.GET.lists %}{% if name != "q" and name != "page" and name != "regle" %}{% for v in value %}<input type="hidden" name="{{ name }}" value="{{ v }}">{% endfor %}{% endif %}{% endfor %}
+    <input id="id_q" type="search" name="q" value="{{ state.q }}" placeholder="{% translate "Jazz, brocante, yoga, Antibes…" %}">
     <button type="submit">{% translate "Chercher" %}</button>
   </div>
-  <div class="chips" aria-label="{% translate "Quand" %}">
-    {% for value, label in when_choices %}<a class="chip{% if active.quand == value %} on{% endif %}" href="{% toggle_param 'quand' value %}">{{ label }}</a>{% endfor %}
-    <a class="chip{% if active.gratuit %} on{% endif %}" href="{% toggle_param 'gratuit' '1' %}">{% translate "Gratuit" %}</a>
-    <a class="chip{% if active.en %} on{% endif %}" href="{% toggle_param 'en' '1' %}" lang="en">EN friendly</a>
-    <a class="chip{% if active.famille %} on{% endif %}" href="{% toggle_param 'famille' '1' %}">{% translate "En famille" %}</a>
-    <a class="chip{% if active.source == 'membres' %} on{% endif %}" href="{% toggle_param 'source' 'membres' %}" title="{% translate "Seulement les événements publiés sur Nice-Event, sans ceux des autres agendas" %}">{% translate "Seulement Nice-Event" %}</a>
+
+  <div class="dd-row">
+    {# Types #}
+    <details class="dd" data-dd="types">
+      <summary class="dd-btn">{% icon "filter" 16 %} {% translate "Types" %} <span class="dd-count" data-dd-count></span></summary>
+      <div class="dd-panel dd-panel-wide">
+        <div class="dd-tools">
+          <button type="button" class="dd-link" data-check-all="categorie">{% translate "Tout cocher" %}</button>
+          <button type="button" class="dd-link" data-check-none="categorie">{% translate "Tout décocher" %}</button>
+        </div>
+        <div class="dd-checks dd-cols">
+          {% for cat in categories %}<label class="dd-check"><input type="checkbox" name="categorie" value="{{ cat.slug }}"{% if cat.slug in checked_cats %} checked{% endif %}> <span class="tone-{{ cat.tone }}">{% icon cat.icon 16 %}</span> {{ cat.name_tr }}</label>{% endfor %}
+        </div>
+      </div>
+    </details>
+
+    {# Dates #}
+    <details class="dd" data-dd="dates">
+      <summary class="dd-btn">{% icon "calendar" 16 %} {% translate "Dates" %} <span class="dd-count" data-dd-count></span></summary>
+      <div class="dd-panel">
+        <div class="dd-checks">
+          <label class="dd-check"><input type="radio" name="quand" value=""{% if not state.quand %} checked{% endif %}> {% translate "Tout ce qui vient" %}</label>
+          {% for value, label in when_choices %}<label class="dd-check"><input type="radio" name="quand" value="{{ value }}"{% if state.quand == value %} checked{% endif %}> {{ label }}</label>{% endfor %}
+          <label class="dd-check"><input type="radio" name="quand" value="dates"{% if state.quand == 'dates' %} checked{% endif %}> {% translate "Choisir des dates…" %}</label>
+        </div>
+        <div class="dd-calendar" data-calendar data-today="{{ today }}" data-lang="{{ LANGUAGE_CODE|default:'fr' }}"{% if state.quand != 'dates' %} hidden{% endif %}>
+          <input type="hidden" name="du" value="{% if state.quand == 'dates' %}{{ state.du }}{% endif %}">
+          <input type="hidden" name="au" value="{% if state.quand == 'dates' %}{{ state.au }}{% endif %}">
+          <p class="help" data-calendar-hint>{% translate "Touche le premier jour, puis le dernier." %}</p>
+        </div>
+      </div>
+    </details>
+
+    {# Zone #}
+    <details class="dd" data-dd="zone">
+      <summary class="dd-btn">{% icon "pin" 16 %} {% translate "Où" %} <span class="dd-count" data-dd-count></span></summary>
+      <div class="dd-panel">
+        <div class="dd-checks">
+          {% for value, label in zones %}<label class="dd-check"><input type="checkbox" name="zone" value="{{ value }}"{% if value in state.zone %} checked{% endif %}> {{ label }}</label>{% endfor %}
+        </div>
+        <fieldset class="dd-near" data-near>
+          <legend>{% translate "Ou près d'une adresse" %}</legend>
+          <input type="hidden" name="pres" value="{% if state.pres %}{{ state.pres.lat }},{{ state.pres.lon }},{{ state.pres.km }}{% endif %}" data-near-value>
+          <div class="autocomplete">
+            <label class="sr" for="id_pres_label">{% translate "Adresse" %}</label>
+            <input id="id_pres_label" type="search" name="pres_label" value="{{ state.pres.label|default:'' }}" autocomplete="off" placeholder="{% translate "Place Masséna, Nice…" %}" data-near-address>
+            <ul class="suggestions" hidden data-near-list></ul>
+          </div>
+          <div class="dd-inline">
+            <button type="button" class="dd-link" data-near-here>{% icon "pin" 14 %} {% translate "Ma position" %}</button>
+            <label class="dd-km">{% translate "dans un rayon de" %} <input type="number" min="1" max="100" step="1" value="{% if state.pres %}{{ state.pres.km|floatformat:'0' }}{% else %}5{% endif %}" data-near-km> km</label>
+          </div>
+          <button type="button" class="dd-link" data-near-clear{% if not state.pres %} hidden{% endif %}>{% icon "close" 14 %} {% translate "Retirer l'adresse" %}</button>
+        </fieldset>
+      </div>
+    </details>
+
+    {# Âge #}
+    <details class="dd" data-dd="age">
+      <summary class="dd-btn">{% icon "users" 16 %} {% translate "Âge" %} <span class="dd-count" data-dd-count></span></summary>
+      <div class="dd-panel">
+        <div class="dd-checks">
+          {% for value, label in publics %}<label class="dd-check"><input type="checkbox" name="public" value="{{ value }}"{% if value in state.public %} checked{% endif %}> {{ label }}</label>{% endfor %}
+        </div>
+        <fieldset class="dd-near">
+          <legend>{% translate "Ou adapté aux âges" %}</legend>
+          <div class="dd-inline">
+            <label>{% translate "de" %} <input type="number" name="age_min" min="0" max="120" value="{{ state.age_min }}" inputmode="numeric"></label>
+            <label>{% translate "à" %} <input type="number" name="age_max" min="0" max="120" value="{{ state.age_max }}" inputmode="numeric"> {% translate "ans" %}</label>
+          </div>
+        </fieldset>
+      </div>
+    </details>
+
+    {# Langue #}
+    <details class="dd" data-dd="langue">
+      <summary class="dd-btn">{% translate "Langue" %} <span class="dd-count" data-dd-count></span></summary>
+      <div class="dd-panel">
+        <div class="dd-checks">
+          {% for value, label in languages %}<label class="dd-check"><input type="checkbox" name="langue" value="{{ value }}"{% if value in state.langue %} checked{% endif %}> {{ label }}</label>{% endfor %}
+        </div>
+      </div>
+    </details>
+
+    {# Prix #}
+    <details class="dd" data-dd="prix">
+      <summary class="dd-btn">{% icon "euro" 16 %} {% translate "Prix" %} <span class="dd-count" data-dd-count></span></summary>
+      <div class="dd-panel">
+        <div class="dd-checks">
+          {% for value, label in prices %}<label class="dd-check"><input type="checkbox" name="prix" value="{{ value }}"{% if value in checked_prix %} checked{% endif %}> {{ label }}</label>{% endfor %}
+        </div>
+      </div>
+    </details>
+
+    {# Sources #}
+    <details class="dd" data-dd="sources">
+      <summary class="dd-btn">{% translate "Sources" %} <span class="dd-count" data-dd-count></span></summary>
+      <div class="dd-panel dd-panel-wide dd-panel-end">
+        <div class="dd-tools">
+          <button type="button" class="dd-link" data-check-all="src">{% translate "Tout cocher" %}</button>
+          <button type="button" class="dd-link" data-check-none="src">{% translate "Tout décocher" %}</button>
+          <button type="button" class="dd-link" data-check-only="src" data-value="nice-event">{% translate "Seulement Nice-Event" %}</button>
+        </div>
+        <div class="dd-checks dd-cols">
+          {% for key, name in sources %}<label class="dd-check"><input type="checkbox" name="src" value="{{ key }}"{% if key in checked_src %} checked{% endif %}> {{ name }}</label>{% endfor %}
+        </div>
+      </div>
+    </details>
+
+    <a class="dd-btn dd-custom{% if state.custom %} on{% endif %}" href="{% url 'alerts:filters' %}">{% icon "settings" 16 %} {% translate "Filtres & alertes" %}</a>
+    <button class="btn btn-ghost btn-sm filterbar-apply" type="submit" data-no-js>{% translate "Appliquer" %}</button>
   </div>
-  <details class="more-filters"{% if active.categorie or active.zone or hidden_sources or active.source == 'externes' %} open{% endif %}>
-    <summary>{% translate "Catégories, zones, sources" %}{% if active.categorie %} <span class="badge badge-inline">{{ active.categorie|length }}</span>{% endif %}</summary>
-    <div class="chips chips-cats">
-      {% for cat in categories %}<a class="chip chip-cat tone-{{ cat.tone }}{% if cat.slug in active.categorie %} on{% endif %}" href="{% toggle_param 'categorie' cat.slug %}">{% icon cat.icon 16 %} {{ cat.name_tr }}</a>{% endfor %}
-    </div>
-    <div class="chips">
-      {% for value, label in zones %}<a class="chip{% if active.zone == value %} on{% endif %}" href="{% toggle_param 'zone' value %}">{{ label }}</a>{% endfor %}
-    </div>
-    <div class="filter-sources">
-      <p class="filter-label">{% translate "Sources" %} <span class="help">{% translate "Touche une source pour la masquer ou la réafficher." %}</span></p>
-      <div class="chips">
-        <a class="chip chip-source{% if 'nice-event' in hidden_sources %} is-off{% endif %}" href="{% toggle_param 'masquer' 'nice-event' %}" aria-pressed="{% if 'nice-event' in hidden_sources %}false{% else %}true{% endif %}">{% if 'nice-event' not in hidden_sources %}{% icon "check" 14 %}{% endif %} Nice-Event</a>
-        {% for key, name in source_groups %}<a class="chip chip-source{% if key in hidden_sources %} is-off{% endif %}" href="{% toggle_param 'masquer' key %}" aria-pressed="{% if key in hidden_sources %}false{% else %}true{% endif %}">{% if key not in hidden_sources %}{% icon "check" 14 %}{% endif %} {{ name }}</a>{% endfor %}
-      </div>
-      <div class="chips">
-        <a class="chip{% if active.source == 'externes' %} on{% endif %}" href="{% toggle_param 'source' 'externes' %}">{% translate "Seulement les autres agendas" %}</a>
-      </div>
-    </div>
-  </details>
-  <details class="more-filters adv-filter"{% if active.regle %} open{% endif %}>
-    <summary>{% icon "filter" 16 %} {% translate "Filtre avancé" %}{% if active.regle %} <span class="badge badge-inline">{% translate "actif" %}</span>{% endif %}</summary>
-    <p class="help">{% translate "Combine des conditions (catégorie, âge, lieu, distance, source, prix…) avec ET, OU et SAUF, puis enregistre la règle pour la retrouver." %}</p>
-    <input type="hidden" name="regle" value="{{ active.regle|default:'' }}" data-rule-input>
-    <div class="rule-builder" data-rule-builder data-csrf="{{ csrf_token }}"
-         data-save-url="{% url 'events:api_filter_save' %}" data-delete-url="{% url 'events:api_filter_delete' 0 %}">
-      <noscript>{% translate "Le filtre avancé a besoin de JavaScript." %}</noscript>
-    </div>
-  </details>
-  {% if active %}<p class="filters-reset"><a href="{{ action }}">{% icon "close" 14 %} {% translate "Effacer les filtres" %}</a></p>{% endif %}
+
+  {% if state.custom %}
+  <p class="custom-filter" data-custom-filter>
+    {% icon "filter" 16 %}
+    <span>{% blocktranslate trimmed with name=state.custom.name %}Ton filtre « {{ name }} » s'ajoute à ces menus.{% endblocktranslate %}</span>
+    <a href="{% url 'alerts:filters' %}">{% translate "Modifier" %}</a>
+    <button type="submit" class="dd-link" formmethod="post" formaction="{% url 'alerts:clear' %}?next={{ request.path|urlencode }}" name="csrfmiddlewaretoken" value="{{ csrf_token }}">{% translate "Retirer" %}</button>
+  </p>
+  {% endif %}
+  <p class="filters-reset"{% if not state.any %} hidden{% endif %} data-reset><a href="{{ action }}">{% icon "close" 14 %} {% translate "Effacer les filtres" %}</a></p>
 </form>
-{{ filter_spec|json_script:"filter-spec" }}
-<script src="{% static 'js/filters.js' %}" defer></script>
+<script src="{% static 'js/filterbar.js' %}" defer></script>

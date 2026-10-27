@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load i18n ne static %}
+{% block title %}{% translate "Filtres & alertes" %}{% endblock %}
+{% block description %}{% translate "Compose un filtre sur mesure pour l'agenda et la carte, et reçois une alerte quand un nouvel événement y correspond." %}{% endblock %}
+{% block head %}<meta name="robots" content="noindex"><link rel="stylesheet" href="{% static 'css/alerts.css' %}"><script src="{% static 'js/rulebuilder.js' %}" defer></script>{% endblock %}
+
+{% block content %}
+<header class="page-head page-head-tight">
+  <div class="wrap">
+    <p class="kicker">{% translate "Sur mesure" %}</p>
+    <h1 class="page-title">{% translate "Filtres & alertes" %}</h1>
+    <p class="page-lede">{% translate "Compose un filtre aussi précis que tu veux, utilise-le dans l'agenda et sur la carte, et reçois une alerte dès qu'un nouvel événement y correspond." %}</p>
+  </div>
+</header>
+
+<div class="wrap page-body filters-page">
+  <details class="tuto"{% if not current and not saved %} open{% endif %}>
+    <summary>{% icon "settings" 18 %} {% translate "Comment ça marche ?" %}</summary>
+    <ol class="tuto-steps">
+      <li><b>{% translate "Ajoute des conditions" %}</b>
+        <span>{% blocktranslate trimmed %}« + Condition » ouvre la liste des critères. Tape pour la raccourcir : <code>âge</code>, <code>prix</code>, ou <code>type=adresse</code>.{% endblocktranslate %}</span></li>
+      <li><b>{% translate "Combine-les" %}</b>
+        <span>{% blocktranslate trimmed %}Dans un groupe, « Toutes ces conditions » veut dire ET, « Au moins une » veut dire OU. Un sous-groupe permet de mélanger les deux. Coche « Sauf » pour exclure : <em>Sauf</em> + expression <code>danse</code> retire tout ce qui parle de danse.{% endblocktranslate %}</span></li>
+      <li><b>{% translate "Regarde l'aperçu" %}</b>
+        <span>{% translate "Le nombre d'événements qui correspondent se met à jour à chaque changement." %}</span></li>
+      <li><b>{% translate "Utilise-le ou garde-le" %}</b>
+        <span>{% blocktranslate trimmed %}« Voir dans l'agenda » l'applique pendant ta visite, en plus des menus. Avec un compte, enregistre-le et active une <b>alerte</b> : courriel, notification du navigateur, Discord ou Telegram.{% endblocktranslate %}</span></li>
+    </ol>
+    <div class="tuto-examples">
+      <p class="filter-label">{% translate "Exemples à essayer" %}</p>
+      <div class="chips">
+        <button type="button" class="chip" data-example='{"op":"and","rules":[{"field":"categorie","in":["plein-air","sport"]},{"field":"quand","value":"weekend"},{"field":"proximite","lat":43.7031,"lon":7.2661,"km":20,"label":"Nice"}]}'>{% translate "Sport et rando ce week-end, à 20 km de Nice" %}</button>
+        <button type="button" class="chip" data-example='{"op":"and","rules":[{"field":"regex","value":"\\bski"},{"field":"zone","in":["arriere-pays"]}]}'>{% translate "Tout ce qui parle de ski dans l'arrière-pays" %}</button>
+        <button type="button" class="chip" data-example='{"op":"and","rules":[{"field":"categorie","in":["spectacle"]},{"field":"regex","value":"danse|ballet","not":true},{"field":"prix_max","value":15}]}'>{% translate "Spectacles sauf danse, 15 € max" %}</button>
+        <button type="button" class="chip" data-example='{"op":"and","rules":[{"field":"age_range","min":4,"max":8},{"op":"or","rules":[{"field":"prix","in":["free"]},{"field":"jour","in":["3"]}]}]}'>{% translate "Pour des enfants de 4 à 8 ans, gratuit ou le mercredi" %}</button>
+      </div>
+    </div>
+  </details>
+
+  <div class="builder-layout">
+    <section class="builder-card" aria-labelledby="builder-title">
+      <div class="builder-head">
+        <h2 id="builder-title" class="builder-title">{% translate "Ton filtre" %}</h2>
+        <label class="builder-name"><span class="sr">{% translate "Nom du filtre" %}</span>
+          <input type="text" maxlength="80" placeholder="{% translate "Nom du filtre (ex. Randos du dimanche)" %}" value="{{ current.name|default:'' }}" data-rule-name></label>
+      </div>
+      <div class="rule-builder" data-rule-builder data-csrf="{{ csrf_token }}"
+           data-logged="{% if user.is_authenticated %}1{% endif %}" data-editing="{{ current.id|default:'' }}">
+        <noscript>{% translate "L'éditeur de filtres a besoin de JavaScript." %}</noscript>
+      </div>
+    </section>
+
+    <aside class="builder-side">
+      <div class="preview" aria-live="polite" data-preview>
+        <p class="preview-count" data-preview-count>…</p>
+        <ul class="preview-list" data-preview-list></ul>
+        <ul class="preview-errors" data-preview-errors></ul>
+      </div>
+      <form method="post" action="{% url 'alerts:use' %}" class="builder-actions" data-use-form>
+        {% csrf_token %}
+        <input type="hidden" name="rule" data-use-rule>
+        <input type="hidden" name="name" data-use-name>
+        <button class="btn btn-blue btn-block" type="submit" name="to" value="agenda">{% icon "calendar" 18 %} {% translate "Voir dans l'agenda" %}</button>
+        <button class="btn btn-ghost btn-block" type="submit" name="to" value="carte">{% icon "map" 18 %} {% translate "Voir sur la carte" %}</button>
+      </form>
+      {% if user.is_authenticated %}
+      <div class="builder-save">
+        <label class="check"><input type="checkbox" data-save-alert> <span>{% translate "M'alerter des nouveaux événements" %}</span></label>
+        <label class="sr" for="save-frequency">{% translate "Fréquence" %}</label>
+        <select id="save-frequency" data-save-frequency>{% for value, label in frequencies %}<option value="{{ value }}">{{ label }}</option>{% endfor %}</select>
+        <button class="btn btn-primary btn-block" type="button" data-save>{% icon "check" 18 %} <span data-save-label>{% translate "Enregistrer ce filtre" %}</span></button>
+        <button class="dd-link" type="button" data-new hidden>{% icon "plus" 14 %} {% translate "Nouveau filtre" %}</button>
+        <p class="help" data-save-status role="status"></p>
+      </div>
+      {% else %}
+      <div class="login-hint">
+        <p>{% translate "Connecte-toi pour enregistrer tes filtres et recevoir des alertes. Sans compte, ton filtre reste utilisable pendant ta visite." %}</p>
+        <a class="btn btn-ghost btn-block" href="{% url 'community:login' %}?next={{ request.path|urlencode }}">{% translate "Se connecter" %}</a>
+      </div>
+      {% endif %}
+    </aside>
+  </div>
+
+  {% if user.is_authenticated %}
+  <section class="saved-section" id="mes-filtres" aria-labelledby="saved-title" data-saved-section>
+    <h2 class="section-title section-title-sm" id="saved-title">{% translate "Mes filtres" %}</h2>
+    {% if saved %}
+    <ul class="saved-cards">
+      {% for f in saved %}
+      <li class="saved-card{% if f.alert %} has-alert{% endif %}" data-saved-id="{{ f.pk }}" data-saved-name="{{ f.name }}"
+          data-saved-rule="{{ f.rule_json }}" data-saved-alert="{% if f.alert %}1{% endif %}" data-saved-frequency="{{ f.frequency }}">
+        <div class="saved-main">
+          <p class="saved-name">{{ f.name }}</p>
+          <p class="help">{% if f.alert %}{% icon "bell" 14 %} {{ f.get_frequency_display }}{% else %}{% translate "Sans alerte" %}{% endif %}</p>
+        </div>
+        <div class="saved-alert">
+          <label class="switch"><input type="checkbox" data-alert-toggle{% if f.alert %} checked{% endif %}> <span>{% translate "Alerte" %}</span></label>
+          <select data-alert-frequency aria-label="{% translate "Fréquence" %}">{% for value, label in frequencies %}<option value="{{ value }}"{% if f.frequency == value %} selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+        </div>
+        <div class="saved-actions">
+          <button type="button" class="btn btn-ghost btn-sm" data-edit>{% icon "edit" 16 %} {% translate "Modifier" %}</button>
+          <form method="post" action="{% url 'alerts:use' %}">{% csrf_token %}<input type="hidden" name="saved" value="{{ f.pk }}">
+            <button class="btn btn-ghost btn-sm" type="submit" name="to" value="agenda">{% translate "Utiliser" %}</button></form>
+          <button type="button" class="btn btn-ghost btn-sm" data-delete aria-label="{% translate "Supprimer" %} {{ f.name }}">{% icon "close" 16 %}</button>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty-inline">{% translate "Aucun filtre enregistré : compose-en un ci-dessus puis « Enregistrer ce filtre »." %}</p>
+    {% endif %}
+  </section>
+
+  <section class="channels-section" id="canaux" aria-labelledby="channels-title">
+    <h2 class="section-title section-title-sm" id="channels-title">{% translate "Où recevoir les alertes" %}</h2>
+    <p class="help">{% translate "Les alertes arrivent toujours dans tes notifications sur le site. Ajoute les canaux que tu veux :" %}</p>
+    <form method="post" action="{% url 'alerts:channels' %}" class="channels form" data-channels data-vapid="{{ vapid_key }}" data-push-url="{% url 'alerts:push_subscribe' %}">
+      {% csrf_token %}
+      <div class="channel">
+        <label class="switch"><input type="checkbox" name="email"{% if email_on %} checked{% endif %}> <span>{% icon "mail" 18 %} {% translate "Courriel" %}</span></label>
+        <p class="help">{{ user.email }}</p>
+      </div>
+      <div class="channel">
+        <label class="switch"><input type="checkbox" name="push" data-push-toggle{% if channels.push.is_active %} checked{% endif %}> <span>{% icon "bell" 18 %} {% translate "Notification du navigateur" %}</span></label>
+        <p class="help" data-push-status>{% blocktranslate count n=push_count %}{{ n }} appareil enregistré.{% plural %}{{ n }} appareils enregistrés.{% endblocktranslate %} {% translate "Cocher la case autorise cet appareil." %}</p>
+      </div>
+      <div class="channel">
+        <label class="switch"><input type="checkbox" name="discord"{% if channels.discord.is_active %} checked{% endif %}> <span>{% icon "discord" 18 %} Discord</span></label>
+        <label class="sr" for="id_discord_webhook">{% translate "Adresse du webhook Discord" %}</label>
+        <input id="id_discord_webhook" type="url" name="discord_webhook" value="{{ channels.discord.config.webhook|default:'' }}" placeholder="https://discord.com/api/webhooks/…">
+        <p class="help">{% translate "Sur ton serveur : Paramètres du salon › Intégrations › Webhooks › Nouveau webhook › Copier l'URL." %}</p>
+      </div>
+      <div class="channel">
+        <label class="switch"><input type="checkbox" name="telegram"{% if channels.telegram.is_active %} checked{% endif %}{% if not telegram_ready %} disabled{% endif %}> <span>{% icon "telegram" 18 %} Telegram</span></label>
+        {% if telegram_ready %}
+        <label class="sr" for="id_telegram_chat">{% translate "Identifiant de discussion Telegram" %}</label>
+        <input id="id_telegram_chat" type="text" name="telegram_chat" value="{{ channels.telegram.config.chat_id|default:'' }}" placeholder="123456789" inputmode="numeric">
+        <p class="help">{% blocktranslate trimmed with bot=telegram_bot %}Écris d'abord à <b>@{{ bot }}</b> sur Telegram (sinon il ne peut pas te répondre), puis récupère ton identifiant auprès de @userinfobot.{% endblocktranslate %}</p>
+        {% else %}<p class="help">{% translate "Bientôt disponible." %}</p>{% endif %}
+      </div>
+      <div class="form-submit">
+        <button class="btn btn-primary" type="submit">{% translate "Enregistrer les canaux" %}</button>
+        <button class="btn btn-ghost" type="submit" name="test" value="1">{% translate "Enregistrer et envoyer un essai" %}</button>
+      </div>
+    </form>
+  </section>
+  {% endif %}
+</div>
+{{ spec|json_script:"rule-spec" }}
+{{ current.rule|json_script:"rule-current" }}
+{% endblock %}

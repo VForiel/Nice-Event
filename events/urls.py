@@ -9,6 +9,7 @@ urlpatterns = [
     path(_("evenements/"), views.event_list, name="list"),
     path(_("evenements/publier/"), views.event_new, name="new"),
     path(_("evenements/agenda.ics"), views.agenda_ics, name="agenda"),
+    path(_("evenements/source/<slug:source>/<str:external_id>/"), views.from_source, name="from_source"),
     path(_("evenements/<slug:slug>/"), views.event_detail, name="detail"),
     path(_("evenements/<slug:slug>/en-ligne/"), views.event_published, name="published"),
     path(_("evenements/<slug:slug>/modifier/"), views.event_edit, name="edit"),
@@ -22,6 +23,5 @@ urlpatterns = [
     path(_("carte/evenements.json"), views.map_data, name="map_data"),
     path("api/adresses/", views.api_addresses, name="api_addresses"),
     path("api/lieux/", views.api_venues, name="api_venues"),
-    path("api/filtres/", views.api_filter_save, name="api_filter_save"),
-    path("api/filtres/<int:pk>/supprimer/", views.api_filter_delete, name="api_filter_delete"),
+    path("api/geocodage/", views.api_geocode, name="api_geocode"),
 ]

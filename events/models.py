@@ -168,6 +168,7 @@ class Event(models.Model):
     source = models.ForeignKey("aggregator.Source", null=True, blank=True, on_delete=models.CASCADE, related_name="events")
     external_id = models.CharField(max_length=300, blank=True, db_index=True)
     external_url = models.URLField("page d'origine", blank=True, max_length=500)
+    external_image = models.URLField("image d'origine", blank=True, max_length=500)  # pour suivre ses changements
     missing_since = models.DateTimeField("absent de la source depuis", null=True, blank=True)
 
     search = models.TextField(blank=True, editable=False)  # titre, résumé, lieu, organisateur sans accents
@@ -321,9 +322,19 @@ class Event(models.Model):
 class SavedFilter(models.Model):
     """Filtre avancé enregistré par un membre (les visiteurs le gardent dans leur navigateur)."""
 
+    class Frequency(models.TextChoices):
+        NOW = "now", _("Dès qu'un événement est publié")
+        DAILY = "daily", _("Un résumé par jour (18 h)")
+        WEEKLY = "weekly", _("Un résumé par semaine (jeudi 18 h)")
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="saved_filters")
     name = models.CharField("nom", max_length=80)
     rule = models.JSONField("règle")
+    alert = models.BooleanField(_("alerte"), default=False)
+    frequency = models.CharField(_("fréquence"), max_length=6, choices=Frequency.choices, default=Frequency.NOW)
+    # Seuls les événements publiés après la mise en route de l'alerte sont signalés.
+    alert_since = models.DateTimeField(null=True, blank=True)
+    last_sent_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -333,3 +344,9 @@ class SavedFilter(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def rule_json(self):
+        import json
+
+        return json.dumps(self.rule, ensure_ascii=False)

@@ -1,0 +1,2 @@
+{% load i18n %}{% include "events/_days.html" %}
+{% if more %}<p class="more"><a class="btn btn-ghost" href="?{% if query %}{{ query }}&amp;{% endif %}page={{ next_page }}">{% translate "Afficher plus d'événements" %}</a></p>{% endif %}

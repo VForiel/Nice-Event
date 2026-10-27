@@ -21,14 +21,13 @@ from community.models import Attendance, Notification, friend_ids, friends_of
 from community.notify import notify
 from core.images import thumbnail_url
 from core.security import throttled
-from core.text import normalize
 from venues import geocode
-from venues.models import Commune, Venue, Zone, zone_filter
+from venues.models import Commune, Venue, Zone
 
 from . import rules
 from .forms import EventForm
 from .ical import calendar
-from .models import Category, Event, SavedFilter
+from .models import Category, Event
 from .seo import event_jsonld
 
 EVENTS_PER_DAY = 5
@@ -71,58 +70,25 @@ def window(when, now=None):
     return max(now, at(day, 5)), at(day + timedelta(days=1), 5)
 
 
+SESSION_FILTER = "filtre_perso"
+
+
+def custom_filter(request):
+    """Filtre personnalisé composé sur la page « Filtres & alertes » et gardé pour la session : {name, rule, id}."""
+    data = request.session.get(SESSION_FILTER)
+    return data if isinstance(data, dict) and rules.parse(data.get("rule")) else None
+
+
 def filtered(request, events):
-    """Applique les filtres de l'URL ; renvoie (événements, filtres actifs)."""
-    params = request.GET
-    active = {}
-    when = params.get("quand", "")
-    start, end = window(when)
-    if start:
-        events = events.between(start, end)
-        active["quand"] = when
-    cats = [c for c in params.getlist("categorie") if c]
-    if cats:
-        events = events.filter(categories__slug__in=cats).distinct()
-        active["categorie"] = cats
-    zone = params.get("zone", "")
-    if zone in Zone.values:
-        events = events.filter(zone_filter(zone))
-        active["zone"] = zone
-    commune = params.get("commune", "")
-    if commune:
-        events = events.filter(venue__commune__slug=commune)
-        active["commune"] = commune
-    if params.get("gratuit"):
-        events = events.filter(price_kind=Event.Price.FREE)
-        active["gratuit"] = "1"
-    if params.get("en"):
-        events = events.filter(Q(language__in=[Event.Language.INTERNATIONAL, Event.Language.NONE]) | Q(spoken__contains="en"))
-        active["en"] = "1"
-    if params.get("famille"):
-        events = events.filter(age_kind__in=[Event.Age.ALL, Event.Age.FAMILY])
-        active["famille"] = "1"
-    origin = params.get("source", "")
-    if origin == "membres":
-        events = events.internal()
-        active["source"] = origin
-    elif origin == "externes":
-        events = events.external()
-        active["source"] = origin
-    hidden = [k for k in params.getlist("masquer") if k]
-    if hidden:
-        events = events.exclude(rules.source_q(hidden))
-        active["masquer"] = hidden
-    rule = rules.parse(params.get("regle"))
-    if rule:
-        events, applied = rules.apply(events, rule)
-        if applied:
-            active["regle"] = params["regle"]
-    q = params.get("q", "").strip()
-    if q:
-        for word in normalize(q).split()[:6]:
-            events = events.filter(search__contains=word)
-        active["q"] = q
-    return events, active
+    """Applique les menus de l'adresse puis le filtre personnalisé de la session ; renvoie (événements, état)."""
+    groups = rules.source_groups()
+    state = rules.bar_state(request.GET, groups)
+    events, applied = rules.apply(events, rules.bar_rule(state))
+    custom = custom_filter(request)
+    if custom:
+        events, _custom_applied = rules.apply(events, custom["rule"])
+    state.update({"groups": groups, "custom": custom, "any": applied or bool(custom)})
+    return events, state
 
 
 def base_queryset():
@@ -149,7 +115,7 @@ def by_day(events):
 
 
 def event_list(request):
-    events, active = filtered(request, base_queryset())
+    events, state = filtered(request, base_queryset())
     try:
         page = max(1, int(request.GET.get("page", 1)))
     except ValueError:
@@ -162,48 +128,36 @@ def event_list(request):
         e.friends_going = going.get(e.pk, 0)
     query = request.GET.copy()
     query.pop("page", None)
-    return render(request, "events/list.html", {
-        "days": by_day(items), "count": len(items), "more": more, "next_page": page + 1, "active": active,
-        "query": query.urlencode(), "map_query": query.urlencode(), **filter_context(request),
-    })
+    query.pop("partiel", None)
+    context = {"days": by_day(items), "count": len(items), "more": more, "next_page": page + 1, "state": state,
+               "query": query.urlencode()}
+    if request.GET.get("partiel"):
+        return render(request, "events/_results.html", context)
+    return render(request, "events/list.html", {**context, **filter_context(request, state)})
 
 
-def filter_context(request):
-    """Ce qu'il faut aux filtres (liste et carte) : puces, sources, et la description du filtre avancé pour le JS."""
+def filter_context(request, state):
+    """Ce qu'il faut à la barre de menus déroulants (agenda et carte)."""
     categories = list(Category.objects.all())
-    groups = rules.source_groups()
-    communes = Commune.objects.order_by("name").values("slug", "name", "lat", "lon")
-    spec = {
-        "fields": [[k, str(v)] for k, v in rules.FIELDS],
-        "categorie": [[c.slug, str(c.name_tr)] for c in categories],
-        "zone": [[k, str(v)] for k, v in Zone.choices],
-        "commune": [[c["slug"], c["name"]] for c in communes],
-        "places": [[c["name"], round(c["lat"], 5), round(c["lon"], 5)] for c in communes],
-        "source": [[rules.NICE_EVENT, "Nice-Event"]] + [list(g) for g in groups],
-        "prix": [[k, str(v)] for k, v in Event.Price.choices],
-        "public": [[k, str(v)] for k, v in Event.Age.choices],
-        "quand": [[k, str(v)] for k, v in WHEN],
-        "jour": [[str(k), str(v)] for k, v in rules.WEEKDAYS],
-        "saved": [{"id": f.pk, "name": f.name, "rule": f.rule} for f in SavedFilter.objects.filter(user=request.user)]
-        if request.user.is_authenticated else None,
-        "labels": {
-            "and": _("Toutes ces conditions (ET)"), "or": _("Au moins une de ces conditions (OU)"),
-            "not": _("Sauf"), "notTitle": _("Inverser : garder ce qui ne correspond pas"),
-            "addRule": _("Condition"), "addGroup": _("Groupe"), "remove": _("Retirer"),
-            "apply": _("Appliquer"), "clear": _("Tout effacer"), "save": _("Enregistrer…"),
-            "load": _("Charger"), "delete": _("Supprimer"), "saved": _("Mes filtres enregistrés"),
-            "noSaved": _("Aucun filtre enregistré pour l'instant."),
-            "namePrompt": _("Nom de ce filtre :"), "deleteConfirm": _("Supprimer ce filtre ?"),
-            "empty": _("Aucune condition : ajoute-en une pour commencer."),
-            "search": _("Chercher…"), "from": _("de"), "to": _("à"), "hour": _("h"),
-            "km": _("km autour de"), "here": _("Ma position"), "mapCenter": _("Centre de la carte"),
-            "choosePlace": _("Choisir une commune…"), "euros": _("€ au plus"), "years": _("ans"),
-            "words": _("mots à chercher"), "local": _("Enregistré dans ce navigateur (connecte-toi pour le retrouver partout)."),
-            "error": _("Enregistrement impossible, réessaie."),
-        },
+    keys = [rules.NICE_EVENT] + [k for k, _n in state["groups"]]
+    return {
+        "categories": categories, "zones": Zone.choices, "when_choices": WHEN, "languages": rules.LANGUAGES,
+        "publics": rules.PUBLICS, "prices": [c for c in Event.Price.choices],
+        "sources": [(rules.NICE_EVENT, "Nice-Event")] + list(state["groups"]),
+        "checked_cats": state["categorie"] or [c.slug for c in categories],
+        "checked_src": state["src"] or keys,
+        "checked_prix": state["prix"] or [k for k, _l in Event.Price.choices],
+        "today": timezone.localdate().isoformat(),
     }
-    return {"categories": categories, "zones": Zone.choices, "when_choices": WHEN, "source_groups": groups,
-            "hidden_sources": request.GET.getlist("masquer"), "filter_spec": spec}
+
+
+def from_source(request, source, external_id):
+    """Lien stable vers un événement repris d'une source partenaire (ex. bouton « Voir sur Nice-Event » de l'AJC06)."""
+    event = Event.objects.published().filter(source__slug=source, external_id=external_id).first()
+    if event is None:
+        messages.info(request, _("Cet événement arrive bientôt sur Nice-Event (les agendas partenaires sont relus plusieurs fois par jour)."))
+        return redirect("events:list")
+    return redirect(event)
 
 
 def visible_or_404(request, event):
@@ -435,9 +389,9 @@ def venue_detail(request, slug):
 
 def map_page(request):
     query = request.GET.copy()
-    return render(request, "events/map.html", {
-        "active": filtered(request, Event.objects.none())[1], "data_query": query.urlencode(), **filter_context(request),
-    })
+    state = filtered(request, Event.objects.none())[1]
+    return render(request, "events/map.html", {"state": state, "data_query": query.urlencode(),
+                                               **filter_context(request, state)})
 
 
 def map_point(event, request):
@@ -491,33 +445,6 @@ def agenda_ics(request):
     return _ics_response(calendar(events[:1000]), "nice-event.ics")
 
 
-# Filtres avancés enregistrés -------------------------------------------------------------------------------------------
-
-MAX_SAVED_FILTERS = 30
-
-
-@login_required
-@require_POST
-def api_filter_save(request):
-    """Enregistre (ou remplace, à nom égal) un filtre avancé du membre connecté."""
-    name = request.POST.get("name", "").strip()[:80]
-    rule = rules.parse(request.POST.get("rule"))
-    if not name or not rule or len(request.POST["rule"]) > 8000:
-        return JsonResponse({"error": _("Nom ou règle manquant.")}, status=400)
-    mine = SavedFilter.objects.filter(user=request.user)
-    if not mine.filter(name=name).exists() and mine.count() >= MAX_SAVED_FILTERS:
-        return JsonResponse({"error": _("Trente filtres au plus : supprimes-en un.")}, status=400)
-    saved, _created = SavedFilter.objects.update_or_create(user=request.user, name=name, defaults={"rule": rule})
-    return JsonResponse({"id": saved.pk, "name": saved.name, "rule": saved.rule})
-
-
-@login_required
-@require_POST
-def api_filter_delete(request, pk):
-    SavedFilter.objects.filter(user=request.user, pk=pk).delete()
-    return JsonResponse({"ok": True})
-
-
 # Aide à la saisie (appelées par le formulaire de publication) ---------------------------------------------------------
 
 
@@ -532,6 +459,17 @@ def api_addresses(request):
     for r in results:
         r["commune"] = communes.get(r["citycode"])
     return JsonResponse({"results": results})
+
+
+@require_GET
+def api_geocode(request):
+    """Adresses des Alpes-Maritimes pour « près d'une adresse » (filtres) : ouvert à tous, limité par adresse IP."""
+    from core.security import client_ip
+
+    if throttled(f"geocode-public:{client_ip(request)}", 120, 3600):
+        return JsonResponse({"results": []})
+    results = geocode.search(request.GET.get("q", ""))
+    return JsonResponse({"results": [{"label": r["label"], "lat": r["lat"], "lon": r["lon"]} for r in results]})
 
 
 @login_required

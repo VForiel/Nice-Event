@@ -29,7 +29,8 @@ SOURCES = [
     ("unidivers-06", "Unidivers", "jsonld", "https://unidivers.fr/events/categorie/alpes-maritimes/", "https://unidivers.fr",
      None, None, {"max_pages": 8, "link_pattern": r"^https://unidivers\.fr/event/[^/]+/?$",
                   "notes": "Magazine culturel ; événements issus en partie d'OpenAgenda."}),
-    ("ajc06", "AJC06", "ical", "https://beta.ajc06.com/evenements/agenda.ics", "https://beta.ajc06.com", NICE, None, {}),
+    ("ajc06", "AJC06", "ajc06", "https://beta.ajc06.com/evenements/nice-event.json", "https://beta.ajc06.com", NICE, None,
+     {"notes": "Seulement les sorties de membres cochées « publier sur Nice-Event » sur le site de l'AJC06, avec tout leur détail."}),
     # Communes équipées de The Events Calendar (API publique)
     ("saint-paul-de-vence", "Ville de Saint-Paul-de-Vence", "tribe", "https://saintpauldevence.org/", None, "06128", None, {}),
     ("saint-vallier-de-thiey", "Ville de Saint-Vallier-de-Thiey", "tribe", "https://saintvallierdethiey.com/", None, "06130", None, {}),

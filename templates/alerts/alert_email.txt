@@ -1,0 +1,14 @@
+{% autoescape off %}Bonjour {{ saved.user.profile.display_name }},
+
+{% if events|length == 1 %}Un nouvel événement correspond à ton alerte « {{ saved.name }} » :{% else %}{{ events|length }} nouveaux événements correspondent à ton alerte « {{ saved.name }} » :{% endif %}
+{% for e, when, url in events %}
+• {{ e.title }}
+  {{ when }} · {{ e.venue.name }}, {{ e.venue.commune.name }} · {{ e.price_label }}
+  {{ url }}
+{% endfor %}{% if more %}
+… et {{ more }} autre{{ more|pluralize }} : {{ site }}/notifications/
+{% endif %}
+—
+Nice-Event · {{ site }}
+Gérer tes alertes : {{ site }}/filtres/
+{% endautoescape %}

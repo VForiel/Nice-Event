@@ -6,6 +6,7 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path, reverse
 
 from core import media as core_media
+from alerts import views as alert_views
 from core import views as core_views
 from events.models import Event
 
@@ -39,6 +40,7 @@ urlpatterns = i18n_patterns(
     path("", include("core.urls")),
     path("", include("events.urls")),
     path("", include("community.urls")),
+    path("", include("alerts.urls")),
     prefix_default_language=False,
 )
 
@@ -48,6 +50,7 @@ urlpatterns += [
     path("admin/", admin.site.urls),
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
     path("robots.txt", core_views.robots),
+    path("sw.js", alert_views.service_worker, name="service_worker"),
     path("media/<path:path>", core_media.media),
 ]
 

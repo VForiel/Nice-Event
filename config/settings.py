@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     "community",
     "aggregator",
     "social",
+    "alerts",
     "gestion",
 ]
 

@@ -48,12 +48,20 @@ Site : http://localhost:8000 (anglais sous `/en/`), gestion : `/gestion/`, admin
 
 ## Filtres
 
-Agenda et carte partagent les mêmes filtres (`events/_filters.html`) : période, gratuit, EN friendly, famille, « Seulement
-Nice-Event », catégories, zones, et une puce par source (regroupées par nom) pour la masquer (`?masquer=meetup`). Le
-**filtre avancé** (`events/rules.py`, éditeur `static/js/filters.js`) combine des conditions (catégorie, période, jour,
-heure, zone, commune, distance à un point, prix, âge, public, langue, accessibilité, source, mots) en groupes ET / OU,
-chacune inversable (SAUF) ; la règle voyage en JSON dans `?regle=`. Les membres l'enregistrent sur leur compte
-(`SavedFilter`), les visiteurs dans leur navigateur.
+Agenda et carte partagent une barre de menus déroulants (`events/_filters.html`, `static/js/filterbar.js`) : types (tout
+cocher / décocher), dates (raccourcis ou plage choisie sur un calendrier), où (zones ou rayon autour d'une adresse BAN ou de
+sa position), âge (public ou tranche), langue, prix, sources. OU à l'intérieur d'un menu, ET entre les menus. Chaque clic
+met à jour l'adresse (`history.replaceState`) et les résultats sans recharger : fragment `?partiel=1` pour la liste,
+`evenements.json` pour la carte. Anciens liens (`?gratuit=1`, `?source=membres`, `?masquer=…`) toujours compris.
+
+Page **Filtres & alertes** (`/filtres/`, app `alerts`, éditeur `static/js/rulebuilder.js`) : tuto et exemples, conditions
+choisies dans une liste filtrable (« âge », « type=adresse »), groupes ET / OU, SAUF, tranche d'âge, rayon autour d'une
+adresse, expression régulière (motifs longs ou à répétitions imbriquées refusés), aperçu en direct
+(`/api/filtres/apercu/`). Le moteur est `events/rules.py`. « Voir dans l'agenda / sur la carte » garde le filtre dans la
+session (il s'ajoute aux menus). Les membres l'enregistrent (`SavedFilter`) et activent une alerte : tout de suite, résumé
+quotidien (18 h) ou hebdomadaire (jeudi 18 h), tâche `alertes` du worker toutes les 10 minutes (`alerts/send.py`).
+Canaux : notification sur le site (toujours), courriel, notification du navigateur (Web Push, clés VAPID créées
+automatiquement, service worker `/sw.js`), Discord (webhook) et Telegram (bot à configurer dans `/gestion/reglages/`).
 
 ## Carte
 

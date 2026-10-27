@@ -523,4 +523,57 @@ def read_tribe(source, fetcher):
     return list(series.values()), True
 
 
-READERS = {"ical": read_ical, "jsonld": read_jsonld, "openagenda": read_openagenda, "wpnice": read_wpnice, "tribe": read_tribe}
+# AJC06 (association des doctorant·es) : sorties proposées par ses membres et cochées « publier sur Nice-Event » --------
+
+# Types de l'AJC06 -> catégories de Nice-Event
+AJC06_CATEGORIES = {
+    "meetup": "rencontres", "camp": "plein-air", "rentree": "rencontres", "plein-air": "plein-air", "culture": "expo",
+    "visite": "expo", "asso": "rencontres", "afterwork": "soiree", "soiree": "soiree", "coworking": "networking",
+    "carriere": "networking", "conference": "conference", "mediation": "conference", "soutenance": "conference",
+    "sport": "sport", "autre": "autre",
+}
+POSTCODE = re.compile(r"\b(06\d{3}|98000)\s+([^,]+)")
+
+
+def read_ajc06(source, fetcher):
+    """Flux JSON de l'AJC06 : tout le détail de l'événement (description, image, prix, inscription, traduction)."""
+    data = json.loads(fetcher.get(source.url, check_robots=False))
+    items = []
+    for ev in data.get("events") or []:
+        start, all_day = as_datetime(ev.get("start"))
+        if start is None:
+            continue
+        end, _ = as_datetime(ev.get("end"))
+        address = clean(ev.get("address"))
+        match = POSTCODE.search(address)
+        price_text = clean(ev.get("price"))
+        free, price = price_from_text(price_text)
+        if re.match(r"^\s*(gratuit|free)", price_text, re.I):
+            free, price = True, None
+        cats = []
+        for code in ev.get("types") or []:
+            slug = AJC06_CATEGORIES.get(code)
+            if slug and slug not in cats:
+                cats.append(slug)
+        items.append({
+            "id": str(ev.get("id")), "url": ev.get("url") or source.website, "title": clean(ev.get("title")),
+            "description": clean(ev.get("summary")) or clean(ev.get("description")),
+            "start": start, "end": end, "all_day": all_day or bool(ev.get("all_day")),
+            "place": clean(ev.get("place")), "address": address, "city": match.group(2).strip() if match else "",
+            "postcode": match.group(1) if match else "", "lat": _float(ev.get("lat")), "lon": _float(ev.get("lon")),
+            "image": ev.get("image") or "", "free": free, "price": price, "age_min": None, "age_max": None,
+            "keywords": " ".join(ev.get("types") or []), "cancelled": bool(ev.get("cancelled")),
+            # Reprise complète (l'AJC06 publie ici de son plein gré) :
+            "full": {
+                "summary": clean(ev.get("summary")), "description": str(ev.get("description") or "").strip(),
+                "title_en": clean(ev.get("title_en")), "summary_en": clean(ev.get("summary_en")),
+                "description_en": str(ev.get("description_en") or "").strip(),
+                "ticket_url": ev.get("registration_url") or "", "price_text": price_text,
+                "categories": cats[:3], "organizer": clean(ev.get("organizer")),
+                "language": ev.get("language") or "",
+            },
+        })
+    return items, True  # flux complet : un événement décoché disparaît de Nice-Event
+
+
+READERS = {"ical": read_ical, "ajc06": read_ajc06, "jsonld": read_jsonld, "openagenda": read_openagenda, "wpnice": read_wpnice, "tribe": read_tribe}

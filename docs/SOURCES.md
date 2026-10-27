@@ -14,7 +14,7 @@ Recherche du 26/10/2026. Les sources retenues sont créées par `python manage.p
 | Unidivers (Alpes-Maritimes) | JSON-LD, liens suivis par motif | ~80 événements culturels dans tout le département (en partie issus d'OpenAgenda). |
 | 12 communes sur The Events Calendar | API `tribe` | Saint-Paul-de-Vence, Saint-Vallier-de-Thiey, Mouans-Sartoux, Théoule-sur-Mer, Tourrettes-sur-Loup, Le Bar-sur-Loup, Andon, Drap, Touët-de-l'Escarène, Bonson, Falicon, Saint-Martin-du-Var (~135 événements ; une série répétée ne garde que sa prochaine date). |
 | Le Cannet | iCal | Agenda municipal. |
-| AJC06 | iCal | Événements de l'association. |
+| AJC06 | Flux JSON dédié | Seulement les sorties de membres cochées « publier aussi sur Nice-Event », reprises en entier (description, image, prix, inscription, anglais) ; lien de retour stable `/evenements/source/ajc06/<id>/`. |
 | OGC Nice, AS Monaco | iCal (fixtur.es) | Matchs à domicile uniquement (filtre sur le titre), à l'Allianz Riviera et au Stade Louis-II. |
 | 17 groupes Meetup (Nice, Antibes) | iCal public des groupes | Échanges linguistiques, apéros internationaux, nomades, yoga, data/IA, networking (~90 événements). Le flux ne donne pas le lieu : commune du groupe ; les événements en ligne sont écartés. |
 

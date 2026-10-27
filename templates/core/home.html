@@ -20,9 +20,9 @@
         <a class="chip" href="{% url 'events:list' %}?quand=aujourdhui">{% translate "Ce soir" %}</a>
         <a class="chip" href="{% url 'events:list' %}?quand=demain">{% translate "Demain" %}</a>
         <a class="chip" href="{% url 'events:list' %}?quand=weekend">{% translate "Ce week-end" %}</a>
-        <a class="chip" href="{% url 'events:list' %}?gratuit=1">{% translate "Gratuit" %}</a>
-        <a class="chip" href="{% url 'events:list' %}?en=1" lang="en">EN friendly</a>
-        <a class="chip" href="{% url 'events:list' %}?famille=1">{% translate "En famille" %}</a>
+        <a class="chip" href="{% url 'events:list' %}?prix=free">{% translate "Gratuit" %}</a>
+        <a class="chip" href="{% url 'events:list' %}?langue=international&amp;langue=none&amp;langue=en" lang="en">EN friendly</a>
+        <a class="chip" href="{% url 'events:list' %}?public=all&amp;public=family">{% translate "En famille" %}</a>
         <a class="chip chip-map" href="{% url 'events:map' %}">{% icon "map" 16 %} {% translate "Carte" %}</a>
       </div>
       <a class="publish-cta" href="{% url 'events:new' %}">
@@ -83,7 +83,7 @@
   <div class="wrap">
     <div class="section-head">
       <h2 class="section-title">{% translate "Fraîchement publiés" %}</h2>
-      <a class="link-more" href="{% url 'events:list' %}?source=membres">{% translate "Tout voir" %} {% icon "arrow" 16 %}</a>
+      <a class="link-more" href="{% url 'events:list' %}?src=nice-event">{% translate "Tout voir" %} {% icon "arrow" 16 %}</a>
     </div>
     <div class="cards">{% for event in latest %}{% include "events/_card.html" %}{% endfor %}</div>
   </div>

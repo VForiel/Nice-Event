@@ -26,6 +26,7 @@
           {% elif n.verb == "approved" %}{% blocktranslate %}Ton événement « {{ title }} » est validé et en ligne. Tes prochains seront publiés directement.{% endblocktranslate %}
           {% elif n.verb == "rejected" %}{% blocktranslate %}Ton événement « {{ title }} » n'a pas été publié.{% endblocktranslate %}{% if n.message %} {{ n.message }}{% endif %}
           {% elif n.verb == "changed" %}{% blocktranslate with what=n.message %}« {{ title }} », où tu vas, a été {{ what }}.{% endblocktranslate %}
+          {% elif n.verb == "alert" %}{% blocktranslate with name=n.message %}Nouveau pour ton alerte « {{ name }} » : <strong>{{ title }}</strong>.{% endblocktranslate %}
           {% elif n.verb == "to_moderate" %}{% blocktranslate %}<strong>{{ name }}</strong> a publié « {{ title }} » : à modérer.{% endblocktranslate %}
           {% endif %}
           {% endwith %}

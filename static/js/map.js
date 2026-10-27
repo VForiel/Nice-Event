@@ -75,11 +75,14 @@
   }
 
   var byId = {};
-  function load() {
-    fetch(d.events, { headers: { Accept: "application/json" } })
+  var first = true;
+  function load(url) {
+    fetch(url, { headers: { Accept: "application/json" } })
       .then(function (r) { return r.json(); })
       .then(function (data) {
         var markers = [];
+        cluster.clearLayers();
+        byId = {};
         data.events.forEach(function (ev) {
           var icon = L.divIcon({
             className: "pin tone-" + ev.tone + (ev.cancelled ? " is-cancelled" : ""),
@@ -93,7 +96,10 @@
         });
         cluster.addLayers(markers);
         if (status) status.textContent = data.events.length ? "" : d.labelEmpty;
-        var wanted = byId[(location.hash || "").slice(1)];
+        var wanted = first && byId[(location.hash || "").slice(1)];
+        var initial = first;
+        first = false;
+        if (!initial) return; // filtre changé : on garde le cadrage choisi par la personne
         if (wanted) {
           cluster.zoomToShowLayer(wanted, function () { wanted.openPopup(); });
         } else if (markers.length && !location.search.match(/zone=nice/)) {
@@ -103,7 +109,12 @@
       })
       .catch(function () { if (status) status.textContent = d.labelEmpty; });
   }
-  load();
+  load(d.events);
+
+  // Filtres changés dans la barre : marqueurs rechargés sans recharger la page.
+  document.addEventListener("filterbar:change", function (e) {
+    load(d.events.split("?")[0] + (e.detail.query ? "?" + e.detail.query : ""));
+  });
 
   var locate = document.querySelector("[data-locate]");
   if (locate && navigator.geolocation) {

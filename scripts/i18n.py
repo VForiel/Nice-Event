@@ -15,7 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 PO = ROOT / "locale" / "en" / "LC_MESSAGES" / "django.po"
-SOURCES = ["core", "events", "venues", "community", "social", "aggregator", "siteconfig", "templates", "config"]
+SOURCES = ["core", "events", "venues", "community", "social", "aggregator", "siteconfig", "alerts", "templates", "config"]
 SKIP = ("migrations", "gestion", "admin", "templates/gestion")
 
 PY_CALL = re.compile(r"""\b(?:_|gettext|gettext_lazy|pgettext_lazy|pgettext)\(\s*((?:"(?:[^"\\]|\\.)*"\s*)+)\)""")

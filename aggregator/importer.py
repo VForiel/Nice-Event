@@ -243,6 +243,16 @@ def scan(source, fetcher=None):
         event.title = clean_title(item)[:140]
         event.summary = excerpt(item["description"]) or f"{item['title'][:150]} — voir le site de l'organisateur."
         event.description = ""  # seul un court extrait est repris ; le détail reste chez la source
+        full = item.get("full")
+        if full:  # source partenaire (AJC06) : tout est repris
+            event.summary = excerpt(full["summary"] or full["description"]) or event.summary
+            event.description = full["description"]
+            event.title_en, event.summary_en = full["title_en"][:140], excerpt(full["summary_en"])
+            event.description_en = full["description_en"]
+            event.ticket_url = full["ticket_url"][:500]
+            event.organizer_name = full["organizer"][:120]
+            if full["language"] in Event.Language.values:
+                event.language = full["language"]
         event.external_url = item["url"][:500]
         event.starts_at, event.end, event.all_day = start, end, bool(item.get("all_day"))
         event.venue = venue_for(item, commune, source.default_place)
@@ -257,20 +267,24 @@ def scan(source, fetcher=None):
         if item.get("age_min"):
             event.age_kind, event.age_min, event.age_max = Event.Age.RANGE if item.get("age_max") else Event.Age.FROM, item["age_min"], item.get("age_max")
         event.state = Event.State.CANCELLED if item.get("cancelled") else Event.State.SCHEDULED
-        event.organizer_name = ""
+        if not full:
+            event.organizer_name = ""
         event.missing_since = None
         if event.status == Event.Status.HIDDEN and event.moderation_note.startswith("Absent de la source"):
             event.status, event.moderation_note = Event.Status.PUBLISHED, ""
         if existing is None:
             event.status = Event.Status.PUBLISHED
         event.save()
-        if existing is None:
+        wanted = list(Category.objects.filter(slug__in=full["categories"])) if full and full["categories"] else None
+        if wanted:
+            event.categories.set(wanted)
+        elif existing is None:
             event.categories.set(guess_categories(item, source.default_category))
             stats["created"] += 1
         else:
             stats["updated"] += 1
         wants_image = source.images_allowed and not event.photo and not item.get("image")
-        if (wants_image or event.price_kind == Event.Price.UNKNOWN) and budget["pages"] > 0:
+        if not full and (wants_image or event.price_kind == Event.Price.UNKNOWN) and budget["pages"] > 0:
             details = details_page(source, item, fetcher)
             if details is not None:
                 budget["pages"] -= 1
@@ -282,9 +296,17 @@ def scan(source, fetcher=None):
                     else:
                         event.price_kind, event.price_min = Event.Price.PAID, details["price"]
                     event.save(update_fields=["price_kind", "price_min"])
-        if source.images_allowed and item.get("image") and not event.photo:
+        image = item.get("image") or ""
+        if full and event.photo and image != event.external_image:
+            # Source partenaire : l'affiche a changé (ou a été retirée) depuis le dernier scan, on suit.
+            event.photo.delete(save=False)
+            event.photo = ""
+            event.external_image = ""
+            event.save(update_fields=["photo", "external_image"])
+        if source.images_allowed and image and not event.photo:
             try:
-                data = fetcher.get(item["image"], binary=True)
+                data = fetcher.get(image, binary=True)
+                event.external_image = image[:500]
                 event.photo.save(f"{source.slug}-{event.pk}.jpg", ContentFile(data), save=True)
             except (FetchError, OSError, ValueError) as exc:
                 log.info("Image non reprise pour %s : %s", event.pk, exc)

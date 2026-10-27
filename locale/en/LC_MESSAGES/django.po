@@ -5,6 +5,246 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: alerts/models.py
+msgid "Discord (webhook)"
+msgstr "Discord (webhook)"
+
+#: alerts/models.py
+msgid "Notification du navigateur"
+msgstr "Browser notification"
+
+#: alerts/urls.py
+msgid "filtres/"
+msgstr "filters/"
+
+#: alerts/urls.py
+msgid "filtres/canaux/"
+msgstr "filters/channels/"
+
+#: alerts/urls.py
+msgid "filtres/retirer/"
+msgstr "filters/remove/"
+
+#: alerts/urls.py
+msgid "filtres/utiliser/"
+msgstr "filters/use/"
+
+#: alerts/views.py
+msgid "%(n)s événements à venir correspondent."
+msgstr "%(n)s upcoming events match."
+
+#: alerts/views.py
+msgid "1 événement à venir correspond."
+msgstr "1 upcoming event matches."
+
+#: alerts/views.py
+msgid "Adresse, lieu, commune…"
+msgstr "Address, place, town…"
+
+#: alerts/views.py
+msgid "Au moins une de ces conditions (OU)"
+msgstr "At least one of these conditions (OR)"
+
+#: alerts/views.py
+msgid "Aucun critère ne correspond."
+msgstr "No criterion matches."
+
+#: alerts/views.py
+msgid "Aucun événement à venir ne correspond."
+msgstr "No upcoming event matches."
+
+#: alerts/views.py
+msgid "Aucune condition pour l'instant : ajoute-en une avec « + Condition »."
+msgstr "No conditions yet: add one with “+ Condition”."
+
+#: alerts/views.py
+msgid "Canaux d'alerte enregistrés."
+msgstr "Alert channels saved."
+
+#: alerts/views.py
+msgid "Ce filtre est vide : ajoute au moins une condition complète."
+msgstr "This filter is empty: add at least one complete condition."
+
+#: alerts/views.py
+msgid "Cet appareil recevra les alertes."
+msgstr "This device will receive alerts."
+
+#: alerts/views.py
+msgid "Chercher…"
+msgstr "Search…"
+
+#: alerts/views.py
+msgid "Complète au moins une condition pour voir l'aperçu."
+msgstr "Complete at least one condition to see the preview."
+
+#: alerts/views.py
+msgid "Condition"
+msgstr "Condition"
+
+#: alerts/views.py
+msgid "Donne un nom au filtre et au moins une condition complète."
+msgstr "Give the filter a name and at least one complete condition."
+
+#: alerts/views.py
+msgid "Donne un nom à ton filtre."
+msgstr "Give your filter a name."
+
+#: alerts/views.py
+msgid "Enregistrement impossible, réessaie."
+msgstr "Could not save, please try again."
+
+#: alerts/views.py
+msgid "Enregistrer ce filtre"
+msgstr "Save this filter"
+
+#: alerts/views.py
+msgid "Essai %(canal)s : %(r)s"
+msgstr "Test %(canal)s: %(r)s"
+
+#: alerts/views.py
+msgid "Fermer"
+msgstr "Close"
+
+#: alerts/views.py
+msgid "Filtre enregistré."
+msgstr "Filter saved."
+
+#: alerts/views.py
+msgid "Filtrer : âge, prix, type=adresse…"
+msgstr "Filter: age, price, type=address…"
+
+#: alerts/views.py
+msgid "Groupe"
+msgstr "Group"
+
+#: alerts/views.py
+msgid "Inverser : garder ce qui ne correspond pas"
+msgstr "Invert: keep what does not match"
+
+#: alerts/views.py
+msgid "L'adresse du webhook Discord doit commencer par https://discord.com/api/webhooks/…"
+msgstr "The Discord webhook address must start with https://discord.com/api/webhooks/…"
+
+#: alerts/views.py
+msgid "L'identifiant Telegram est un nombre (ou @nom_de_canal)."
+msgstr "The Telegram ID is a number (or @channel_name)."
+
+#: alerts/views.py
+msgid "Lieu accessible en fauteuil roulant"
+msgstr "Wheelchair-accessible venue"
+
+#: alerts/views.py
+msgid "Ma position"
+msgstr "My location"
+
+#: alerts/views.py
+msgid "Mettre à jour ce filtre"
+msgstr "Update this filter"
+
+#: alerts/views.py
+msgid "Modification de « %(name)s »"
+msgstr "Editing “%(name)s”"
+
+#: alerts/views.py
+msgid "Mon filtre"
+msgstr "My filter"
+
+#: alerts/views.py
+msgid "Motif invalide"
+msgstr "Invalid pattern"
+
+#: alerts/views.py
+msgid "Notifications refusées par le navigateur."
+msgstr "Notifications blocked by the browser."
+
+#: alerts/views.py
+msgid "Quel critère ?"
+msgstr "Which criterion?"
+
+#: alerts/views.py
+msgid "Recherché dans le titre, le résumé, la description et le lieu, sans tenir compte des majuscules. Exemples :"
+msgstr "Searched in the title, summary, description and venue, ignoring case. Examples:"
+
+#: alerts/views.py
+msgid "Retirer"
+msgstr "Remove"
+
+#: alerts/views.py
+msgid "Sans alerte"
+msgstr "No alert"
+
+#: alerts/views.py
+msgid "Sauf"
+msgstr "Not"
+
+#: alerts/views.py
+msgid "Supprimer ce filtre ?"
+msgstr "Delete this filter?"
+
+#: alerts/views.py
+msgid "Toutes ces conditions (ET)"
+msgstr "All of these conditions (AND)"
+
+#: alerts/views.py
+msgid "Trente filtres au plus : supprimes-en un."
+msgstr "Thirty filters at most: delete one first."
+
+#: alerts/views.py
+msgid "Trop de requêtes, patiente un peu."
+msgstr "Too many requests, please wait a little."
+
+#: alerts/views.py
+msgid "Tu as déjà un filtre de ce nom."
+msgstr "You already have a filter with this name."
+
+#: alerts/views.py
+msgid "ans"
+msgstr "years old"
+
+#: alerts/views.py
+msgid "au"
+msgstr "to"
+
+#: alerts/views.py
+msgid "de"
+msgstr "from"
+
+#: alerts/views.py
+msgid "du"
+msgstr "from"
+
+#: alerts/views.py
+msgid "entre"
+msgstr "between"
+
+#: alerts/views.py
+msgid "envoyé"
+msgstr "sent"
+
+#: alerts/views.py
+msgid "h"
+msgstr ":00"
+
+#: alerts/views.py
+msgid "h et"
+msgstr ":00 and"
+
+#: alerts/views.py
+msgid "km au plus de"
+msgstr "km at most from"
+
+#: alerts/views.py
+msgid "mots à chercher"
+msgstr "words to look for"
+
+#: alerts/views.py
+msgid "à"
+msgstr "to"
+
+#: alerts/views.py
+msgid "€ au plus"
+msgstr "€ at most"
+
 #: community/confirmation.py
 msgid "Nice-Event : confirme ton adresse"
 msgstr "Nice-Event: confirm your email address"
@@ -642,6 +882,10 @@ msgid "Dès %(n)s ans"
 msgstr "Ages %(n)s+"
 
 #: events/models.py
+msgid "Dès qu'un événement est publié"
+msgstr "As soon as an event is published"
+
+#: events/models.py
 msgid "En attente de modération"
 msgstr "Awaiting review"
 
@@ -730,12 +974,24 @@ msgid "Tranche d'âge"
 msgstr "Age range"
 
 #: events/models.py
+msgid "Un résumé par jour (18 h)"
+msgstr "One digest a day (6 pm)"
+
+#: events/models.py
+msgid "Un résumé par semaine (jeudi 18 h)"
+msgstr "One digest a week (Thursday 6 pm)"
+
+#: events/models.py
 msgid "Une ou deux phrases : elles apparaissent dans les listes, sur la carte et sur les visuels."
 msgstr "One or two sentences: shown in lists, on the map and on the visuals."
 
 #: events/models.py
 msgid "accessible en fauteuil roulant"
 msgstr "wheelchair accessible"
+
+#: events/models.py
+msgid "alerte"
+msgstr "alert"
 
 #: events/models.py
 msgid "catégories"
@@ -756,6 +1012,10 @@ msgstr "start"
 #: events/models.py
 msgid "fin"
 msgstr "end"
+
+#: events/models.py
+msgid "fréquence"
+msgstr "frequency"
 
 #: events/models.py
 msgid "langue"
@@ -862,24 +1122,104 @@ msgid "Accessible en fauteuil"
 msgstr "Wheelchair accessible"
 
 #: events/rules.py
-msgid "Adapté à l'âge"
-msgstr "Suitable for age"
+msgid "Accessible sans parler français"
+msgstr "Accessible without speaking French"
 
 #: events/rules.py
-msgid "Catégorie"
-msgstr "Category"
+msgid "Adapté à des personnes de N à M ans"
+msgstr "Suitable for people aged N to M"
 
 #: events/rules.py
-msgid "Contient les mots"
-msgstr "Contains the words"
+msgid "Adultes (18 ans et plus)"
+msgstr "Adults (18 and over)"
 
 #: events/rules.py
-msgid "EN friendly"
-msgstr "EN friendly"
+msgid "Anglais parlé sur place"
+msgstr "English spoken there"
+
+#: events/rules.py
+msgid "Aujourd'hui, ce week-end, 30 prochains jours…"
+msgstr "Today, this weekend, next 30 days…"
+
+#: events/rules.py
+msgid "Commence entre 18 h et 23 h, par exemple"
+msgstr "Starts between 6 pm and 11 pm, for example"
+
+#: events/rules.py
+msgid "Concert, soirée, rando, atelier…"
+msgstr "Concert, party, hike, workshop…"
+
+#: events/rules.py
+msgid "Contient tous ces mots (sans tenir compte des accents)"
+msgstr "Contains all these words (accents ignored)"
+
+#: events/rules.py
+msgid "En français, international, anglais parlé…"
+msgstr "In French, international, English spoken…"
+
+#: events/rules.py
+msgid "Entre deux dates précises"
+msgstr "Between two exact dates"
+
+#: events/rules.py
+msgid "Expression régulière"
+msgstr "Regular expression"
+
+#: events/rules.py
+msgid "Gratuit, prix libre, payant"
+msgstr "Free, pay what you want, paid"
 
 #: events/rules.py
 msgid "Jour de la semaine"
 msgstr "Day of the week"
+
+#: events/rules.py
+msgid "Langue"
+msgstr "Language"
+
+#: events/rules.py
+msgid "Lieu déclaré accessible"
+msgstr "Venue declared accessible"
+
+#: events/rules.py
+msgid "Motif avancé sur le titre et la description, ex. \\bski\\b"
+msgstr "Advanced pattern on the title and description, e.g. \\bski\\b"
+
+#: events/rules.py
+msgid "Motif invalide : %(e)s"
+msgstr "Invalid pattern: %(e)s"
+
+#: events/rules.py
+msgid "Motif trop coûteux : évite les répétitions imbriquées comme (a+)+."
+msgstr "Pattern too costly: avoid nested repetitions such as (a+)+."
+
+#: events/rules.py
+msgid "Motif trop long (%(n)s caractères au plus)."
+msgstr "Pattern too long (%(n)s characters at most)."
+
+#: events/rules.py
+msgid "Motif vide."
+msgstr "Empty pattern."
+
+#: events/rules.py
+msgid "Mots"
+msgstr "Words"
+
+#: events/rules.py
+msgid "Nice, Métropole, Côte, arrière-pays, Monaco"
+msgstr "Nice, Metropolis, Coast, hinterland, Monaco"
+
+#: events/rules.py
+msgid "Nice-Event ou un agenda en particulier"
+msgstr "Nice-Event or a specific calendar"
+
+#: events/rules.py
+msgid "Pas plus de N €"
+msgstr "No more than N €"
+
+#: events/rules.py
+msgid "Plage de dates"
+msgstr "Date range"
 
 #: events/rules.py
 msgid "Prix"
@@ -890,6 +1230,10 @@ msgid "Prix maximum"
 msgstr "Maximum price"
 
 #: events/rules.py
+msgid "Près d'une adresse"
+msgstr "Near an address"
+
+#: events/rules.py
 msgid "Public"
 msgstr "Audience"
 
@@ -898,8 +1242,24 @@ msgid "Période"
 msgstr "When"
 
 #: events/rules.py
+msgid "Seulement le samedi et le dimanche, par exemple"
+msgstr "Only on Saturday and Sunday, for example"
+
+#: events/rules.py
 msgid "Source"
 msgstr "Source"
+
+#: events/rules.py
+msgid "Tout public, famille, adultes"
+msgstr "All ages, family, adults"
+
+#: events/rules.py
+msgid "Type d'événement"
+msgstr "Event type"
+
+#: events/rules.py
+msgid "Une ou plusieurs communes"
+msgstr "One or several towns"
 
 #: events/rules.py
 msgid "Zone"
@@ -934,8 +1294,8 @@ msgid "vendredi"
 msgstr "Friday"
 
 #: events/rules.py
-msgid "À proximité de"
-msgstr "Near"
+msgid "À moins de N km d'une adresse ou de ta position"
+msgstr "Within N km of an address or of your location"
 
 #: events/urls.py
 msgid "carte/"
@@ -990,6 +1350,10 @@ msgid "evenements/publier/"
 msgstr "events/new/"
 
 #: events/urls.py
+msgid "evenements/source/<slug:source>/<str:external_id>/"
+msgstr "events/source/<slug:source>/<str:external_id>/"
+
+#: events/urls.py
 msgid "lieux/<slug:slug>/"
 msgstr "venues/<slug:slug>/"
 
@@ -1006,28 +1370,12 @@ msgid "7 prochains jours"
 msgstr "Next 7 days"
 
 #: events/views.py
-msgid "Appliquer"
-msgstr "Apply"
-
-#: events/views.py
-msgid "Au moins une de ces conditions (OU)"
-msgstr "At least one of these conditions (OR)"
-
-#: events/views.py
-msgid "Aucun filtre enregistré pour l'instant."
-msgstr "No saved filters yet."
-
-#: events/views.py
-msgid "Aucune condition : ajoute-en une pour commencer."
-msgstr "No conditions yet: add one to start."
-
-#: events/views.py
 msgid "Ce week-end"
 msgstr "This weekend"
 
 #: events/views.py
-msgid "Centre de la carte"
-msgstr "Map centre"
+msgid "Cet événement arrive bientôt sur Nice-Event (les agendas partenaires sont relus plusieurs fois par jour)."
+msgstr "This event will soon be on Nice-Event (partner calendars are read several times a day)."
 
 #: events/views.py
 msgid "Cet événement est annulé."
@@ -1038,116 +1386,16 @@ msgid "Cet événement est passé."
 msgstr "This event is over."
 
 #: events/views.py
-msgid "Charger"
-msgstr "Load"
-
-#: events/views.py
-msgid "Chercher…"
-msgstr "Search…"
-
-#: events/views.py
-msgid "Choisir une commune…"
-msgstr "Choose a town…"
-
-#: events/views.py
-msgid "Condition"
-msgstr "Condition"
-
-#: events/views.py
 msgid "Désolé, c'est complet."
 msgstr "Sorry, it's sold out."
-
-#: events/views.py
-msgid "Enregistrement impossible, réessaie."
-msgstr "Could not save, please try again."
-
-#: events/views.py
-msgid "Enregistrer…"
-msgstr "Save…"
-
-#: events/views.py
-msgid "Enregistré dans ce navigateur (connecte-toi pour le retrouver partout)."
-msgstr "Saved in this browser (log in to get it on all your devices)."
-
-#: events/views.py
-msgid "Groupe"
-msgstr "Group"
-
-#: events/views.py
-msgid "Inverser : garder ce qui ne correspond pas"
-msgstr "Invert: keep what does not match"
 
 #: events/views.py
 msgid "Invitation envoyée."
 msgstr "Invitation sent."
 
 #: events/views.py
-msgid "Ma position"
-msgstr "My location"
-
-#: events/views.py
-msgid "Mes filtres enregistrés"
-msgstr "My saved filters"
-
-#: events/views.py
-msgid "Nom de ce filtre :"
-msgstr "Name of this filter:"
-
-#: events/views.py
-msgid "Nom ou règle manquant."
-msgstr "Missing name or rule."
-
-#: events/views.py
-msgid "Retirer"
-msgstr "Remove"
-
-#: events/views.py
-msgid "Sauf"
-msgstr "Not"
-
-#: events/views.py
-msgid "Supprimer"
-msgstr "Delete"
-
-#: events/views.py
-msgid "Supprimer ce filtre ?"
-msgstr "Delete this filter?"
-
-#: events/views.py
-msgid "Tout effacer"
-msgstr "Clear all"
-
-#: events/views.py
-msgid "Toutes ces conditions (ET)"
-msgstr "All of these conditions (AND)"
-
-#: events/views.py
-msgid "Trente filtres au plus : supprimes-en un."
-msgstr "Thirty filters at most: delete one first."
-
-#: events/views.py
 msgid "Tu as déjà publié beaucoup d'événements aujourd'hui, réessaie demain."
 msgstr "You've already posted lots of events today, try again tomorrow."
-
-#: events/views.py
-msgid "ans"
-msgstr "years old"
-
-#: events/views.py
-msgid "de"
-msgstr "from"
-
-#: events/views.py
-msgid "h"
-msgstr ":00"
-
-#: events/views.py
-msgid "km autour de"
-msgstr "km around"
-
-#: events/views.py
-msgid "mots à chercher"
-msgstr "words to look for"
 
 #: events/views.py
 msgid "Événement mis à jour."
@@ -1156,14 +1404,6 @@ msgstr "Event updated."
 #: events/views.py
 msgid "Événement supprimé."
 msgstr "Event deleted."
-
-#: events/views.py
-msgid "à"
-msgstr "to"
-
-#: events/views.py
-msgid "€ au plus"
-msgstr "€ at most"
 
 #: templates/404.html
 msgid "Cette page n'existe pas, ou plus."
@@ -1185,6 +1425,192 @@ msgstr "Lost on the Prom?"
 msgid "Retour à l'accueil"
 msgstr "Back to the home page"
 
+#: templates/alerts/filters.html
+msgid "%(n)s appareil enregistré."
+msgid_plural "%(n)s appareils enregistrés."
+msgstr[0] "%(n)s device registered."
+msgstr[1] "%(n)s devices registered."
+
+#: templates/alerts/filters.html
+msgid "Adresse du webhook Discord"
+msgstr "Discord webhook address"
+
+#: templates/alerts/filters.html
+msgid "Ajoute des conditions"
+msgstr "Add conditions"
+
+#: templates/alerts/filters.html
+msgid "Alerte"
+msgstr "Alert"
+
+#: templates/alerts/filters.html
+msgid "Aucun filtre enregistré : compose-en un ci-dessus puis « Enregistrer ce filtre »."
+msgstr "No saved filters: build one above, then “Save this filter”."
+
+#: templates/alerts/filters.html
+msgid "Bientôt disponible."
+msgstr "Coming soon."
+
+#: templates/alerts/filters.html
+msgid "Cocher la case autorise cet appareil."
+msgstr "Ticking the box allows this device."
+
+#: templates/alerts/filters.html
+msgid "Combine-les"
+msgstr "Combine them"
+
+#: templates/alerts/filters.html
+msgid "Comment ça marche ?"
+msgstr "How does it work?"
+
+#: templates/alerts/filters.html
+msgid "Compose un filtre aussi précis que tu veux, utilise-le dans l'agenda et sur la carte, et reçois une alerte dès qu'un nouvel événement y correspond."
+msgstr "Build a filter as precise as you like, use it in the calendar and on the map, and get an alert as soon as a new event matches it."
+
+#: templates/alerts/filters.html
+msgid "Compose un filtre sur mesure pour l'agenda et la carte, et reçois une alerte quand un nouvel événement y correspond."
+msgstr "Build a custom filter for the calendar and the map, and get an alert when a new event matches it."
+
+#: templates/alerts/filters.html
+msgid "Connecte-toi pour enregistrer tes filtres et recevoir des alertes. Sans compte, ton filtre reste utilisable pendant ta visite."
+msgstr "Log in to save your filters and receive alerts. Without an account, your filter works for the rest of your visit."
+
+#: templates/alerts/filters.html
+msgid "Dans un groupe, « Toutes ces conditions » veut dire ET, « Au moins une » veut dire OU. Un sous-groupe permet de mélanger les deux. Coche « Sauf » pour exclure : <em>Sauf</em> + expression <code>danse</code> retire tout ce qui parle de danse."
+msgstr "In a group, “All of these conditions” means AND, “At least one” means OR. A sub-group lets you mix both. Tick “Not” to exclude: <em>Not</em> + pattern <code>danse</code> removes everything about dance."
+
+#: templates/alerts/filters.html
+msgid "Enregistrer et envoyer un essai"
+msgstr "Save and send a test"
+
+#: templates/alerts/filters.html
+msgid "Enregistrer les canaux"
+msgstr "Save channels"
+
+#: templates/alerts/filters.html
+msgid "Exemples à essayer"
+msgstr "Examples to try"
+
+#: templates/alerts/filters.html
+msgid "Filtres & alertes"
+msgstr "Filters & alerts"
+
+#: templates/alerts/filters.html
+msgid "Fréquence"
+msgstr "Frequency"
+
+#: templates/alerts/filters.html
+msgid "Identifiant de discussion Telegram"
+msgstr "Telegram chat ID"
+
+#: templates/alerts/filters.html
+msgid "L'éditeur de filtres a besoin de JavaScript."
+msgstr "The filter editor needs JavaScript."
+
+#: templates/alerts/filters.html
+msgid "Le nombre d'événements qui correspondent se met à jour à chaque changement."
+msgstr "The number of matching events updates with every change."
+
+#: templates/alerts/filters.html
+msgid "Les alertes arrivent toujours dans tes notifications sur le site. Ajoute les canaux que tu veux :"
+msgstr "Alerts always arrive in your notifications on the site. Add the channels you want:"
+
+#: templates/alerts/filters.html
+msgid "M'alerter des nouveaux événements"
+msgstr "Alert me about new events"
+
+#: templates/alerts/filters.html
+msgid "Mes filtres"
+msgstr "My filters"
+
+#: templates/alerts/filters.html
+msgid "Modifier"
+msgstr "Edit"
+
+#: templates/alerts/filters.html
+msgid "Nom du filtre"
+msgstr "Filter name"
+
+#: templates/alerts/filters.html
+msgid "Nom du filtre (ex. Randos du dimanche)"
+msgstr "Filter name (e.g. Sunday hikes)"
+
+#: templates/alerts/filters.html
+msgid "Nouveau filtre"
+msgstr "New filter"
+
+#: templates/alerts/filters.html
+msgid "Où recevoir les alertes"
+msgstr "Where to receive alerts"
+
+#: templates/alerts/filters.html
+msgid "Pour des enfants de 4 à 8 ans, gratuit ou le mercredi"
+msgstr "For children aged 4 to 8, free or on Wednesday"
+
+#: templates/alerts/filters.html
+msgid "Regarde l'aperçu"
+msgstr "Check the preview"
+
+#: templates/alerts/filters.html
+msgid "Se connecter"
+msgstr "Sign in"
+
+#: templates/alerts/filters.html
+msgid "Spectacles sauf danse, 15 € max"
+msgstr "Shows except dance, €15 max"
+
+#: templates/alerts/filters.html
+msgid "Sport et rando ce week-end, à 20 km de Nice"
+msgstr "Sport and hikes this weekend, within 20 km of Nice"
+
+#: templates/alerts/filters.html
+msgid "Supprimer"
+msgstr "Delete"
+
+#: templates/alerts/filters.html
+msgid "Sur mesure"
+msgstr "Made to measure"
+
+#: templates/alerts/filters.html
+msgid "Sur ton serveur : Paramètres du salon › Intégrations › Webhooks › Nouveau webhook › Copier l'URL."
+msgstr "On your server: Channel settings › Integrations › Webhooks › New webhook › Copy URL."
+
+#: templates/alerts/filters.html
+msgid "Ton filtre"
+msgstr "Your filter"
+
+#: templates/alerts/filters.html
+msgid "Tout ce qui parle de ski dans l'arrière-pays"
+msgstr "Everything about skiing in the hinterland"
+
+#: templates/alerts/filters.html
+msgid "Utilise-le ou garde-le"
+msgstr "Use it or keep it"
+
+#: templates/alerts/filters.html
+msgid "Utiliser"
+msgstr "Use"
+
+#: templates/alerts/filters.html
+msgid "Voir dans l'agenda"
+msgstr "See in the calendar"
+
+#: templates/alerts/filters.html
+msgid "Voir sur la carte"
+msgstr "See on the map"
+
+#: templates/alerts/filters.html
+msgid "« + Condition » ouvre la liste des critères. Tape pour la raccourcir : <code>âge</code>, <code>prix</code>, ou <code>type=adresse</code>."
+msgstr "“+ Condition” opens the list of criteria. Type to shorten it: <code>age</code>, <code>price</code>, or <code>type=address</code>."
+
+#: templates/alerts/filters.html
+msgid "« Voir dans l'agenda » l'applique pendant ta visite, en plus des menus. Avec un compte, enregistre-le et active une <b>alerte</b> : courriel, notification du navigateur, Discord ou Telegram."
+msgstr "“See in the calendar” applies it during your visit, on top of the menus. With an account, save it and turn on an <b>alert</b>: email, browser notification, Discord or Telegram."
+
+#: templates/alerts/filters.html
+msgid "Écris d'abord à <b>@%(bot)s</b> sur Telegram (sinon il ne peut pas te répondre), puis récupère ton identifiant auprès de @userinfobot."
+msgstr "First write to <b>@%(bot)s</b> on Telegram (otherwise it cannot reply), then get your ID from @userinfobot."
+
 #: templates/base.html
 msgid "%(n)s notification non lue"
 msgid_plural "%(n)s notifications non lues"
@@ -1194,6 +1620,10 @@ msgstr[1] "%(n)s unread notifications"
 #: templates/base.html
 msgid "Agenda"
 msgstr "What's on"
+
+#: templates/base.html
+msgid "Alertes"
+msgstr "Alerts"
 
 #: templates/base.html
 msgid "Aller au contenu"
@@ -1322,10 +1752,6 @@ msgstr "Settings"
 #: templates/base.html
 msgid "S'abonner à l'agenda (iCal)"
 msgstr "Subscribe to the calendar (iCal)"
-
-#: templates/base.html
-msgid "Se connecter"
-msgstr "Sign in"
 
 #: templates/base.html
 msgid "Se déconnecter"
@@ -1530,6 +1956,10 @@ msgstr "Friend requests, invitations and people joining your events will show up
 #: templates/community/notifications.html
 msgid "Modérer"
 msgstr "Review"
+
+#: templates/community/notifications.html
+msgid "Nouveau pour ton alerte « %(name)s » : <strong>%(title)s</strong>."
+msgstr "New for your alert “%(name)s”: <strong>%(title)s</strong>."
 
 #: templates/community/notifications.html
 msgid "Rien de neuf pour l'instant."
@@ -1896,52 +2326,84 @@ msgid "Rien pour l'instant…"
 msgstr "Nothing yet…"
 
 #: templates/events/_filters.html
-msgid "Catégories, zones, sources"
-msgstr "Categories, areas, sources"
+msgid "Appliquer"
+msgstr "Apply"
 
 #: templates/events/_filters.html
-msgid "Combine des conditions (catégorie, âge, lieu, distance, source, prix…) avec ET, OU et SAUF, puis enregistre la règle pour la retrouver."
-msgstr "Combine conditions (category, age, place, distance, source, price…) with AND, OR and NOT, then save the rule to use it again."
+msgid "Choisir des dates…"
+msgstr "Choose dates…"
+
+#: templates/events/_filters.html
+msgid "Dates"
+msgstr "Dates"
 
 #: templates/events/_filters.html
 msgid "Effacer les filtres"
 msgstr "Clear filters"
 
 #: templates/events/_filters.html
-msgid "Filtre avancé"
-msgstr "Advanced filter"
+msgid "Ou adapté aux âges"
+msgstr "Or suitable for ages"
 
 #: templates/events/_filters.html
-msgid "Le filtre avancé a besoin de JavaScript."
-msgstr "The advanced filter needs JavaScript."
+msgid "Ou près d'une adresse"
+msgstr "Or near an address"
 
 #: templates/events/_filters.html
-msgid "Quand"
-msgstr "When"
+msgid "Où"
+msgstr "Where"
+
+#: templates/events/_filters.html
+msgid "Place Masséna, Nice…"
+msgstr "Place Masséna, Nice…"
+
+#: templates/events/_filters.html
+msgid "Retirer l'adresse"
+msgstr "Remove the address"
 
 #: templates/events/_filters.html
 msgid "Seulement Nice-Event"
 msgstr "Only Nice-Event"
 
 #: templates/events/_filters.html
-msgid "Seulement les autres agendas"
-msgstr "Only other calendars"
-
-#: templates/events/_filters.html
-msgid "Seulement les événements publiés sur Nice-Event, sans ceux des autres agendas"
-msgstr "Only events published on Nice-Event, without those from other calendars"
-
-#: templates/events/_filters.html
 msgid "Sources"
 msgstr "Sources"
 
 #: templates/events/_filters.html
-msgid "Touche une source pour la masquer ou la réafficher."
-msgstr "Tap a source to hide or show it."
+msgid "Ton filtre « %(name)s » s'ajoute à ces menus."
+msgstr "Your filter “%(name)s” is applied on top of these menus."
 
 #: templates/events/_filters.html
-msgid "actif"
-msgstr "on"
+msgid "Touche le premier jour, puis le dernier."
+msgstr "Tap the first day, then the last."
+
+#: templates/events/_filters.html
+msgid "Tout ce qui vient"
+msgstr "Everything upcoming"
+
+#: templates/events/_filters.html
+msgid "Tout cocher"
+msgstr "Select all"
+
+#: templates/events/_filters.html
+msgid "Tout décocher"
+msgstr "Deselect all"
+
+#: templates/events/_filters.html
+msgid "Types"
+msgstr "Types"
+
+#: templates/events/_filters.html
+msgid "dans un rayon de"
+msgstr "within"
+
+#: templates/events/_filters.html
+msgid "Âge"
+msgstr "Age"
+
+#: templates/events/_results.html
+msgid "Afficher plus d'événements"
+msgstr "Show more events"
 
 #: templates/events/_share.html
 msgid "Copier le lien"
@@ -2070,10 +2532,6 @@ msgid "J'y vais (annuler)"
 msgstr "I'm going (cancel)"
 
 #: templates/events/detail.html
-msgid "Modifier"
-msgstr "Edit"
-
-#: templates/events/detail.html
 msgid "Non accessible en fauteuil roulant"
 msgstr "Not wheelchair accessible"
 
@@ -2186,10 +2644,6 @@ msgid "État"
 msgstr "Status"
 
 #: templates/events/list.html
-msgid "Afficher plus d'événements"
-msgstr "Show more events"
-
-#: templates/events/list.html
 msgid "Ajouter ces événements à ton agenda (Google, Apple, Outlook, Thunderbird…)"
 msgstr "Add these events to your calendar (Google, Apple, Outlook, Thunderbird…)"
 
@@ -2204,10 +2658,6 @@ msgstr "Subscribe"
 #: templates/events/list.html
 msgid "Tous les événements à venir à Nice, sur la Côte d'Azur et à Monaco : concerts, soirées, sorties, ateliers, rencontres."
 msgstr "All upcoming events in Nice, on the French Riviera and in Monaco: concerts, parties, outings, workshops, meetups."
-
-#: templates/events/list.html
-msgid "Voir sur la carte"
-msgstr "See on the map"
 
 #: templates/events/map.html
 msgid "Aucun événement sur la carte avec ces filtres."

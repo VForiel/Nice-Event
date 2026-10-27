@@ -74,6 +74,16 @@
     </div>
   </fieldset>
   <fieldset class="g-block">
+    <legend>Alertes des membres</legend>
+    <p class="g-help">Les membres reçoivent leurs alertes sur le site, par courriel, sur Discord (webhook), dans leur navigateur
+      (clés créées automatiquement) et sur Telegram si un bot est configuré ici : créer le bot avec @BotFather, coller son jeton.</p>
+    <div class="g-grid">
+      {% include "gestion/_field.html" with field=form.telegram_bot_name %}
+      {% include "gestion/_field.html" with field=form.telegram_bot_token %}
+      <div class="field field-check"><label class="check">{{ form.clear_telegram_bot_token }} <span>Effacer le jeton</span></label></div>
+    </div>
+  </fieldset>
+  <fieldset class="g-block">
     <legend>Agendas externes</legend>
     <p class="g-help">Les sources se gèrent dans <a href="{% url 'gestion:sources' %}">Gestion › Sources</a>.</p>
     {% include "gestion/_field.html" with field=form.scan_times %}

@@ -58,6 +58,13 @@ class SiteConfig(models.Model):
     x_api_secret = EncryptedTextField("X : API key secret", blank=True)
     x_access_token = models.CharField("X : access token", max_length=100, blank=True)
     x_access_secret = EncryptedTextField("X : access token secret", blank=True)
+    # Alertes des membres (page « Filtres & alertes »)
+    telegram_bot_token = EncryptedTextField("jeton du bot Telegram", blank=True,
+                                            help_text="Créé avec @BotFather ; les membres indiquent leur identifiant de discussion.")
+    telegram_bot_name = models.CharField("nom du bot Telegram", max_length=60, blank=True, help_text="Sans @, ex. NiceEventBot")
+    # Notifications du navigateur (Web Push) : paire de clés VAPID créée automatiquement au premier besoin.
+    vapid_public_key = models.CharField(max_length=120, blank=True, editable=False)
+    vapid_private_key = EncryptedTextField(blank=True, editable=False)
     social_checked_at = models.DateTimeField("dernière vérification des comptes", null=True, blank=True)
     social_check = models.JSONField("résultat de la vérification", default=dict, blank=True)
 
