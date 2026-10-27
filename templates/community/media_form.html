@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n ne %}
+{% block title %}{% translate "Ajouter des photos ou vidéos" %}{% endblock %}
+{% block head %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block content %}
+<div class="wrap page-body media-page">
+  <p><a href="{{ event.get_absolute_url }}#souvenirs">{% icon "arrow-left" 16 %} {{ event.title_tr }}</a></p>
+  <h1 class="page-title">{% translate "Ajouter des photos ou vidéos" %}</h1>
+  <p class="page-lede">{% translate "Plusieurs fichiers d'un coup, ou des liens vers un média hébergé ailleurs. Une vidéo trop lourde, une photo qui ne passe pas ou un album entier ? Mets-les sur YouTube, Vimeo, Google Photos ou Flickr et colle simplement le lien." %}</p>
+  <form class="form" method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    {% if form.errors %}<p class="form-error" tabindex="-1" data-form-error>{% if form.non_field_errors %}{{ form.non_field_errors|join:" " }}{% else %}{% translate "Rien n'est publié : corrige les champs signalés." %}{% endif %}</p>{% endif %}
+    {% include "community/_field.html" with field=form.files %}
+    {% include "community/_field.html" with field=form.links %}
+    {% include "community/_field.html" with field=form.caption %}
+    {% include "community/_field.html" with field=form.consent %}
+    <button class="btn btn-primary" type="submit">{% icon "check" 18 %} {% translate "Publier" %}</button>
+  </form>
+</div>
+{% endblock %}

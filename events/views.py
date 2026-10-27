@@ -191,6 +191,7 @@ def event_detail(request, slug):
         "story_url": reverse("events:visual", args=[event.slug, "story"]) + "?telecharger=1",
         "share_text": share_text(event),
     }
+    context.update(memories(request, event))
     if request.user.is_authenticated:
         friends = list(friends_of(request.user))
         going_ids = {u.pk for u in attendees}
@@ -200,6 +201,28 @@ def event_detail(request, slug):
             "invitable": [f for f in friends if f.pk not in going_ids],
         })
     return render(request, "events/detail.html", context)
+
+
+def memories(request, event):
+    """Commentaires, notes, photos et vidéos des membres sur la fiche d'un événement."""
+    from community.forms import CommentForm
+    from community.models import Comment, Media
+    from community.views import can_rate
+
+    comments = list(Comment.objects.filter(event=event, is_hidden=False, author__is_active=True)
+                    .select_related("author__profile"))
+    ratings = [c.rating for c in comments if c.rating]
+    rate = can_rate(event)
+    return {
+        "comments": [c for c in comments if c.body],
+        "rating_count": len(ratings),
+        "rating_average": round(sum(ratings) / len(ratings), 1) if ratings else None,
+        "rating_stars": round(sum(ratings) / len(ratings)) if ratings else 0,
+        "my_rating": next((c.rating for c in reversed(comments) if c.rating and c.author_id == request.user.pk), None),
+        "can_rate": rate,
+        "comment_form": CommentForm(can_rate=rate),
+        "media": Media.objects.filter(event=event, is_hidden=False).select_related("uploader__profile"),
+    }
 
 
 def og_image_url(request, event):

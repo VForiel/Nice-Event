@@ -186,3 +186,45 @@
 fieldset.field { border: 0; padding: 0; margin: 0; min-width: 0; }
 fieldset.field legend { font-weight: 700; padding: 0; }
 
+
+/* Avis, notes et souvenirs (photos, vidéos, liens) sur la fiche d'un événement */
+.memories { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line); scroll-margin-top: 96px; }
+.memories-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-bottom: 12px; }
+.memories-head h2 { font-size: 1.5rem; margin: 0; }
+.rating-summary { display: flex; align-items: center; gap: 6px; margin: 0; }
+.stars { display: inline-flex; gap: 1px; vertical-align: -2px; }
+.star { display: inline-flex; color: var(--line); }
+.star svg { fill: currentColor; stroke: none; }
+.star.is-on { color: var(--ocre); }
+.comments { list-style: none; padding: 0; margin: 0 0 16px; display: grid; gap: 14px; }
+.comment { display: grid; grid-template-columns: auto 1fr; gap: 10px; scroll-margin-top: 96px; }
+.comment-body p { margin: 0 0 4px; overflow-wrap: anywhere; }
+.comment-meta { font-size: .9rem; color: var(--ink-2); }
+.comment-meta a { color: var(--ink); }
+.comment-tools { display: flex; gap: 12px; font-size: .8125rem; }
+.comment-tools form { display: inline; }
+.comment-tools button, .comment-tools a { background: none; border: 0; padding: 0; color: var(--ink-2); font: inherit; cursor: pointer; text-decoration: underline; }
+.comment-form { display: grid; gap: 10px; max-width: 640px; }
+.rate { border: 0; padding: 0; margin: 0; }
+.rate legend { font-weight: 600; margin-bottom: 4px; }
+.rate-stars { display: inline-flex; flex-direction: row-reverse; gap: 2px; }
+.rate-stars label { cursor: pointer; color: var(--line); display: inline-flex; }
+.rate-stars input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.rate-stars svg { fill: currentColor; stroke: var(--ink-2); stroke-width: 1; }
+.rate-stars label:hover, .rate-stars label:hover ~ label,
+.rate-stars label:has(input:checked), .rate-stars label:has(input:checked) ~ label { color: var(--ocre); }
+.rate-stars label:has(input:focus-visible) { outline: 2px solid var(--chaise); outline-offset: 2px; border-radius: 4px; }
+.media-grid { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); }
+.media-item { display: grid; gap: 6px; scroll-margin-top: 96px; }
+.media-frame { display: block; width: 100%; aspect-ratio: 4 / 3; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--paper-2, var(--card)); }
+.media-frame img, .media-frame video, .media-frame iframe { width: 100%; height: 100%; object-fit: cover; border: 0; display: block; }
+video.media-frame { object-fit: contain; background: #000; }
+.embed { display: grid; place-items: center; text-align: center; padding: 12px; }
+.embed.is-playing { padding: 0; }
+.embed-play { display: inline-flex; flex-direction: column; align-items: center; gap: 6px; background: none; border: 0; color: var(--ink); font: inherit; font-weight: 600; cursor: pointer; }
+.embed-play svg { fill: currentColor; width: 44px; height: 44px; padding: 8px; border-radius: 50%; background: var(--card); border: 1px solid var(--line); }
+.embed-note { font-size: .75rem; color: var(--ink-2); margin: 0; }
+.media-link { display: grid; place-content: center; justify-items: center; gap: 4px; color: var(--ink); text-decoration: none; text-align: center; padding: 12px; }
+.media-link span { font-size: .875rem; color: var(--ink-2); }
+.media-meta p { margin: 0; font-size: .875rem; color: var(--ink-2); overflow-wrap: anywhere; }
+.media-page { max-width: 720px; }

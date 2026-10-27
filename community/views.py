@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.encoding import force_str
 from django.utils.http import url_has_allowed_host_and_scheme, urlsafe_base64_decode
+from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
@@ -17,8 +18,8 @@ from core.security import client_ip, throttled
 from events.models import Event
 
 from . import confirmation
-from .forms import DeleteAccountForm, EmailForm, ProfileForm, ReportForm, SignupForm
-from .models import Friendship, Notification, Profile, Report, friends_of, relation
+from .forms import CommentForm, DeleteAccountForm, EmailForm, MediaForm, ProfileForm, ReportForm, SignupForm
+from .models import Comment, Friendship, Media, Notification, Profile, Report, friends_of, relation
 from .notify import notify
 
 SIGNUPS_PER_HOUR = 5
@@ -185,9 +186,13 @@ def profile(request, handle):
     if person.show_events or rel == "self":
         going = events.filter(attendances__user=person.user).exclude(organizer=person.user)[:6]
     organized = events.filter(organizer=person.user)[:6]
+    went = []
+    if person.past_events_visible_to(rel):
+        went = (Event.objects.published().past().filter(attendances__user=person.user)
+                .select_related("venue__commune").prefetch_related("categories")[:12])
     return render(request, "community/profile.html", {
         "person": person, "rel": rel, "friends": friends_of(person.user)[:12],
-        "friend_count": friends_of(person.user).count(), "going": going, "organized": organized,
+        "friend_count": friends_of(person.user).count(), "going": going, "organized": organized, "went": went,
         "interests": person.interests.all(),
         "show_contacts": person.has_contacts and person.contacts_visible_to(request.user, rel),
     })
@@ -243,8 +248,13 @@ AUTO_HIDE_REPORTS = 3
 def report(request, kind, key):
     if kind == "evenement":
         target = get_object_or_404(Event, slug=key)
-    else:
+    elif kind in ("commentaire", "media"):
+        model = Comment if kind == "commentaire" else Media
+        target = get_object_or_404(model.objects.select_related("event"), pk=key if key.isdigit() else 0, is_hidden=False)
+    elif kind == "profil":
         target = get_object_or_404(Profile, handle=key)
+    else:
+        raise Http404
     form = ReportForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         if throttled(f"reports:{request.user.pk}", 10, 86400):
@@ -252,7 +262,17 @@ def report(request, kind, key):
             return redirect(target.get_absolute_url())
         Report.objects.create(reporter=request.user, reason=form.cleaned_data["reason"],
                               event=target if kind == "evenement" else None,
-                              profile=target if kind != "evenement" else None)
+                              comment=target if kind == "commentaire" else None,
+                              media=target if kind == "media" else None,
+                              profile=target if kind == "profil" else None)
+        if kind in ("commentaire", "media"):
+            field = "comment" if kind == "commentaire" else "media"
+            reporters = Report.objects.filter(**{field: target}, handled=False).values("reporter").distinct().count()
+            if reporters >= AUTO_HIDE_REPORTS:
+                target.is_hidden = True
+                target.save(update_fields=["is_hidden"])
+            messages.success(request, _("Merci, l'équipe va regarder ça."))
+            return redirect(target.event.get_absolute_url())
         # Plusieurs signalements de membres différents : l'événement est masqué en attendant l'équipe.
         if kind == "evenement" and target.status == Event.Status.PUBLISHED:
             reporters = Report.objects.filter(event=target, handled=False).values("reporter").distinct().count()
@@ -264,3 +284,77 @@ def report(request, kind, key):
         return redirect(target.get_absolute_url() if kind != "evenement" or target.status == Event.Status.PUBLISHED
                         else "events:list")
     return render(request, "community/report.html", {"form": form, "target": target})
+
+
+# Commentaires, photos et vidéos des événements ----------------------------------------------------------------------
+
+
+def can_rate(event):
+    return event.starts_at <= timezone.now()
+
+
+@login_required
+@require_POST
+def comment_new(request, slug):
+    event = get_object_or_404(Event.objects.published(), slug=slug)
+    form = CommentForm(request.POST, can_rate=can_rate(event))
+    if not form.is_valid():
+        messages.error(request, " ".join(e for errors in form.errors.values() for e in errors))
+    elif throttled(f"comments:{request.user.pk}", 30, 3600):
+        messages.error(request, _("Beaucoup de commentaires en peu de temps : réessaie plus tard."))
+    else:
+        rating = form.cleaned_data.get("rating")
+        if rating:  # seule la note la plus récente d'un membre compte
+            Comment.objects.filter(event=event, author=request.user, rating__isnull=False).update(rating=None)
+        comment = Comment.objects.create(event=event, author=request.user, rating=rating,
+                                         body=form.cleaned_data["body"].strip())
+        Comment.objects.filter(event=event, author=request.user, rating__isnull=True, body="").exclude(
+            pk=comment.pk).delete()  # anciennes notes sans texte, remplacées
+        messages.success(request, _("Merci pour ton avis !") if rating else _("Commentaire publié."))
+        return redirect(comment.get_absolute_url())
+    return redirect(event.get_absolute_url() + "#commentaires")
+
+
+@login_required
+@require_POST
+def comment_delete(request, pk):
+    comment = get_object_or_404(Comment.objects.select_related("event"), pk=pk)
+    if comment.author_id != request.user.pk and not request.user.is_staff:
+        raise Http404
+    comment.delete()
+    messages.success(request, _("Commentaire supprimé."))
+    return redirect(safe_next(request, comment.event.get_absolute_url() + "#commentaires"))
+
+
+@login_required
+def media_new(request, slug):
+    event = get_object_or_404(Event.objects.published(), slug=slug)
+    form = MediaForm(request.POST or None, request.FILES or None)
+    if request.method == "POST" and form.is_valid():
+        data = form.cleaned_data
+        count = len(data["files"]) + len(data["links"])
+        if throttled(f"media:{request.user.pk}", 60, 86400, cost=count):
+            messages.error(request, _("Beaucoup d'envois aujourd'hui : réessaie demain."))
+            return redirect(event.get_absolute_url())
+        common = {"event": event, "uploader": request.user, "caption": data["caption"].strip()}
+        for kind, f in data["files"]:
+            if kind == "photo":
+                Media.objects.create(kind=Media.Kind.PHOTO, image=f, **common)
+            else:
+                Media.objects.create(kind=Media.Kind.VIDEO, video=f, **common)
+        for link in data["links"]:
+            Media.objects.create(kind=Media.Kind.LINK, url=link, **common)
+        messages.success(request, _("Merci ! %(n)s élément(s) ajouté(s).") % {"n": count})
+        return redirect(event.get_absolute_url() + "#souvenirs")
+    return render(request, "community/media_form.html", {"form": form, "event": event})
+
+
+@login_required
+@require_POST
+def media_delete(request, pk):
+    item = get_object_or_404(Media.objects.select_related("event"), pk=pk)
+    if item.uploader_id != request.user.pk and not request.user.is_staff:
+        raise Http404
+    item.delete()
+    messages.success(request, _("Supprimé."))
+    return redirect(safe_next(request, item.event.get_absolute_url() + "#souvenirs"))

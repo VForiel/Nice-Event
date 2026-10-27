@@ -3,7 +3,7 @@
 
 {% block content %}
 <h1 class="g-title">Signalements</h1>
-<p class="g-lede">Un événement signalé par trois membres différents est masqué automatiquement en attendant ta décision
+<p class="g-lede">Un événement, un commentaire ou un média signalé par trois membres différents est masqué automatiquement en attendant ta décision
   (Événements › Masqués).</p>
 <table class="g-table">
   <thead><tr><th>Reçu</th><th>Contenu</th><th>Motif</th><th>Par</th><th></th></tr></thead>
@@ -12,6 +12,8 @@
     <tr{% if r.handled %} class="is-done"{% endif %}>
       <td class="nowrap">{{ r.created_at|date:"d/m H:i" }}</td>
       <td>{% if r.event %}Événement : <a href="{{ r.event.get_absolute_url }}" target="_blank">{{ r.event.title }}</a> ({{ r.event.get_status_display|lower }})
+        {% elif r.comment %}Commentaire de {{ r.comment.author.profile.display_name }} sur <a href="{{ r.comment.get_absolute_url }}" target="_blank">{{ r.comment.event.title }}</a>{% if r.comment.is_hidden %} (masqué){% endif %} : « {{ r.comment.body|truncatechars:160 }} »
+        {% elif r.media %}{{ r.media.get_kind_display }} sur <a href="{{ r.media.get_absolute_url }}" target="_blank">{{ r.media.event.title }}</a>{% if r.media.is_hidden %} (masqué){% endif %}{% if r.media.url %} : <a href="{{ r.media.url }}" rel="noopener nofollow" target="_blank">{{ r.media.url|truncatechars:60 }}</a>{% elif r.media.image %} : <a href="{{ r.media.image.url }}" target="_blank">image</a>{% elif r.media.video %} : <a href="{{ r.media.video.url }}" target="_blank">vidéo</a>{% endif %}
         {% elif r.profile %}Profil : <a href="{{ r.profile.get_absolute_url }}" target="_blank">{{ r.profile.display_name }}</a>{% endif %}</td>
       <td>{{ r.reason|linebreaksbr }}</td>
       <td>{{ r.reporter.profile.display_name|default:"compte supprimé" }}</td>
@@ -21,6 +23,10 @@
         {% if r.event and r.event.status == 'published' %}
         <form method="post" action="{% url 'gestion:event_action' r.event.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}">
           <button class="btn btn-ghost btn-sm" type="submit" name="action" value="hide">Masquer l'événement</button></form>{% endif %}
+        {% if r.comment %}<form method="post" action="{% url 'community:comment_delete' r.comment.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}">
+          <button class="btn btn-ghost btn-sm" type="submit" data-confirm="Supprimer ce commentaire ?">Supprimer le commentaire</button></form>{% endif %}
+        {% if r.media %}<form method="post" action="{% url 'community:media_delete' r.media.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}">
+          <button class="btn btn-ghost btn-sm" type="submit" data-confirm="Supprimer ce média ?">Supprimer le média</button></form>{% endif %}
       </td>
     </tr>
     {% empty %}<tr><td colspan="5">Aucun signalement.</td></tr>

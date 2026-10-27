@@ -25,12 +25,12 @@ FORBIDDEN_USERNAMES = {"admin", "administrator", "administrateur", "root", "wp-a
 KEEP_FAILURES = timedelta(days=7)  # au-delà, les échecs ne servent plus à rien
 
 
-def throttled(key, limit, seconds):
-    """Compteur simple en cache : vrai si la limite est déjà atteinte (sinon compte ce passage)."""
+def throttled(key, limit, seconds, cost=1):
+    """Compteur simple en cache : vrai si la limite est déjà atteinte (sinon compte ce passage, pour `cost`)."""
     count = cache.get(key, 0)
     if count >= limit:
         return True
-    cache.set(key, count + 1, seconds)
+    cache.set(key, count + cost, seconds)
     return False
 
 

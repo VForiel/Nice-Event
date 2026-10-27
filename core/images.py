@@ -80,3 +80,27 @@ def thumbnail_url(field, size):
     except (OSError, Image.DecompressionBombError):
         return field.url
     return f"{settings.MEDIA_URL}{rel}?v={int(mtime)}"
+
+
+VIDEO_MAX_BYTES = 50 * 1024 * 1024
+VIDEO_TYPES = {".mp4": "video/mp4", ".m4v": "video/mp4", ".mov": "video/quicktime", ".webm": "video/webm"}
+
+
+def validate_video(uploaded):
+    """Vidéos MP4, MOV ou WebM d'au plus 50 Mo, vérifiées sur leur signature (pas seulement l'extension)."""
+    suffix = Path(uploaded.name).suffix.lower()
+    if suffix not in VIDEO_TYPES:
+        raise ValidationError(_("Format de vidéo non pris en charge (MP4, MOV ou WebM). Partage-la plutôt par un lien "
+                                "(YouTube, Google Photos…)."))
+    if uploaded.size > VIDEO_MAX_BYTES:
+        raise ValidationError(_("Vidéo trop lourde (50 Mo maximum) : mets-la sur YouTube, Vimeo ou Google Photos et "
+                                "colle le lien."))
+    uploaded.seek(0)
+    head = uploaded.read(12)
+    uploaded.seek(0)
+    if not (head[4:8] == b"ftyp" or head[:4] == b"\x1a\x45\xdf\xa3"):
+        raise ValidationError(_("Ce fichier n'est pas une vidéo lisible."))
+
+
+def is_video_name(name):
+    return Path(name).suffix.lower() in VIDEO_TYPES

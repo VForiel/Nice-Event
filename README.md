@@ -30,7 +30,7 @@ Site : http://localhost:8000 (anglais sous `/en/`), gestion : `/gestion/`, admin
 | `core` | accueil, pages fixes, sécurité (blocage des IP), images, Markdown, planificateur de tâches (`core/jobs.py`, commande `worker`), sauvegardes |
 | `venues` | communes des Alpes-Maritimes et de Monaco (zones Nice / Métropole / Côte / Arrière-pays / Monaco), lieux, géocodage BAN (`venues/geocode.py`) |
 | `events` | catégories (`events/categories.py` : emoji, couleur, pictogramme), événements, publication, liste filtrable, carte, iCal, JSON-LD |
-| `community` | comptes (connexion par courriel), confirmation d'adresse, profils, amis, « J'y vais », invitations, notifications (+ courriel), signalements |
+| `community` | comptes (connexion par courriel), confirmation d'adresse, profils, amis, « J'y vais », invitations, notifications (+ courriel), signalements, avis (commentaires + notes) et photos/vidéos des événements |
 | `social` | visuels générés (`social/visuals.py`), diffusion Instagram / Facebook / X / Bluesky (`social/networks.py`), publications programmées |
 | `aggregator` | agendas externes : connecteurs iCal, JSON-LD (schema.org Event) et OpenAgenda, import, doublons, disparitions |
 | `siteconfig` | réglages en base (courriel, réseaux, horaires des scans…), secrets chiffrés |
@@ -45,6 +45,21 @@ Site : http://localhost:8000 (anglais sous `/en/`), gestion : `/gestion/`, admin
   devient « de confiance » et publie directement. Refus : motif envoyé à l'auteur.
 - Trois signalements de membres différents masquent un événement en attendant l'équipe.
 - Modifier un événement (date, lieu, annulé, reporté) prévient les personnes inscrites.
+
+## Avis, photos et vidéos
+
+- **Avis** sous chaque événement publié (y compris ceux des agendas externes) : commentaire et/ou note de 1 à 5 étoiles,
+  la note seulement une fois l'événement commencé ; une seule note compte par membre (la plus récente). Moyenne affichée
+  en haut de la fiche.
+- **Photos et vidéos** (`/evenements/<slug>/souvenirs/ajouter/`) : plusieurs fichiers d'un coup (photos converties en
+  WebP, 12 Mo max. ; vidéos MP4/MOV/WebM jusqu'à 50 Mo, servies par plages d'octets pour Safari) et liens externes, un
+  par ligne. YouTube, Vimeo et Dailymotion se lisent sur place mais le lecteur ne se charge qu'au clic (`core/embeds.py`,
+  domaines ajoutés à la CSP `frame-src`) ; Pinterest, Google Photos, Drive, Flickr, Instagram… s'affichent en carte. Un
+  fichier trop lourd ou non convertible (HEIC…) est refusé avec le conseil de passer par un lien.
+- Modération : signalement des commentaires et médias (masqués après trois signalements), suppression par l'auteur·rice
+  et l'équipe, y compris depuis `/gestion/signalements/`.
+- **Profil** : rubrique « Y est allé·e » (événements passés où le membre a cliqué « J'y vais »), visible selon le réglage
+  « qui voit les événements auxquels j'ai participé » (tous ceux qui voient le profil, amis, moi seul·e).
 
 ## Filtres
 

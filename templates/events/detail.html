@@ -29,6 +29,7 @@
         {% elif event.organizer_name %}{% translate "Organisé par" %} {% if event.organizer_url %}<a href="{{ event.organizer_url }}" rel="noopener nofollow">{{ event.organizer_name }}</a>{% else %}{{ event.organizer_name }}{% endif %}
         {% elif event.organizer %}{% translate "Proposé par" %} <a href="{{ event.organizer.profile.get_absolute_url }}">{{ event.organizer.profile.display_name }}</a>{% endif %}
         {% if attendee_count %} · {% blocktranslate count n=attendee_count %}{{ n }} personne y va{% plural %}{{ n }} personnes y vont{% endblocktranslate %}{% endif %}
+        {% if rating_count %} · <a href="#commentaires">{% include "community/_stars.html" with value=rating_stars %} {{ rating_average|floatformat:1 }}/5</a>{% endif %}
       </p>
 
       {% if event.photo %}
@@ -65,6 +66,8 @@
         {% endif %}
       </section>
       {% endif %}
+
+      {% if event.status == 'published' %}{% include "community/_memories.html" %}{% endif %}
     </div>
 
     <aside class="event-side">

@@ -11,6 +11,8 @@ from pathlib import Path
 
 from django.utils.csp import CSP
 
+from core.embeds import FRAME_SOURCES
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
 
@@ -193,6 +195,7 @@ SECURE_CSP = {
     "font-src": [CSP.SELF],
     "connect-src": [CSP.SELF],
     "form-action": [CSP.SELF],
+    "frame-src": [CSP.SELF, *FRAME_SOURCES],  # lecteurs vidéo chargés au clic (core/embeds.py)
     "frame-ancestors": [CSP.NONE],
     "base-uri": [CSP.SELF],
     "object-src": [CSP.NONE],

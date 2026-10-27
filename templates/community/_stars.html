@@ -1,0 +1,1 @@
+{% load i18n ne %}<span class="stars" role="img" aria-label="{% blocktranslate with n=value %}{{ n }} sur 5{% endblocktranslate %}">{% for n in "12345" %}<span class="star{% if forloop.counter <= value %} is-on{% endif %}">{% icon "star" 16 %}</span>{% endfor %}</span>

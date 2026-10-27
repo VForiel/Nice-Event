@@ -102,7 +102,7 @@ class ProfileForm(PartialSaveMixin, forms.ModelForm):
         model = Profile
         fields = [
             "display_name", "pronouns", "avatar", "headline", "bio", "commune", "interests", "website", "accent",
-            "visibility", "show_events", "email_notifications",
+            "visibility", "show_events", "past_events", "email_notifications",
             "phone", "whatsapp", "instagram", "facebook", "bluesky", "x", "other_contact", "contact_visibility",
         ]
         widgets = {
@@ -112,6 +112,7 @@ class ProfileForm(PartialSaveMixin, forms.ModelForm):
             "accent": forms.RadioSelect,
             "visibility": forms.RadioSelect,
             "contact_visibility": forms.RadioSelect,
+            "past_events": forms.RadioSelect,
             "phone": forms.TextInput(attrs={"type": "tel", "autocomplete": "tel"}),
             "whatsapp": forms.TextInput(attrs={"type": "tel"}),
         }
@@ -177,3 +178,98 @@ class DeleteAccountForm(forms.Form):
 class ReportForm(forms.Form):
     reason = forms.CharField(label=_("Qu'est-ce qui ne va pas ?"), max_length=1000, widget=forms.Textarea(attrs={"rows": 4}),
                              help_text=_("Arnaque, faux événement, contenu choquant ou illégal, revente de billets…"))
+
+
+class CommentForm(forms.Form):
+    body = forms.CharField(label=_("Ton commentaire"), max_length=2000, required=False,
+                           widget=forms.Textarea(attrs={"rows": 3}))
+    rating = forms.TypedChoiceField(label=_("Ta note"), required=False, coerce=int, empty_value=None,
+                                    choices=[(n, n) for n in range(5, 0, -1)], widget=forms.RadioSelect)
+
+    def __init__(self, *args, can_rate=True, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not can_rate:
+            del self.fields["rating"]
+
+    def clean(self):
+        data = super().clean()
+        if not (data.get("body") or "").strip() and not data.get("rating"):
+            raise forms.ValidationError(_("Écris quelques mots ou choisis une note."))
+        return data
+
+
+class MultipleFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+
+class MultipleFileField(forms.FileField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("widget", MultipleFileInput(attrs={"accept": "image/*,video/mp4,video/webm,video/quicktime"}))
+        super().__init__(*args, **kwargs)
+
+    def clean(self, data, initial=None):
+        if isinstance(data, (list, tuple)):
+            return [super(MultipleFileField, self).clean(d, initial) for d in data if d]
+        return [super().clean(data, initial)] if data else []
+
+
+class MediaForm(forms.Form):
+    """Plusieurs photos et vidéos d'un coup, et/ou des liens vers des médias hébergés ailleurs (un par ligne)."""
+
+    MAX_ITEMS = 20
+
+    files = MultipleFileField(label=_("Photos et vidéos"), required=False,
+                              help_text=_("Plusieurs fichiers à la fois. Photos jusqu'à 12 Mo (converties en WebP), "
+                                          "vidéos MP4, MOV ou WebM jusqu'à 50 Mo."))
+    links = forms.CharField(label=_("Ou des liens"), required=False, widget=forms.Textarea(attrs={"rows": 3}),
+                            help_text=_("Un par ligne : YouTube, Vimeo, Dailymotion (lus sur place), Pinterest, "
+                                        "Google Photos, Drive, Flickr… Pratique pour les vidéos lourdes ou les albums."))
+    caption = forms.CharField(label=_("Légende"), max_length=200, required=False)
+    consent = forms.BooleanField(label=_("Les personnes reconnaissables sur ces photos et vidéos sont d'accord pour "
+                                         "qu'elles soient publiées sur le site."))
+
+    def clean_files(self):
+        from django.core.exceptions import ValidationError
+
+        from core.images import is_video_name, validate_image, validate_video
+
+        items, errors = [], []
+        for f in self.cleaned_data["files"]:
+            try:
+                if is_video_name(f.name):
+                    validate_video(f)
+                    items.append(("video", f))
+                else:
+                    validate_image(f)
+                    items.append(("photo", f))
+            except ValidationError as exc:
+                hint = _("ou partage-la par un lien (Google Photos, Flickr…)") if not is_video_name(f.name) else ""
+                errors.append(f"{f.name} : {' '.join(exc.messages)} {hint}".strip())
+        if errors:
+            raise forms.ValidationError(errors)
+        return items
+
+    def clean_links(self):
+        from core.embeds import parse
+
+        links, bad = [], []
+        for line in self.cleaned_data["links"].split():
+            line = line.strip()
+            if not line:
+                continue
+            if not line.startswith(("http://", "https://")):
+                line = "https://" + line
+            line = line.replace("http://", "https://", 1)
+            (links if parse(line) and len(line) <= 500 else bad).append(line)
+        if bad:
+            raise forms.ValidationError(_("Lien non valable : %(list)s") % {"list": ", ".join(bad)})
+        return links
+
+    def clean(self):
+        data = super().clean()
+        count = len(data.get("files") or []) + len(data.get("links") or [])
+        if not count and not self.errors:
+            raise forms.ValidationError(_("Ajoute au moins une photo, une vidéo ou un lien."))
+        if count > self.MAX_ITEMS:
+            raise forms.ValidationError(_("%(n)s éléments au plus à la fois.") % {"n": self.MAX_ITEMS})
+        return data

@@ -1,0 +1,77 @@
+{% load i18n ne %}{# Avis (commentaires + notes) et photos/vidéos des membres, sur la fiche d'un événement. #}
+<section class="memories" id="commentaires" aria-labelledby="comments-title">
+  <header class="memories-head">
+    <h2 id="comments-title">{% translate "Avis et commentaires" %}</h2>
+    {% if rating_count %}<p class="rating-summary">{% include "community/_stars.html" with value=rating_stars %} <b>{{ rating_average|floatformat:1 }}</b> / 5 · {% blocktranslate count n=rating_count %}{{ n }} note{% plural %}{{ n }} notes{% endblocktranslate %}</p>{% endif %}
+  </header>
+  {% if comments %}
+  <ol class="comments">
+    {% for c in comments %}
+    <li class="comment" id="commentaire-{{ c.pk }}">
+      <a href="{{ c.author.profile.get_absolute_url }}">{% include "community/_avatar.html" with p=c.author.profile size="sm" %}</a>
+      <div class="comment-body">
+        <p class="comment-meta"><a href="{{ c.author.profile.get_absolute_url }}"><b>{{ c.author.profile.display_name }}</b></a>{% if c.rating %} {% include "community/_stars.html" with value=c.rating %}{% endif %} · <time datetime="{{ c.created_at|date:'c' }}">{% blocktranslate with t=c.created_at|timesince %}il y a {{ t }}{% endblocktranslate %}</time></p>
+        <p>{{ c.body|linebreaksbr }}</p>
+        {% if user.is_authenticated %}<div class="comment-tools">
+          {% if c.author_id == user.pk or user.is_staff %}<form method="post" action="{% url 'community:comment_delete' c.pk %}">{% csrf_token %}<button type="submit" data-confirm="{% translate "Supprimer ce commentaire ?" %}">{% translate "Supprimer" %}</button></form>{% endif %}
+          {% if c.author_id != user.pk %}<a href="{% url 'community:report' 'commentaire' c.pk %}">{% translate "Signaler" %}</a>{% endif %}
+        </div>{% endif %}
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+  {% elif not rating_count %}<p class="help">{% translate "Pas encore d'avis. Tu y étais, ou tu as une question ? Lance la discussion." %}</p>{% endif %}
+
+  {% if user.is_authenticated %}
+  <form class="form comment-form" method="post" action="{% url 'community:comment_new' event.slug %}">
+    {% csrf_token %}
+    {% if can_rate %}
+    <fieldset class="rate">
+      <legend>{% if my_rating %}{% blocktranslate with n=my_rating %}Ta note : {{ n }}/5 (une nouvelle note la remplace){% endblocktranslate %}{% else %}{% translate "Ta note (facultatif)" %}{% endif %}</legend>
+      <div class="rate-stars">{% for radio in comment_form.rating %}<label title="{{ radio.choice_label }}/5">{{ radio.tag }}{% icon "star" 28 %}<span class="sr">{% blocktranslate with n=radio.choice_label %}{{ n }} sur 5{% endblocktranslate %}</span></label>{% endfor %}</div>
+    </fieldset>
+    {% endif %}
+    <div class="field"><label for="{{ comment_form.body.id_for_label }}">{{ comment_form.body.label }}</label>{{ comment_form.body }}</div>
+    <button class="btn btn-primary" type="submit">{% translate "Publier" %}</button>
+  </form>
+  {% else %}
+  <p><a class="btn btn-ghost" href="{% url 'community:login' %}?next={{ request.path|urlencode }}">{% translate "Se connecter pour commenter" %}</a></p>
+  {% endif %}
+</section>
+
+<section class="memories" id="souvenirs" aria-labelledby="media-title">
+  <header class="memories-head">
+    <h2 id="media-title">{% translate "Photos et vidéos" %}</h2>
+    {% url 'community:media_new' event.slug as media_new %}
+    <a class="btn btn-ghost" href="{% if user.is_authenticated %}{{ media_new }}{% else %}{% url 'community:login' %}?next={{ media_new|urlencode }}{% endif %}">{% icon "plus" 18 %} {% translate "Ajouter des photos ou vidéos" %}</a>
+  </header>
+  {% if media %}
+  <ul class="media-grid">
+    {% for m in media %}
+    <li class="media-item media-{{ m.kind }}" id="media-{{ m.pk }}">
+      {% if m.kind == "photo" %}
+      <a class="media-frame" href="{{ m.image.url }}" target="_blank"><img src="{{ m.image|thumb:480 }}" alt="{{ m.caption }}" loading="lazy"></a>
+      {% elif m.kind == "video" %}
+      <video class="media-frame" src="{{ m.video.url }}" controls preload="metadata" playsinline></video>
+      {% else %}{% with e=m.embed %}
+        {% if e.player %}
+        <div class="media-frame embed" data-embed="{{ e.player }}" data-embed-title="{{ m.caption|default:e.provider }}">
+          <button class="embed-play" type="button">{% icon "play" 28 %}<span>{% blocktranslate with p=e.provider %}Lire la vidéo ({{ p }}){% endblocktranslate %}</span></button>
+          <p class="embed-note">{% blocktranslate with p=e.provider %}Le lecteur {{ p }} ne se charge qu'au clic.{% endblocktranslate %}</p>
+        </div>
+        {% else %}
+        <a class="media-frame media-link" href="{{ m.url }}" rel="noopener nofollow" target="_blank">{% icon "external" 22 %}<b>{{ e.provider }}</b><span>{% translate "Voir l'album ou le média" %}</span></a>
+        {% endif %}
+      {% endwith %}{% endif %}
+      <div class="media-meta">
+        <p>{% if m.caption %}{{ m.caption }} · {% endif %}{% if m.uploader %}{{ m.uploader.profile.display_name }}{% endif %}{% if m.kind == "lien" %} · <a href="{{ m.url }}" rel="noopener nofollow" target="_blank">{% translate "lien" %}</a>{% endif %}</p>
+        {% if user.is_authenticated %}<div class="comment-tools">
+          {% if m.uploader_id == user.pk or user.is_staff %}<form method="post" action="{% url 'community:media_delete' m.pk %}">{% csrf_token %}<button type="submit" data-confirm="{% translate "Supprimer ?" %}">{% translate "Supprimer" %}</button></form>{% endif %}
+          {% if m.uploader_id != user.pk %}<a href="{% url 'community:report' 'media' m.pk %}">{% translate "Signaler" %}</a>{% endif %}
+        </div>{% endif %}
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}<p class="help">{% translate "Pas encore de photo ni de vidéo. Partage les tiennes : fichiers, ou un lien vers ton album." %}</p>{% endif %}
+</section>

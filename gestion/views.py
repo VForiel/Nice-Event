@@ -272,7 +272,8 @@ def source_scan(request, pk):
 
 @staff_required
 def reports(request):
-    items = Report.objects.select_related("reporter__profile", "event", "profile").order_by("handled", "-created_at")[:200]
+    items = Report.objects.select_related("reporter__profile", "event", "profile", "comment__event", "comment__author__profile",
+                                           "media__event").order_by("handled", "-created_at")[:200]
     return render(request, "gestion/reports.html", {"items": items})
 
 

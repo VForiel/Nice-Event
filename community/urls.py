@@ -33,4 +33,8 @@ urlpatterns = [
     path(_("amis/"), views.friends, name="friends"),
     path("notifications/", views.notifications, name="notifications"),
     path(_("signaler/<str:kind>/<slug:key>/"), views.report, name="report"),
+    path(_("evenements/<slug:slug>/commenter/"), views.comment_new, name="comment_new"),
+    path(_("commentaires/<int:pk>/supprimer/"), views.comment_delete, name="comment_delete"),
+    path(_("evenements/<slug:slug>/souvenirs/ajouter/"), views.media_new, name="media_new"),
+    path(_("souvenirs/<int:pk>/supprimer/"), views.media_delete, name="media_delete"),
 ]

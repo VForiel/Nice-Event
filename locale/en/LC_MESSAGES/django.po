@@ -250,6 +250,14 @@ msgid "Nice-Event : confirme ton adresse"
 msgstr "Nice-Event: confirm your email address"
 
 #: community/forms.py
+msgid "%(n)s éléments au plus à la fois."
+msgstr "%(n)s items at most at a time."
+
+#: community/forms.py
+msgid "Ajoute au moins une photo, une vidéo ou un lien."
+msgstr "Add at least one photo, video or link."
+
+#: community/forms.py
 msgid "Arnaque, faux événement, contenu choquant ou illégal, revente de billets…"
 msgstr "Scam, fake event, offensive or illegal content, ticket resale…"
 
@@ -278,12 +286,36 @@ msgid "Langues parlées"
 msgstr "Languages spoken"
 
 #: community/forms.py
+msgid "Les personnes reconnaissables sur ces photos et vidéos sont d'accord pour qu'elles soient publiées sur le site."
+msgstr "Everyone recognisable in these photos and videos agrees to their being published on the site."
+
+#: community/forms.py
+msgid "Lien non valable : %(list)s"
+msgstr "Invalid link: %(list)s"
+
+#: community/forms.py
+msgid "Légende"
+msgstr "Caption"
+
+#: community/forms.py
 msgid "Mot de passe"
 msgstr "Password"
 
 #: community/forms.py
 msgid "Mot de passe incorrect."
 msgstr "Wrong password."
+
+#: community/forms.py
+msgid "Ou des liens"
+msgstr "Or links"
+
+#: community/forms.py
+msgid "Photos et vidéos"
+msgstr "Photos and videos"
+
+#: community/forms.py
+msgid "Plusieurs fichiers à la fois. Photos jusqu'à 12 Mo (converties en WebP), vidéos MP4, MOV ou WebM jusqu'à 50 Mo."
+msgstr "Several files at once. Photos up to 12 MB (converted to WebP), MP4, MOV or WebM videos up to 50 MB."
 
 #: community/forms.py
 msgid "Prénom et nom (ou pseudo)"
@@ -298,12 +330,32 @@ msgid "Quelques lignes sur toi. Mise en forme Markdown possible."
 msgstr "A few lines about you. Markdown formatting allowed."
 
 #: community/forms.py
+msgid "Ta note"
+msgstr "Your rating"
+
+#: community/forms.py
+msgid "Ton commentaire"
+msgstr "Your comment"
+
+#: community/forms.py
 msgid "Ton mot de passe, pour confirmer"
 msgstr "Your password, to confirm"
 
 #: community/forms.py
 msgid "Un compte existe déjà avec cette adresse."
 msgstr "An account already exists with this address."
+
+#: community/forms.py
+msgid "Un par ligne : YouTube, Vimeo, Dailymotion (lus sur place), Pinterest, Google Photos, Drive, Flickr… Pratique pour les vidéos lourdes ou les albums."
+msgstr "One per line: YouTube, Vimeo, Dailymotion (played here), Pinterest, Google Photos, Drive, Flickr… Handy for large videos or whole albums."
+
+#: community/forms.py
+msgid "ou partage-la par un lien (Google Photos, Flickr…)"
+msgstr "or share it through a link (Google Photos, Flickr…)"
+
+#: community/forms.py
+msgid "Écris quelques mots ou choisis une note."
+msgstr "Write a few words or pick a rating."
 
 #: community/models.py
 msgid "Bleu chaise"
@@ -334,12 +386,20 @@ msgid "Lavande"
 msgstr "Lavender"
 
 #: community/models.py
+msgid "Lien"
+msgstr "Link"
+
+#: community/models.py
 msgid "Membres connectés uniquement"
 msgstr "Signed-in members only"
 
 #: community/models.py
 msgid "Mes amis uniquement"
 msgstr "My friends only"
+
+#: community/models.py
+msgid "Moi seul·e"
+msgstr "Only me"
 
 #: community/models.py
 msgid "Numéro, si différent du téléphone"
@@ -354,12 +414,20 @@ msgid "Personne"
 msgstr "Nobody"
 
 #: community/models.py
+msgid "Photo"
+msgstr "Photo"
+
+#: community/models.py
 msgid "Pin parasol"
 msgstr "Stone pine"
 
 #: community/models.py
 msgid "Soleil"
 msgstr "Sun"
+
+#: community/models.py
+msgid "Tous ceux qui voient mon profil"
+msgstr "Everyone who can see my profile"
 
 #: community/models.py
 msgid "Tous les membres connectés"
@@ -374,12 +442,16 @@ msgid "Une ligne : « Nouvelle à Nice, je cherche des sorties ! », « Fan de j
 msgstr "One line: “New in Nice, looking for things to do!”, “Jazz fan”…"
 
 #: community/models.py
+msgid "Vidéo"
+msgstr "Video"
+
+#: community/models.py
 msgid "adresse du profil"
 msgstr "profile address"
 
 #: community/models.py
-msgid "afficher les événements auxquels je participe"
-msgstr "show the events I'm going to"
+msgid "afficher les événements à venir auxquels je participe"
+msgstr "show the upcoming events I'm going to"
 
 #: community/models.py
 msgid "autre"
@@ -388,6 +460,10 @@ msgstr "other"
 #: community/models.py
 msgid "ce qui me plaît"
 msgstr "what I like"
+
+#: community/models.py
+msgid "commentaire"
+msgstr "comment"
 
 #: community/models.py
 msgid "couleur du profil"
@@ -402,12 +478,20 @@ msgid "langues parlées"
 msgstr "languages spoken"
 
 #: community/models.py
+msgid "légende"
+msgstr "caption"
+
+#: community/models.py
 msgid "ma commune"
 msgstr "my town"
 
 #: community/models.py
 msgid "nom affiché"
 msgstr "display name"
+
+#: community/models.py
+msgid "note"
+msgstr "rating"
 
 #: community/models.py
 msgid "photo"
@@ -430,6 +514,10 @@ msgid "qui peut voir mon profil"
 msgstr "who can see my profile"
 
 #: community/models.py
+msgid "qui voit les événements auxquels j'ai participé"
+msgstr "who can see the events I went to"
+
+#: community/models.py
 msgid "recevoir par courriel les invitations et les changements des événements où je vais"
 msgstr "get invitations and changes to events I'm going to by email"
 
@@ -444,6 +532,10 @@ msgstr "phone"
 #: community/urls.py
 msgid "amis/"
 msgstr "friends/"
+
+#: community/urls.py
+msgid "commentaires/<int:pk>/supprimer/"
+msgstr "comments/<int:pk>/delete/"
 
 #: community/urls.py
 msgid "compte/"
@@ -494,6 +586,14 @@ msgid "compte/supprimer/"
 msgstr "account/delete/"
 
 #: community/urls.py
+msgid "evenements/<slug:slug>/commenter/"
+msgstr "events/<slug:slug>/comment/"
+
+#: community/urls.py
+msgid "evenements/<slug:slug>/souvenirs/ajouter/"
+msgstr "events/<slug:slug>/memories/add/"
+
+#: community/urls.py
 msgid "membres/"
 msgstr "members/"
 
@@ -509,6 +609,10 @@ msgstr "members/<slug:handle>/friend/<str:action>/"
 msgid "signaler/<str:kind>/<slug:key>/"
 msgstr "report/<str:kind>/<slug:key>/"
 
+#: community/urls.py
+msgid "souvenirs/<int:pk>/supprimer/"
+msgstr "memories/<int:pk>/delete/"
+
 #: community/views.py
 msgid "Adresse confirmée : tu peux publier tes événements !"
 msgstr "Address confirmed: you can now post events!"
@@ -516,6 +620,14 @@ msgstr "Address confirmed: you can now post events!"
 #: community/views.py
 msgid "Adresse mise à jour : confirme-la avec le lien qui vient de partir."
 msgstr "Address updated: confirm it with the link we just sent."
+
+#: community/views.py
+msgid "Beaucoup d'envois aujourd'hui : réessaie demain."
+msgstr "Lots of uploads today: try again tomorrow."
+
+#: community/views.py
+msgid "Beaucoup de commentaires en peu de temps : réessaie plus tard."
+msgstr "Lots of comments in a short time: try again later."
 
 #: community/views.py
 msgid "Beaucoup de demandes : réessaie dans une heure."
@@ -538,12 +650,28 @@ msgid "Ce lien de confirmation n'est plus valable. Connecte-toi pour en demander
 msgstr "This confirmation link is no longer valid. Sign in to request a new one."
 
 #: community/views.py
+msgid "Commentaire publié."
+msgstr "Comment posted."
+
+#: community/views.py
+msgid "Commentaire supprimé."
+msgstr "Comment deleted."
+
+#: community/views.py
 msgid "Demande envoyée."
 msgstr "Request sent."
 
 #: community/views.py
 msgid "Le courriel n'a pas pu partir. Réessaie plus tard ou écris-nous."
 msgstr "The email couldn't be sent. Try again later or write to us."
+
+#: community/views.py
+msgid "Merci ! %(n)s élément(s) ajouté(s)."
+msgstr "Thanks! %(n)s item(s) added."
+
+#: community/views.py
+msgid "Merci pour ton avis !"
+msgstr "Thanks for your review!"
 
 #: community/views.py
 msgid "Merci, l'équipe va regarder ça."
@@ -560,6 +688,10 @@ msgstr "Profile saved, except these fields, left unchanged: %(fields)s."
 #: community/views.py
 msgid "Profil enregistré."
 msgstr "Profile saved."
+
+#: community/views.py
+msgid "Supprimé."
+msgstr "Deleted."
 
 #: community/views.py
 msgid "Ton compte et tes données ont été supprimés."
@@ -598,6 +730,14 @@ msgid "Ton nom"
 msgstr "Your name"
 
 #: core/images.py
+msgid "Ce fichier n'est pas une vidéo lisible."
+msgstr "This file isn't a playable video."
+
+#: core/images.py
+msgid "Format de vidéo non pris en charge (MP4, MOV ou WebM). Partage-la plutôt par un lien (YouTube, Google Photos…)."
+msgstr "Unsupported video format (MP4, MOV or WebM). Share it through a link instead (YouTube, Google Photos…)."
+
+#: core/images.py
 msgid "Image illisible ou trop grande. Essaie en JPEG ou PNG."
 msgstr "Unreadable or oversized image. Try a JPEG or PNG."
 
@@ -608,6 +748,10 @@ msgstr "Image too large (40 megapixels maximum)."
 #: core/images.py
 msgid "Image trop lourde (12 Mo maximum)."
 msgstr "Image too heavy (12 MB maximum)."
+
+#: core/images.py
+msgid "Vidéo trop lourde (50 Mo maximum) : mets-la sur YouTube, Vimeo ou Google Photos et colle le lien."
+msgstr "Video too large (50 MB maximum): put it on YouTube, Vimeo or Google Photos and paste the link."
 
 #: core/models.py
 msgid "Autre chose"
@@ -1801,6 +1945,80 @@ msgstr "Remove friend"
 msgid "Se connecter pour l'ajouter"
 msgstr "Sign in to add them"
 
+#: templates/community/_memories.html
+msgid "%(n)s sur 5"
+msgstr "%(n)s out of 5"
+
+#: templates/community/_memories.html
+msgid "%(n)s note"
+msgid_plural "%(n)s notes"
+msgstr[0] "%(n)s rating"
+msgstr[1] "%(n)s ratings"
+
+#: templates/community/_memories.html
+msgid "Ajouter des photos ou vidéos"
+msgstr "Add photos or videos"
+
+#: templates/community/_memories.html
+msgid "Avis et commentaires"
+msgstr "Reviews and comments"
+
+#: templates/community/_memories.html
+msgid "Le lecteur %(p)s ne se charge qu'au clic."
+msgstr "The %(p)s player only loads when you click."
+
+#: templates/community/_memories.html
+msgid "Lire la vidéo (%(p)s)"
+msgstr "Play the video (%(p)s)"
+
+#: templates/community/_memories.html
+msgid "Pas encore d'avis. Tu y étais, ou tu as une question ? Lance la discussion."
+msgstr "No reviews yet. Were you there, or have a question? Start the conversation."
+
+#: templates/community/_memories.html
+msgid "Pas encore de photo ni de vidéo. Partage les tiennes : fichiers, ou un lien vers ton album."
+msgstr "No photos or videos yet. Share yours: files, or a link to your album."
+
+#: templates/community/_memories.html
+msgid "Publier"
+msgstr "Post"
+
+#: templates/community/_memories.html
+msgid "Se connecter pour commenter"
+msgstr "Log in to comment"
+
+#: templates/community/_memories.html
+msgid "Signaler"
+msgstr "Report"
+
+#: templates/community/_memories.html
+msgid "Supprimer ?"
+msgstr "Delete?"
+
+#: templates/community/_memories.html
+msgid "Supprimer ce commentaire ?"
+msgstr "Delete this comment?"
+
+#: templates/community/_memories.html
+msgid "Ta note (facultatif)"
+msgstr "Your rating (optional)"
+
+#: templates/community/_memories.html
+msgid "Ta note : %(n)s/5 (une nouvelle note la remplace)"
+msgstr "Your rating: %(n)s/5 (a new rating replaces it)"
+
+#: templates/community/_memories.html
+msgid "Voir l'album ou le média"
+msgstr "View the album or media"
+
+#: templates/community/_memories.html
+msgid "il y a %(t)s"
+msgstr "%(t)s ago"
+
+#: templates/community/_memories.html
+msgid "lien"
+msgstr "link"
+
 #: templates/community/confirm_email.txt
 msgid "Bonjour %(name)s,\n\nBienvenue sur Nice-Event ! Pour confirmer ton adresse et pouvoir publier des événements, ouvre ce lien (valable trois jours) :"
 msgstr "Hi %(name)s,\n\nWelcome to Nice-Event! To confirm your address and be able to post events, open this link (valid for three days):"
@@ -1894,6 +2112,14 @@ msgstr "No account yet?"
 #: templates/community/login.html
 msgid "Re-bonjour"
 msgstr "Welcome back"
+
+#: templates/community/media_form.html
+msgid "Plusieurs fichiers d'un coup, ou des liens vers un média hébergé ailleurs. Une vidéo trop lourde, une photo qui ne passe pas ou un album entier ? Mets-les sur YouTube, Vimeo, Google Photos ou Flickr et colle simplement le lien."
+msgstr "Several files at once, or links to media hosted elsewhere. A video that's too large, a photo that won't upload or a whole album? Put them on YouTube, Vimeo, Google Photos or Flickr and just paste the link."
+
+#: templates/community/media_form.html
+msgid "Rien n'est publié : corrige les champs signalés."
+msgstr "Nothing was posted: fix the highlighted fields."
 
 #: templates/community/members.html
 msgid "%(n)s résultat"
@@ -2090,6 +2316,10 @@ msgid "Visible par : %(who)s."
 msgstr "Visible to: %(who)s."
 
 #: templates/community/profile.html
+msgid "Y est allé·e"
+msgstr "Went to"
+
+#: templates/community/profile.html
 msgid "Y va bientôt"
 msgstr "Going soon"
 
@@ -2108,10 +2338,6 @@ msgstr "Join the community"
 #: templates/community/report.html
 msgid "Envoyer"
 msgstr "Send"
-
-#: templates/community/report.html
-msgid "Signaler"
-msgstr "Report"
 
 #: templates/community/report.html
 msgid "Tu signales « %(name)s ». L'équipe de Nice-Event lira ton message ; la personne concernée ne saura pas qui l'a envoyé."
@@ -2618,10 +2844,6 @@ msgstr "Where?"
 #: templates/events/form.html
 msgid "Pour qui ?"
 msgstr "For whom?"
-
-#: templates/events/form.html
-msgid "Publier"
-msgstr "Post"
 
 #: templates/events/form.html
 msgid "Quand ?"

@@ -41,6 +41,14 @@
       </section>
       {% endif %}
 
+      {% if went %}
+      <section class="profile-block">
+        <h2>{% translate "Y est allé·e" %}</h2>
+        {% if rel == "self" %}<p class="help">{% blocktranslate with who=person.get_past_events_display|lower %}Visible par : {{ who }}.{% endblocktranslate %} <a href="{% url 'community:settings' %}">{% translate "Modifier" %}</a></p>{% endif %}
+        <div class="cards cards-compact">{% for event in went %}{% include "events/_card.html" %}{% endfor %}</div>
+      </section>
+      {% endif %}
+
       {% if organized %}
       <section class="profile-block">
         <h2>{% translate "Organise" %}</h2>
