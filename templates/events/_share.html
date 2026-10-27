@@ -7,6 +7,8 @@
   <div class="share-grid">
     <a href="https://wa.me/?text={{ t }}%20{{ u }}" rel="noopener" target="_blank">{% icon "whatsapp" 18 %} WhatsApp</a>
     <a class="mobile-only" href="fb-messenger://share/?link={{ u }}">{% icon "messenger" 18 %} Messenger</a>
+    {# Instagram n'a pas de lien de partage : on copie texte + lien, puis on ouvre Instagram (l'appli sur mobile) #}
+    <a href="https://www.instagram.com/" rel="noopener" target="_blank" data-copy="{{ share_text }} {{ share_url }}" data-copied="{% translate "Lien copié : colle-le sur Instagram" %}">{% icon "instagram" 18 %} <span data-copy-label>Instagram</span></a>
     <a href="https://www.facebook.com/sharer/sharer.php?u={{ u }}" rel="noopener" target="_blank">{% icon "facebook" 18 %} Facebook</a>
     <a href="https://bsky.app/intent/compose?text={{ t }}%20{{ u }}" rel="noopener" target="_blank">{% icon "bluesky" 18 %} Bluesky</a>
     <a href="https://x.com/intent/post?text={{ t }}&amp;url={{ u }}" rel="noopener" target="_blank">{% icon "x" 18 %} X</a>

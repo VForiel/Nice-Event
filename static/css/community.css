@@ -205,6 +205,7 @@ fieldset.field legend { font-weight: 700; padding: 0; }
 .comment-tools form { display: inline; }
 .comment-tools button, .comment-tools a { background: none; border: 0; padding: 0; color: var(--ink-2); font: inherit; cursor: pointer; text-decoration: underline; }
 .comment-form { display: grid; gap: 10px; max-width: 640px; }
+.comment-form .btn { justify-self: start; }
 .rate { border: 0; padding: 0; margin: 0; }
 .rate legend { font-weight: 600; margin-bottom: 4px; }
 .rate-stars { display: inline-flex; flex-direction: row-reverse; gap: 2px; }

@@ -2644,6 +2644,10 @@ msgid "Fais tourner !"
 msgstr "Spread the word!"
 
 #: templates/events/_share.html
+msgid "Lien copié : colle-le sur Instagram"
+msgstr "Link copied: paste it on Instagram"
+
+#: templates/events/_share.html
 msgid "Partager…"
 msgstr "Share…"
 
