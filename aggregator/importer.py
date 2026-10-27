@@ -226,6 +226,9 @@ def scan(source, fetcher=None):
             stats["skipped"] += 1
             continue
         start, end = item["start"], item.get("end")
+        if end and end <= start:
+            # « 19 h – 0 h » saisi sur un seul jour : la fin est le lendemain (au-delà, fin incohérente ignorée)
+            end = end + timedelta(days=1) if end + timedelta(days=1) > start else None
         if not item.get("title") or (end or start) < now or (end and end - start > MAX_SPAN and "expo" not in normalize(item["title"])):
             stats["skipped"] += 1
             remember_skip(source, item)
@@ -280,9 +283,7 @@ def scan(source, fetcher=None):
             event.categories.set(wanted)
         elif existing is None:
             event.categories.set(guess_categories(item, source.default_category))
-            stats["created"] += 1
-        else:
-            stats["updated"] += 1
+        stats["created" if existing is None else "updated"] += 1
         wants_image = source.images_allowed and not event.photo and not item.get("image")
         if not full and (wants_image or event.price_kind == Event.Price.UNKNOWN) and budget["pages"] > 0:
             details = details_page(source, item, fetcher)
