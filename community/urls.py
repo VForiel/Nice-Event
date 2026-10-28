@@ -9,6 +9,8 @@ app_name = "community"
 
 urlpatterns = [
     path(_("compte/inscription/"), views.signup, name="signup"),
+    path(_("compte/google/"), views.google_start, name="google_start"),
+    path(_("compte/google/retour/"), views.google_callback, name="google_callback"),
     path(_("compte/confirmer/<uidb64>/<token>/"), views.confirm, name="confirm"),
     path(_("compte/confirmer/renvoyer/"), views.confirm_resend, name="confirm_resend"),
     path(_("compte/connexion/"), auth_views.LoginView.as_view(

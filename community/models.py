@@ -311,3 +311,14 @@ class Media(models.Model):
         from core.embeds import parse
 
         return parse(self.url) if self.url else None
+
+
+class GoogleAccount(models.Model):
+    """Compte Google relié (identifiant « sub », stable même si l'adresse Gmail change)."""
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="google_accounts")
+    sub = models.CharField(max_length=255, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "compte Google"

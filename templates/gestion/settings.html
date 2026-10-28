@@ -31,6 +31,13 @@
     <legend>Comptes et publication</legend>
     <div class="field field-check"><label class="check">{{ form.require_email_confirmation }} <span>{{ form.require_email_confirmation.label|capfirst }}</span></label>
       <p class="help">{{ form.require_email_confirmation.help_text }}</p></div>
+    <p class="g-help">Connexion avec Google : Console Google Cloud › API et services › Identifiants › « ID client OAuth »
+      de type « Application Web », URI de redirection autorisé : <code>{{ google_redirect }}</code>.{% if config.google_ready %} <strong>Configuré.</strong>{% endif %}</p>
+    <div class="g-grid">
+      {% include "gestion/_field.html" with field=form.google_client_id %}
+      {% include "gestion/_field.html" with field=form.google_client_secret %}
+      <div class="field field-check"><label class="check">{{ form.clear_google_client_secret }} <span>{{ form.clear_google_client_secret.label }}</span></label></div>
+    </div>
   </fieldset>
 
   <fieldset class="g-block" id="reseaux">

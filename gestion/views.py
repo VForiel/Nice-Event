@@ -340,8 +340,10 @@ def settings_view(request):
         return redirect("gestion:settings")
     from social.models import Network
 
+    from community.google import redirect_uri as google_redirect
+
     return render(request, "gestion/settings.html", {
-        "form": form, "config": config, "networks": Network.choices,
+        "form": form, "config": config, "networks": Network.choices, "google_redirect": google_redirect(),
         "test_form": TestEmailForm(initial={"to": request.user.email}),
         "changes": ConfigChange.objects.select_related("user")[:10],
     })

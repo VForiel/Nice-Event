@@ -558,6 +558,14 @@ msgid "compte/deconnexion/"
 msgstr "account/logout/"
 
 #: community/urls.py
+msgid "compte/google/"
+msgstr "account/google/"
+
+#: community/urls.py
+msgid "compte/google/retour/"
+msgstr "account/google/return/"
+
+#: community/urls.py
 msgid "compte/inscription/"
 msgstr "account/signup/"
 
@@ -658,8 +666,20 @@ msgid "Commentaire supprimé."
 msgstr "Comment deleted."
 
 #: community/views.py
+msgid "Connexion avec Google annulée."
+msgstr "Google sign-in cancelled."
+
+#: community/views.py
 msgid "Demande envoyée."
 msgstr "Request sent."
+
+#: community/views.py
+msgid "Google n'a pas confirmé cette adresse : connecte-toi avec ton mot de passe."
+msgstr "Google has not verified this address: log in with your password."
+
+#: community/views.py
+msgid "La connexion avec Google a échoué, réessaie."
+msgstr "Google sign-in failed, please try again."
 
 #: community/views.py
 msgid "Le courriel n'a pas pu partir. Réessaie plus tard ou écris-nous."
@@ -700,6 +720,10 @@ msgstr "Your account and your data have been deleted."
 #: community/views.py
 msgid "Trop d'inscriptions depuis cette connexion, réessaie plus tard."
 msgstr "Too many sign-ups from this connection, try again later."
+
+#: community/views.py
+msgid "Un compte existe déjà avec cette adresse, mais elle n'est pas encore confirmée : connecte-toi avec ton mot de passe (ou « mot de passe oublié »), puis confirme-la."
+msgstr "An account already uses this address, but it is not confirmed yet: log in with your password (or \"forgot password\"), then confirm it."
 
 #: community/views.py
 msgid "Vous êtes maintenant amis."
@@ -1944,6 +1968,14 @@ msgstr "Remove friend"
 #: templates/community/_friend_button.html
 msgid "Se connecter pour l'ajouter"
 msgstr "Sign in to add them"
+
+#: templates/community/_google_button.html
+msgid "Continuer avec Google"
+msgstr "Continue with Google"
+
+#: templates/community/_google_button.html
+msgid "ou"
+msgstr "or"
 
 #: templates/community/_memories.html
 msgid "%(n)s sur 5"

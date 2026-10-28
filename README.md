@@ -30,7 +30,7 @@ Site : http://localhost:8000 (anglais sous `/en/`), gestion : `/gestion/`, admin
 | `core` | accueil, pages fixes, sécurité (blocage des IP), images, Markdown, planificateur de tâches (`core/jobs.py`, commande `worker`), sauvegardes |
 | `venues` | communes des Alpes-Maritimes et de Monaco (zones Nice / Métropole / Côte / Arrière-pays / Monaco), lieux, géocodage BAN (`venues/geocode.py`) |
 | `events` | catégories (`events/categories.py` : emoji, couleur, pictogramme), événements, publication, liste filtrable, carte, iCal, JSON-LD |
-| `community` | comptes (connexion par courriel), confirmation d'adresse, profils, amis, « J'y vais », invitations, notifications (+ courriel), signalements, avis (commentaires + notes) et photos/vidéos des événements |
+| `community` | comptes (connexion par courriel ou avec Google : `community/google.py`, OpenID Connect sans bibliothèque, identifiants dans `/gestion/reglages/`, une adresse non confirmée n'est jamais reprise), confirmation d'adresse, profils, amis, « J'y vais », invitations, notifications (+ courriel), signalements, avis (commentaires + notes) et photos/vidéos des événements |
 | `social` | visuels générés (`social/visuals.py`), diffusion Instagram / Facebook / X / Bluesky (`social/networks.py`), publications programmées |
 | `aggregator` | agendas externes : connecteurs iCal, JSON-LD (schema.org Event) et OpenAgenda, import, doublons, disparitions |
 | `siteconfig` | réglages en base (courriel, réseaux, horaires des scans…), secrets chiffrés |

@@ -12,6 +12,7 @@ from django.utils.encoding import force_str
 from django.utils.http import url_has_allowed_host_and_scheme, urlsafe_base64_decode
 from django.utils import timezone
 from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy
 from django.views.decorators.http import require_POST
 
 from core.security import client_ip, throttled
@@ -64,6 +65,43 @@ def signup(request):
             messages.success(request, _("Bienvenue ! Complète ton profil pour que tes amis te trouvent."))
         return redirect(safe_next(request, reverse_lazy("community:settings")))
     return render(request, "community/signup.html", {"form": form, "next": request.GET.get("next", "")})
+
+
+def google_start(request):
+    from . import google
+
+    if not google.enabled():
+        raise Http404
+    return redirect(google.start(request, safe_next(request, "")))
+
+
+GOOGLE_ERRORS = {
+    "cancelled": gettext_lazy("Connexion avec Google annulée."),
+    "email": gettext_lazy("Google n'a pas confirmé cette adresse : connecte-toi avec ton mot de passe."),
+    "unconfirmed": gettext_lazy("Un compte existe déjà avec cette adresse, mais elle n'est pas encore confirmée : "
+                                "connecte-toi avec ton mot de passe (ou « mot de passe oublié »), puis confirme-la."),
+}
+
+
+def google_callback(request):
+    from . import google
+
+    if not google.enabled():
+        raise Http404
+    try:
+        info, next_url = google.identity(request)
+        user, created = google.find_or_create(info)
+    except google.GoogleError as error:
+        messages.error(request, str(GOOGLE_ERRORS.get(str(error), _("La connexion avec Google a échoué, réessaie."))))
+        return redirect("community:login")
+    if not user.is_active:
+        messages.error(request, _("Ce compte est désactivé."))
+        return redirect("community:login")
+    login(request, user, backend="community.auth.EmailBackend")
+    if created:
+        messages.success(request, _("Bienvenue ! Complète ton profil pour que tes amis te trouvent."))
+        return redirect(next_url or "community:settings")
+    return redirect(next_url or "community:me")
 
 
 def confirm(request, uidb64, token):

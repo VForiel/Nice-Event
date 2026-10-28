@@ -15,6 +15,7 @@
 
 {% block card %}
 <h2>{% translate "Créer mon compte" %}</h2>
+{% include "community/_google_button.html" %}
 <form class="form" method="post" novalidate>
   {% csrf_token %}
   <input type="hidden" name="next" value="{{ next }}">

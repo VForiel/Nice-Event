@@ -229,3 +229,9 @@ video.media-frame { object-fit: contain; background: #000; }
 .media-link span { font-size: .875rem; color: var(--ink-2); }
 .media-meta p { margin: 0; font-size: .875rem; color: var(--ink-2); overflow-wrap: anywhere; }
 .media-page { max-width: 720px; }
+
+/* Connexion avec Google */
+.auth-alt { display: grid; gap: 14px; margin-bottom: 14px; }
+.btn-google { justify-content: center; gap: 10px; }
+.auth-or { display: flex; align-items: center; gap: 12px; margin: 0; color: var(--ink-2); font-size: .875rem; }
+.auth-or::before, .auth-or::after { content: ""; flex: 1; border-top: 1px solid var(--line); }

@@ -41,6 +41,11 @@ class SiteConfig(models.Model):
     social_signature = models.CharField("signature des publications", max_length=200, blank=True,
                                         default="#Nice #CoteDAzur #NiceEvent",
                                         help_text="Ajoutée à la fin des textes (hashtags…).")
+    # Connexion avec Google (OpenID Connect)
+    google_client_id = models.CharField("Google : ID client", max_length=200, blank=True,
+                                        help_text="Console Google Cloud › API et services › Identifiants › ID client OAuth")
+    google_client_secret = EncryptedTextField("Google : code secret du client", blank=True)
+
     bluesky_enabled = models.BooleanField("Bluesky actif", default=False)
     bluesky_handle = models.CharField("identifiant Bluesky", max_length=100, blank=True, help_text="Ex. nice-event.bsky.social")
     bluesky_app_password = EncryptedTextField("mot de passe d'application Bluesky", blank=True,
@@ -93,6 +98,10 @@ class SiteConfig(models.Model):
             if 0 <= h < 24 and 0 <= m < 60:
                 hours.append(f"{h:02d}:{m:02d}")
         return hours or ["10:00", "16:00", "22:00"]
+
+    @property
+    def google_ready(self):
+        return bool(self.google_client_id and self.google_client_secret)
 
     @property
     def smtp_ready(self):

@@ -4,7 +4,7 @@ from .models import SiteConfig
 
 # Champs secrets : jamais réaffichés ; vide = on garde la valeur enregistrée, case « effacer » pour la supprimer.
 SECRETS = ["smtp_password", "bluesky_app_password", "facebook_page_token", "x_api_secret", "x_access_secret",
-           "telegram_bot_token"]
+           "telegram_bot_token", "google_client_secret"]
 
 
 class SecretInput(forms.PasswordInput):
@@ -19,11 +19,12 @@ class SiteConfigForm(forms.ModelForm):
     clear_x_api_secret = forms.BooleanField(label="Effacer", required=False)
     clear_x_access_secret = forms.BooleanField(label="Effacer", required=False)
     clear_telegram_bot_token = forms.BooleanField(label="Effacer", required=False)
+    clear_google_client_secret = forms.BooleanField(label="Effacer", required=False)
 
     class Meta:
         model = SiteConfig
         fields = ["smtp_host", "smtp_port", "smtp_security", "smtp_user", "smtp_password", "from_email", "contact_email",
-                  "require_email_confirmation", "scan_times", "social_signature",
+                  "require_email_confirmation", "google_client_id", "google_client_secret", "scan_times", "social_signature",
                   "bluesky_enabled", "bluesky_handle", "bluesky_app_password",
                   "meta_api_version", "facebook_enabled", "facebook_page_id", "facebook_page_token",
                   "instagram_enabled", "instagram_user_id",

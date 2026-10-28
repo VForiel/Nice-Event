@@ -10,6 +10,7 @@
 
 {% block card %}
 <h2>{% translate "Se connecter" %}</h2>
+{% include "community/_google_button.html" %}
 <form class="form" method="post" novalidate>
   {% csrf_token %}
   {% if form.non_field_errors %}<div class="errorlist">{{ form.non_field_errors }}</div>{% endif %}
