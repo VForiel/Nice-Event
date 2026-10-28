@@ -18,7 +18,7 @@ from events.rules import regex_error
 from venues.models import Commune, Venue
 
 from .test_aggregator import FakeFetcher
-from .test_events import Base
+from .test_events import Base, soon
 
 
 class BarTests(Base):
@@ -66,6 +66,21 @@ class BarTests(Base):
         self.assertNotContains(response, "<html")
         data = self.client.get(reverse("events:map_data") + "?zone=nice").json()
         self.assertEqual(sorted(e["title"] for e in data["events"]), ["Jazz à Nice", "Soirée Meetup"])
+
+    def test_date_range_lists_its_own_days(self):
+        expo = self.event(title="Exposition", starts_at=soon(1, 10), end=soon(30, 18))
+        self.event(title="Avant", starts_at=soon(5))
+        self.event(title="Pendant", starts_at=soon(10))
+        self.event(title="Après", starts_at=soon(12))
+        first = timezone.localdate() + timedelta(days=10)
+        params = [("quand", "dates"), ("du", first.isoformat()), ("au", (first + timedelta(days=1)).isoformat())]
+        response = self.client.get(reverse("events:list") + "?" + urlencode(params + [("partiel", "1")]))
+        days = [(day, [e.title for e in items]) for day, items in response.context["days"]]
+        # L'exposition commencée avant la plage s'affiche à son premier jour, avant les événements du jour
+        self.assertEqual(days, [(first, ["Exposition", "Pendant"])])
+        # Un seul jour touché dans le calendrier : ce jour-là seulement
+        self.assertEqual(self.titles(params[:2]), ["Exposition", "Pendant"])
+        self.assertIn(expo.title, self.titles([("quand", "dates"), ("du", (first + timedelta(days=2)).isoformat())]))
 
     def test_custom_filter_for_the_session(self):
         rule = {"op": "and", "rules": [{"field": "regex", "value": "danse", "not": True},

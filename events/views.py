@@ -6,7 +6,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models import Count, F, Q
+from django.db.models import Count, DateTimeField, F, Q, Value
+from django.db.models.functions import Greatest
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -108,14 +109,29 @@ def friends_going(user, events):
     return {r["event"]: r["n"] for r in rows}
 
 
-def by_day(events):
-    """[(jour, [événements])] ; un événement déjà commencé est rangé aujourd'hui."""
-    today = timezone.localdate()
-    return [(day, list(items)) for day, items in groupby(events, key=lambda e: max(e.local_start.date(), today))]
+def by_day(events, start=None):
+    """[(jour, [événements])] ; un événement déjà commencé au début de la période (ou aujourd'hui) y est rangé."""
+    first = timezone.localtime(start).date() if start else timezone.localdate()
+    return [(day, list(items)) for day, items in groupby(events, key=lambda e: max(e.local_start.date(), first))]
+
+
+def period_start(state):
+    """Début de la période choisie dans le menu « Dates » (jamais avant maintenant)."""
+    now = timezone.now()
+    if state["quand"] == "dates":
+        first = rules.day(state["du"])
+        start = timezone.make_aware(datetime.combine(first, time(5, 0))) if first else None
+    else:
+        start = window(state["quand"])[0] if state["quand"] else None
+    return max(start, now) if start else now
 
 
 def event_list(request):
     events, state = filtered(request, base_queryset())
+    # Les expositions et festivals déjà commencés s'affichent au premier jour de la période, pas à leur début
+    start = period_start(state)
+    events = events.annotate(shown_at=Greatest("starts_at", Value(start, output_field=DateTimeField()))).order_by(
+        "shown_at", "starts_at")
     try:
         page = max(1, int(request.GET.get("page", 1)))
     except ValueError:
@@ -129,7 +145,7 @@ def event_list(request):
     query = request.GET.copy()
     query.pop("page", None)
     query.pop("partiel", None)
-    context = {"days": by_day(items), "count": len(items), "more": more, "next_page": page + 1, "state": state,
+    context = {"days": by_day(items, start), "count": len(items), "more": more, "next_page": page + 1, "state": state,
                "query": query.urlencode()}
     if request.GET.get("partiel"):
         return render(request, "events/_results.html", context)

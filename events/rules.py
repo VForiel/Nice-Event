@@ -329,8 +329,8 @@ def bar_rule(state):
     rules = []
     if state["categorie"]:
         rules.append({"field": "categorie", "in": state["categorie"]})
-    if state["quand"] == "dates":
-        rules.append({"field": "dates", "from": state["du"], "to": state["au"]})
+    if state["quand"] == "dates":  # un seul jour touché dans le calendrier : ce jour-là seulement
+        rules.append({"field": "dates", "from": state["du"], "to": state["au"] or state["du"]})
     elif state["quand"]:
         rules.append({"field": "quand", "value": state["quand"]})
     if state["src"]:
