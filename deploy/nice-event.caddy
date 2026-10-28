@@ -15,3 +15,17 @@ nice-event.fr {
 www.nice-event.fr {
 	redir https://nice-event.fr{uri} permanent
 }
+# Beta (~/Nice-Event-beta, branche main) : copie de la base de prod sans secrets ni tâches de fond, hors des moteurs de recherche.
+beta.nice-event.fr {
+	header >X-Robots-Tag "noindex, nofollow"
+	request_body {
+		max_size 15MB
+	}
+	handle_path /tiles/* {
+		reverse_proxy nice-event-beta_tiles:80
+	}
+	handle {
+		encode zstd gzip
+		reverse_proxy nice-event-beta_web:8000
+	}
+}

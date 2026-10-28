@@ -170,11 +170,18 @@ docker compose exec web python manage.py createsuperuser
 cp deploy/nice-event.caddy ~/reverse-proxy/sites/ && cd ~/reverse-proxy && docker compose exec caddy caddy reload --config /etc/caddy/Caddyfile
 ```
 
-Mise à jour :
+Mise à jour : automatique (`.github/workflows/deploy.yml`). Un push lance les tests, puis le déploiement sur VPS1 :
 
-```sh
-cd ~/Nice-Event && git pull && docker compose up -d --build
-```
+- `main` → https://beta.nice-event.fr (`~/Nice-Event-beta`, `NICE_EVENT_INSTANCE=nice-event-beta` dans son `.env`) ;
+- `stable` → https://nice-event.fr (`~/Nice-Event`). Mettre en production ce qui est validé sur la beta :
+  `git push origin main:stable`.
+
+Sur VPS1, `~/deploy/deploy.sh` fait `git merge --ff-only` de la branche puis `docker compose up -d --build` (la beta
+sans `worker` : ni scans, ni alertes, ni diffusion). Journaux dans `~/deploy/logs/`. La base de la beta est une copie de
+celle de prod, sans secrets (SMTP, réseaux, Telegram), sans abonnements push ni webhooks Discord, avec un bandeau
+« version de test » ; `~/deploy/beta-reset.sh nice-event` la recopie.
+
+À la main si besoin : `ssh VPS1 '~/deploy/deploy.sh nice-event prod'` (ou `beta`).
 
 Restauration : arrêter les conteneurs, `gunzip` la copie voulue de `backups/` à la place de `/data/db.sqlite3` dans le
 volume, extraire l'archive des médias dans `/data`, redémarrer.

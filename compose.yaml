@@ -1,11 +1,15 @@
 # Production sur VPS1 : le reverse proxy Caddy partagé (~/reverse-proxy) joint le site par le réseau « proxy ».
 # web : le site (gunicorn) ; worker : tâches planifiées (sauvegarde, puis publications programmées et scans).
 # Les deux partagent la base SQLite et les médias (volume data) ; les sauvegardes vont dans ./backups sur l'hôte.
+# NICE_EVENT_INSTANCE (dans .env) sépare les instances d'une même machine : nice-event (prod, branche stable) et
+# nice-event-beta (beta.nice-event.fr, branche main, dans ~/Nice-Event-beta) ont leurs conteneurs, image et volume.
+name: ${NICE_EVENT_INSTANCE:-nice-event}
+
 services:
   web:
     build: .
-    image: nice-event
-    container_name: nice-event_web
+    image: ${NICE_EVENT_INSTANCE:-nice-event}
+    container_name: ${NICE_EVENT_INSTANCE:-nice-event}_web
     restart: unless-stopped
     env_file: .env
     volumes:
@@ -14,8 +18,8 @@ services:
     networks: [proxy]
 
   worker:
-    image: nice-event
-    container_name: nice-event_worker
+    image: ${NICE_EVENT_INSTANCE:-nice-event}
+    container_name: ${NICE_EVENT_INSTANCE:-nice-event}_worker
     restart: unless-stopped
     env_file: .env
     command: ["python", "manage.py", "worker"]
@@ -27,7 +31,7 @@ services:
   # Fond de carte : tiles/nice-region.pmtiles (scripts/extract_tiles.py, copié à la main), servi par plages d'octets.
   tiles:
     image: caddy:2-alpine
-    container_name: nice-event_tiles
+    container_name: ${NICE_EVENT_INSTANCE:-nice-event}_tiles
     restart: unless-stopped
     volumes:
       - ./deploy/tiles.Caddyfile:/etc/caddy/Caddyfile:ro

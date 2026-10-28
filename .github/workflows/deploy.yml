@@ -1,0 +1,46 @@
+# Tests, puis déploiement sur VPS1 : main → https://beta.nice-event.fr, stable → https://nice-event.fr.
+# La clé DEPLOY_SSH_KEY ne peut que lancer ~/deploy/gate.sh nice-event sur VPS1 (commande forcée dans authorized_keys) ;
+# le mot envoyé (beta ou prod) choisit l'instance. VPS1_KNOWN_HOSTS épingle la clé d'hôte du serveur.
+name: Deploy
+
+on:
+  push:
+    branches: [main, stable]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python manage.py test tests
+
+  deploy:
+    needs: tests
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref_name == 'stable' && 'production' || 'beta' }}
+      url: ${{ github.ref_name == 'stable' && 'https://nice-event.fr' || 'https://beta.nice-event.fr' }}
+    steps:
+      - name: Deploy on VPS1
+        env:
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.VPS1_KNOWN_HOSTS }}
+          TARGET: ${{ github.ref_name == 'stable' && 'prod' || 'beta' }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/deploy && chmod 600 ~/.ssh/deploy
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/deploy -o IdentitiesOnly=yes -o BatchMode=yes ubuntu@152.228.240.129 "$TARGET"
