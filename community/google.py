@@ -21,6 +21,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.urls import reverse
+from django.utils import translation
 
 AUTHORIZE = "https://accounts.google.com/o/oauth2/v2/auth"
 TOKEN = "https://oauth2.googleapis.com/token"
@@ -43,7 +44,9 @@ def enabled():
 
 
 def redirect_uri():
-    return settings.SITE_URL + reverse("community:google_callback")
+    """Toujours la même adresse (celle déclarée chez Google), quelle que soit la langue de la page."""
+    with translation.override(settings.LANGUAGE_CODE):
+        return settings.SITE_URL + reverse("community:google_callback")
 
 
 def start(request, next_url=""):
