@@ -203,7 +203,7 @@ générique reste **remplaçable depuis l'interface** par une photo de ton choix
 | DATAtourisme (base nationale des offices de tourisme, dont la Côte d'Azur) | flux open data, licence ouverte |
 | Agenda de la Ville de Nice, Métropole, office du tourisme | JSON-LD / iCal / RSS si disponibles |
 | Salles et lieux (Opéra, TNN, Nikaïa, Forum Nice Nord, MAMAC, Acropolis…) | JSON-LD / iCal / page dédiée |
-| Agenda de l'AJC06 (`beta.ajc06.com/evenements/agenda.ics`) | iCal, accès garanti |
+| Agenda de l'AJC06 (`ajc06.com/evenements/agenda.ics`) | iCal, accès garanti |
 | Billetteries (Ticketmaster, Shotgun…) | API publique quand elle existe |
 
 Exclus : événements Facebook et Meetup (pas d'accès autorisé), sites qui l'interdisent.
