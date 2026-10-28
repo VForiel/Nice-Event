@@ -293,3 +293,13 @@ a.dd-btn::after { display: none; }
 .popup .meta { margin: 0; font-size: .875rem; }
 .popup .btn { margin-top: 4px; color: #fff; }
 .leaflet-interactive.me { fill: var(--chaise); fill-opacity: .9; stroke: #fff; stroke-width: 3; }
+
+/* Soutien au site : encart après « J'y vais », fenêtre après la création d'un événement */
+.support-note { margin-top: 4px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; font-size: .92rem; }
+.support-note p { margin: 0 0 6px; }
+.support-link { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+.support-dialog { max-width: min(460px, calc(100vw - 32px)); padding: 24px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--ink); }
+.support-dialog::backdrop { background: rgb(0 0 0 / .45); }
+.support-dialog h2 { margin: 0 0 8px; }
+.support-dialog p { margin: 0 0 18px; }
+.support-actions { display: flex; flex-wrap: wrap; gap: 8px; }

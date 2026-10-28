@@ -3,6 +3,7 @@ from unittest import mock
 
 from django.contrib.auth import get_user_model
 from django.core import mail
+from django.core.cache import cache
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -245,6 +246,23 @@ class CommunityTests(Base):
         self.client.post(reverse("community:signup"), {
             "display_name": "Dan", "email": "dan@example.org", "password": "pw-Solide-123", "consent": "on"})
         self.assertEqual(self.client.get(reverse("events:new")).status_code, 200)
+
+    def test_support_note_once_after_attending(self):
+        event = self.event()
+        bob = self.member("bob@example.org", "Bob")
+        self.client.force_login(bob)
+        page = self.client.post(reverse("events:attend", args=[event.slug]), follow=True)
+        self.assertContains(page, 'data-testid="support-note"')
+        self.assertContains(page, "https://github.com/sponsors/VForiel")
+        # Une seule fois : pas au rechargement, ni pour les autres événements
+        self.assertNotContains(self.client.get(event.get_absolute_url()), 'data-testid="support-note"')
+
+    def test_support_dialog_after_creating_an_event(self):
+        self.addCleanup(cache.clear)  # la limite de publications par jour est dans le cache, partagé entre les tests
+        self.client.force_login(self.alice)
+        page = self.client.post(reverse("events:new"), self.form_data(), follow=True)
+        self.assertContains(page, "data-open-on-load")
+        self.assertContains(page, "Un coup de pouce ?")
 
     def test_attend_and_invite_friend(self):
         event = self.event()

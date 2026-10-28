@@ -2730,6 +2730,10 @@ msgid "Billetterie"
 msgstr "Tickets"
 
 #: templates/events/detail.html
+msgid "Bonne sortie !"
+msgstr "Have a great time!"
+
+#: templates/events/detail.html
 msgid "Dans le même genre"
 msgstr "More like this"
 
@@ -2760,6 +2764,10 @@ msgstr "I'm going"
 #: templates/events/detail.html
 msgid "J'y vais (annuler)"
 msgstr "I'm going (cancel)"
+
+#: templates/events/detail.html
+msgid "Nice-Event est gratuit et sans publicité. Pour qu'il le reste, tu peux soutenir le site."
+msgstr "Nice-Event is free and ad-free. To keep it that way, you can support the site."
 
 #: templates/events/detail.html
 msgid "Non accessible en fauteuil roulant"
@@ -2796,6 +2804,10 @@ msgstr "Booking required"
 #: templates/events/detail.html
 msgid "S'inscrire"
 msgstr "Register"
+
+#: templates/events/detail.html
+msgid "Soutenir Nice-Event"
+msgstr "Support Nice-Event"
 
 #: templates/events/detail.html
 msgid "Sur la carte"
@@ -2932,6 +2944,10 @@ msgid "Comme pour tout premier événement, l'équipe jette un œil avant la mis
 msgstr "As with every first event, the team takes a look before it goes live (usually within the day). You'll get a notification; after that, your events will be published right away."
 
 #: templates/events/published.html
+msgid "Faire un don"
+msgstr "Donate"
+
+#: templates/events/published.html
 msgid "Maintenant, le plus important : fais-le savoir. Un partage dans un groupe WhatsApp ou une story suffit souvent à remplir une soirée."
 msgstr "Now the most important part: spread the word. A share in a WhatsApp group or a story is often enough to fill an evening."
 
@@ -2940,8 +2956,20 @@ msgid "Merci, c'est envoyé !"
 msgstr "Thanks, it's sent!"
 
 #: templates/events/published.html
+msgid "Nice-Event est gratuit, sans publicité, et développé sur du temps libre. Si le site t'aide à faire connaître tes événements, un petit don paie le serveur et permet de continuer à l'améliorer."
+msgstr "Nice-Event is free, ad-free and built on spare time. If it helps you spread the word about your events, a small donation pays for the server and keeps it improving."
+
+#: templates/events/published.html
+msgid "Plus tard"
+msgstr "Maybe later"
+
+#: templates/events/published.html
 msgid "Presque !"
 msgstr "Almost!"
+
+#: templates/events/published.html
+msgid "Un coup de pouce ?"
+msgstr "Give us a hand?"
 
 #: templates/events/published.html
 msgid "Voir la page de l'événement"

@@ -93,6 +93,12 @@
             {% elif event.is_full %}<button class="btn btn-ghost btn-block" type="button" disabled>{% translate "Complet" %}</button>
             {% elif not event.is_cancelled %}<button class="btn btn-blue btn-block" type="submit">{% icon "heart" 18 %} {% translate "J'y vais" %}</button>{% endif %}
           </form>
+          {% if just_joined and is_going %}
+          <div class="support-note" data-testid="support-note">
+            <p><b>{% translate "Bonne sortie !" %}</b> {% translate "Nice-Event est gratuit et sans publicité. Pour qu'il le reste, tu peux soutenir le site." %}</p>
+            <a class="support-link" href="{{ DONATION_URL }}" target="_blank" rel="noopener">{% icon "heart" 16 %} {% translate "Soutenir Nice-Event" %}</a>
+          </div>
+          {% endif %}
           {% else %}
           <a class="btn btn-blue btn-block" href="{% url 'community:login' %}?next={{ request.path|urlencode }}">{% icon "heart" 18 %} {% translate "J'y vais" %}</a>
           {% endif %}

@@ -111,3 +111,15 @@
     box.classList.add("is-playing");
   });
 })();
+
+// Fenêtres ouvertes à l'arrivée sur la page (soutien au site après la création d'un événement).
+(function () {
+  "use strict";
+  document.querySelectorAll("dialog[data-open-on-load]").forEach(function (dialog) {
+    if (typeof dialog.showModal !== "function") return;
+    dialog.showModal();
+    dialog.addEventListener("click", function (e) {
+      if (e.target === dialog) dialog.close();  // clic sur le fond
+    });
+  });
+})();

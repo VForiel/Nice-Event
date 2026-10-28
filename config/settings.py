@@ -180,6 +180,8 @@ EMAIL_TIMEOUT = 20
 
 # Mentions légales
 LEGAL_PUBLISHER = "Vincent Foriel"
+# Page de dons (encart après « J'y vais » et fenêtre après la création d'un événement)
+DONATION_URL = os.environ.get("DONATION_URL", "https://github.com/sponsors/VForiel")
 LEGAL_HOST = os.environ.get("LEGAL_HOST", "OVH SAS, 2 rue Kellermann, 59100 Roubaix, France — +33 9 72 10 10 07.")
 
 # Sécurité. CSP native de Django 6 : {{ csp_nonce }} dans les gabarits pour les rares scripts en ligne.

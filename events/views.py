@@ -197,6 +197,7 @@ def event_detail(request, slug):
         going_ids = {u.pk for u in attendees}
         context.update({
             "is_going": request.user.pk in going_ids,
+            "just_joined": request.session.pop("just_attending", None) == event.pk,
             "friends_going": [f for f in friends if f.pk in going_ids],
             "invitable": [f for f in friends if f.pk not in going_ids],
         })
@@ -381,6 +382,7 @@ def attend(request, slug):
         messages.error(request, _("Cet événement est annulé."))
     else:
         Attendance.objects.create(event=event, user=request.user)
+        request.session["just_attending"] = event.pk  # la page de l'événement propose une fois de soutenir le site
         if event.organizer_id:
             notify(event.organizer, request.user, Notification.Verb.ATTENDING, event)
     return redirect(event.get_absolute_url() + "#participants")

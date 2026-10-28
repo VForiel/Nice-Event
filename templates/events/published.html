@@ -24,4 +24,15 @@
   </div>
   {% if event.status == 'published' %}<aside>{% include "events/_share.html" %}</aside>{% endif %}
 </div>
+
+<dialog class="support-dialog" data-open-on-load aria-labelledby="support-title">
+  <form method="dialog">
+    <h2 id="support-title">{% translate "Un coup de pouce ?" %}</h2>
+    <p>{% translate "Nice-Event est gratuit, sans publicité, et développé sur du temps libre. Si le site t'aide à faire connaître tes événements, un petit don paie le serveur et permet de continuer à l'améliorer." %}</p>
+    <div class="support-actions">
+      <a class="btn btn-blue" href="{{ DONATION_URL }}" target="_blank" rel="noopener">{% icon "heart" 18 %} {% translate "Faire un don" %}</a>
+      <button class="btn btn-ghost" type="submit" value="later">{% translate "Plus tard" %}</button>
+    </div>
+  </form>
+</dialog>
 {% endblock %}
