@@ -29,6 +29,7 @@
   <script nonce="{{ csp_nonce }}">try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
   <script type="speculationrules" nonce="{{ csp_nonce }}">{"prefetch": [{"where": {"and": [{"href_matches": "/*"}, {"not": {"href_matches": ["/gestion/*", "/admin/*", "/compte/*", "/en/account/*", "/media/*", "/notifications/*", "/*.ics", "/*.json", "/api/*"]}}]}, "eagerness": "moderate"}]}</script>
   <script src="{% static 'js/site.js' %}" defer></script>
+  <script src="{% static 'js/cards.js' %}" defer></script>
   {% block head %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
@@ -54,8 +55,9 @@
       </button>
       <nav id="nav" class="nav" aria-label="{% translate "Navigation principale" %}">
         {% with ns=request.resolver_match.namespace page=request.resolver_match.url_name %}
-        <a href="{% url 'events:list' %}"{% if ns == 'events' and page != 'map' %} aria-current="page"{% endif %}>{% translate "Agenda" %}</a>
+        <a href="{% url 'events:list' %}"{% if ns == 'events' and page != 'map' and page != 'discover' %} aria-current="page"{% endif %}>{% translate "Agenda" %}</a>
         <a href="{% url 'events:map' %}"{% if page == 'map' %} aria-current="page"{% endif %}>{% translate "Carte" %}</a>
+        <a href="{% url 'events:discover' %}"{% if ns == 'events' and page == 'discover' %} aria-current="page"{% endif %}>{% translate "Découvrir" %}</a>
         <a href="{% url 'alerts:filters' %}"{% if ns == 'alerts' %} aria-current="page"{% endif %}>{% translate "Alertes" %}</a>
         {% endwith %}
         <div class="nav-tools">

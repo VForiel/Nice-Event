@@ -36,16 +36,19 @@ def home(request):
     we_start, we_end = window("weekend")
     today = list(events.between(today_start, today_end)[:6])
     weekend = list(events.between(we_start, we_end).exclude(pk__in=[e.pk for e in today])[:6])
+    from events.recommend import for_home
+
+    recommended = for_home(request.user)
     featured = list(events.filter(featured=True)[:3])
     latest = list(events.internal().order_by("-published_at")[:4])
-    going = friends_going(request.user, today + weekend + featured + latest)
-    for e in today + weekend + featured + latest:
+    going = friends_going(request.user, today + weekend + featured + latest + recommended)
+    for e in today + weekend + featured + latest + recommended:
         e.friends_going = going.get(e.pk, 0)
     now = timezone.now()
     categories = Category.objects.annotate(n=Count("events", filter=Q(events__status=Event.Status.PUBLISHED,
                                                                         events__ends_at__gte=now))).order_by("order")
     return render(request, "core/home.html", {
-        "today": today, "weekend": weekend, "featured": featured, "latest": latest, "categories": categories,
+        "today": today, "weekend": weekend, "featured": featured, "recommended": recommended, "latest": latest, "categories": categories,
         "total": events.count(),
     })
 

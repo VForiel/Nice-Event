@@ -199,6 +199,25 @@ class Attendance(models.Model):
         verbose_name = "participation"
 
 
+class EventInterest(models.Model):
+    """« Ça m'intéresse » ou « Pas pour moi » d'un membre sur un événement (du site ou repris d'un agenda) :
+    affiché sur le profil et utilisé par les recommandations (events.recommend)."""
+
+    class Value(models.IntegerChoices):
+        YES = 1, _("Ça m'intéresse")
+        NO = -1, _("Pas pour moi")
+
+    event = models.ForeignKey("events.Event", on_delete=models.CASCADE, related_name="interests")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="event_interests")
+    value = models.SmallIntegerField(choices=Value.choices)
+    created_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["event", "user"], name="unique_event_interest")]
+        ordering = ["-created_at"]
+        verbose_name = "intérêt"
+
+
 class Notification(models.Model):
     class Verb(models.TextChoices):
         FRIEND_REQUEST = "friend_request", "demande d'ami"

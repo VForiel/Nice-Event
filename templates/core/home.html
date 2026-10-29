@@ -35,6 +35,24 @@
 
 <div class="stripe" aria-hidden="true"></div>
 
+{% if recommended %}
+<section class="section section-tight">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="section-title">{% translate "Recommandé pour toi" %}</h2>
+      <a class="link-more" href="{% url 'events:discover' %}">{% translate "Découvrir" %} {% icon "arrow" 16 %}</a>
+    </div>
+    <div class="cards">{% for event in recommended %}{% include "events/_card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% elif user.is_authenticated %}
+<section class="section section-tight">
+  <div class="wrap">
+    <p class="empty-inline">{% translate "Dis-nous ce qui te tente (« Ça m'intéresse » ou « Pas pour moi » sur les cartes) pour recevoir des recommandations." %} <a href="{% url 'events:discover' %}">{% translate "Commencer avec Découvrir" %}</a></p>
+  </div>
+</section>
+{% endif %}
+
 {% if featured %}
 <section class="section section-tight">
   <div class="wrap">

@@ -30,7 +30,7 @@ Site : http://localhost:8000 (anglais sous `/en/`), gestion : `/gestion/`, admin
 | `core` | accueil, pages fixes, sécurité (blocage des IP), images, Markdown, planificateur de tâches (`core/jobs.py`, commande `worker`), sauvegardes |
 | `venues` | communes des Alpes-Maritimes et de Monaco (zones Nice / Métropole / Côte / Arrière-pays / Monaco), lieux, géocodage BAN (`venues/geocode.py`) |
 | `events` | catégories (`events/categories.py` : emoji, couleur, pictogramme), événements, publication, liste filtrable, carte, iCal, JSON-LD |
-| `community` | comptes (connexion par courriel ou avec Google : `community/google.py`, OpenID Connect sans bibliothèque, identifiants dans `/gestion/reglages/`, une adresse non confirmée n'est jamais reprise), confirmation d'adresse, profils, amis, « J'y vais », invitations, notifications (+ courriel), signalements, avis (commentaires + notes) et photos/vidéos des événements |
+| `community` | comptes (connexion par courriel ou avec Google : `community/google.py`, OpenID Connect sans bibliothèque, identifiants dans `/gestion/reglages/`, une adresse non confirmée n'est jamais reprise), confirmation d'adresse, profils, amis, « J'y vais », « Ça m'intéresse » / « Pas pour moi » (`EventInterest`), invitations, notifications (+ courriel), signalements, avis (commentaires + notes) et photos/vidéos des événements |
 | `social` | visuels générés (`social/visuals.py`), diffusion Instagram / Facebook / X / Bluesky (`social/networks.py`), publications programmées |
 | `aggregator` | agendas externes : connecteurs iCal, JSON-LD (schema.org Event) et OpenAgenda, import, doublons, disparitions |
 | `siteconfig` | réglages en base (courriel, réseaux, horaires des scans…), secrets chiffrés |
@@ -60,6 +60,19 @@ Site : http://localhost:8000 (anglais sous `/en/`), gestion : `/gestion/`, admin
   et l'équipe, y compris depuis `/gestion/signalements/`.
 - **Profil** : rubrique « Y est allé·e » (événements passés où le membre a cliqué « J'y vais »), visible selon le réglage
   « qui voit les événements auxquels j'ai participé » (tous ceux qui voient le profil, amis, moi seul·e).
+
+## Intérêts et recommandations
+
+- **« Ça m'intéresse » / « Pas pour moi »** sur chaque carte et chaque page d'événement, y compris les événements repris
+  d'agendas externes (où « J'y vais » n'existe pas) ; sans rechargement (`static/js/cards.js`), recliquer annule.
+  Les « Ça m'intéresse » à venir s'affichent sur le profil (rubrique « Ça l'intéresse », même réglage de visibilité
+  que « Y va bientôt »).
+- **« Recommandé pour toi »** sur l'accueil dès trois signaux : `events/recommend.py` compare les catégories, les mots
+  du titre, la source, la commune et le prix des événements notés (« J'y vais » compte comme « Ça m'intéresse »), plus
+  un peu de popularité, d'amis et de proximité dans le temps ; deux événements au plus par catégorie.
+- **Découvrir** (`/decouvrir/`, membres connectés) : une carte à la fois, glissée à droite ou à gauche (ou boutons,
+  flèches du clavier), toucher pour le détail ; mêmes recommandations avec une part de hasard pour faire découvrir.
+- **« Afficher plus d'événements »** ajoute la suite à la liste sans recharger : on garde sa place dans le fil.
 
 ## Filtres
 

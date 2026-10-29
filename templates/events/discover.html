@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n ne static %}
+{% block title %}{% translate "Découvrir" %}{% endblock %}
+{% block body_class %}page-discover{% endblock %}
+{% block head %}<script src="{% static 'js/discover.js' %}" defer></script>{% endblock %}
+
+{% block content %}
+<header class="page-head page-head-tight">
+  <div class="wrap">
+    <h1 class="page-title">{% translate "Découvrir" %}</h1>
+    <p class="page-lede">{% translate "Une sortie à la fois, choisie d'après tes goûts. Glisse à droite si ça te tente, à gauche sinon : chaque choix affine tes recommandations." %}</p>
+  </div>
+</header>
+<div class="wrap">
+  <div class="discover" data-discover data-next="{% url 'events:discover_next' %}" data-csrf="{{ csrf_token }}"
+       data-label-yes="{% translate "Ça m'intéresse" %}" data-label-no="{% translate "Pas pour moi" %}" data-label-via="{% translate "via" %}">
+    <div class="discover-stack" data-stack aria-live="polite">
+      <div class="discover-empty" data-empty hidden>
+        <p class="empty-title">{% translate "Tu as tout vu !" %}</p>
+        <p>{% translate "Plus rien à te proposer pour l'instant : de nouveaux événements arrivent plusieurs fois par jour." %}</p>
+        <p><a class="btn btn-ghost" href="{% url 'community:me' %}#interets">{% translate "Revoir ce qui m'intéresse" %}</a></p>
+      </div>
+    </div>
+    <div class="discover-actions">
+      <button class="ia ia-no" type="button" data-choice="no" title="{% translate "Pas pour moi" %}">{% icon "close" 28 %}<span class="sr">{% translate "Pas pour moi" %}</span></button>
+      <a class="ia discover-open" href="#" data-open title="{% translate "Voir le détail" %}">{% icon "arrow" 22 %}<span class="sr">{% translate "Voir le détail" %}</span></a>
+      <button class="ia ia-yes" type="button" data-choice="yes" title="{% translate "Ça m'intéresse" %}">{% icon "star" 28 %}<span class="sr">{% translate "Ça m'intéresse" %}</span></button>
+    </div>
+    <p class="discover-hint">{% translate "Au clavier : flèche gauche ou droite, Entrée pour le détail." %}</p>
+  </div>
+</div>
+{% endblock %}

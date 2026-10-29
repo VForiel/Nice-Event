@@ -19,5 +19,6 @@
       {% if event.friends_going %}<p class="going">{% blocktranslate count n=event.friends_going %}{{ n }} ami y va{% plural %}{{ n }} amis y vont{% endblocktranslate %}</p>{% endif %}
     </div>
   </a>
+  {% if user.is_authenticated and event.is_upcoming %}{% include "events/_interest.html" %}{% endif %}
 </article>
 {% endwith %}

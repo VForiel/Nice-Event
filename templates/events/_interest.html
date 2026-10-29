@@ -1,0 +1,6 @@
+{% load i18n ne %}{% my_interest event as mine %}
+<form class="interest{% if big %} interest-big{% endif %}" method="post" action="{% url 'events:interest' event.slug %}" data-interest>
+  {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+  <button class="ia ia-yes" type="submit" name="value" value="yes" aria-pressed="{% if mine == 1 %}true{% else %}false{% endif %}" title="{% translate "Ça m'intéresse" %}">{% icon "star" 18 %}{% if big %} <span>{% translate "Ça m'intéresse" %}</span>{% else %}<span class="sr">{% translate "Ça m'intéresse" %}</span>{% endif %}</button>
+  <button class="ia ia-no" type="submit" name="value" value="no" aria-pressed="{% if mine == -1 %}true{% else %}false{% endif %}" title="{% translate "Pas pour moi" %}">{% icon "close" 18 %}{% if big %} <span>{% translate "Pas pour moi" %}</span>{% else %}<span class="sr">{% translate "Pas pour moi" %}</span>{% endif %}</button>
+</form>

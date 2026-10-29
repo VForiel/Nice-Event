@@ -41,6 +41,19 @@
       </section>
       {% endif %}
 
+      {% if interested %}
+      <section class="profile-block" id="interets">
+        <h2>{% translate "Ça l'intéresse" %}</h2>
+        {% if rel == "self" %}<p class="help">{% translate "Les événements à venir que tu as marqués « Ça m'intéresse »." %} <a href="{% url 'events:discover' %}">{% translate "En découvrir d'autres" %}</a></p>{% endif %}
+        <div class="cards cards-compact">{% for event in interested %}{% include "events/_card.html" %}{% endfor %}</div>
+      </section>
+      {% elif rel == "self" %}
+      <section class="profile-block" id="interets">
+        <h2>{% translate "Ça l'intéresse" %}</h2>
+        <p class="help">{% translate "Rien pour l'instant : marque des événements « Ça m'intéresse », ou fais un tour sur Découvrir." %} <a href="{% url 'events:discover' %}">{% translate "Découvrir" %}</a></p>
+      </section>
+      {% endif %}
+
       {% if went %}
       <section class="profile-block">
         <h2>{% translate "Y est allé·e" %}</h2>

@@ -524,3 +524,61 @@ def api_venues(request):
     return JsonResponse({"results": [
         {"id": v.pk, "name": v.name, "address": v.address, "commune": v.commune_id, "commune_name": v.commune.name,
          "lat": v.lat, "lon": v.lon} for v in venues]})
+
+
+# Ça m'intéresse / Pas pour moi, et page Découvrir ------------------------------------------------------------------
+
+@login_required
+@require_POST
+def interest(request, slug):
+    """Bascule « Ça m'intéresse » (value=yes) ou « Pas pour moi » (value=no) ; recliquer annule."""
+    from community.models import EventInterest
+
+    event = get_object_or_404(Event.objects.published(), slug=slug)
+    wanted = {"yes": EventInterest.Value.YES, "no": EventInterest.Value.NO}.get(request.POST.get("value"))
+    current = EventInterest.objects.filter(event=event, user=request.user).first()
+    if wanted is None or (current and current.value == wanted and request.POST.get("keep") != "1"):
+        if current:
+            current.delete()
+        value = 0
+    else:
+        EventInterest.objects.update_or_create(event=event, user=request.user, defaults={"value": wanted})
+        value = int(wanted)
+    if "application/json" in request.headers.get("Accept", ""):
+        return JsonResponse({"value": value})
+    back = request.POST.get("next", "")
+    if back.startswith("/") and not back.startswith("//"):
+        return redirect(back)
+    return redirect(event.get_absolute_url())
+
+
+def discover_card(event):
+    """Ce que la page Découvrir affiche d'un événement (rempli côté navigateur, sans rechargement)."""
+    from core.templatetags.ne import hours, when
+
+    cat = event.main_category
+    return {
+        "id": event.pk, "url": event.get_absolute_url(), "title": event.title_tr, "summary": event.summary_tr,
+        "when": str(when(event))[:1].upper() + str(when(event))[1:], "hours": str(hours(event)),
+        "place": f"{event.venue.name} · {event.venue.commune.name}", "price": str(event.price_label),
+        "free": event.is_free, "category": cat.name_tr if cat else "", "tone": cat.tone if cat else "nuit",
+        "photo": thumbnail_url(event.photo, 720) if event.photo else "",
+        "source": event.source.name if event.source_id else "",
+        "interest": reverse("events:interest", args=[event.slug]),
+    }
+
+
+@login_required
+def discover(request):
+    return render(request, "events/discover.html")
+
+
+@login_required
+@require_GET
+def discover_next(request):
+    """Les prochains événements à proposer : les plus susceptibles de plaire, avec une part de découverte."""
+    from .recommend import recommend
+
+    seen = [int(pk) for pk in request.GET.get("vus", "").split(",") if pk.isdigit()][:500]
+    events = recommend(request.user, limit=6, exclude=seen, explore=0.4, per_category=2)
+    return JsonResponse({"events": [discover_card(e) for e in events]})

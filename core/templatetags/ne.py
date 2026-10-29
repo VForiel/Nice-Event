@@ -189,3 +189,17 @@ def has_param(request, spec):
     """{{ request|has_param:"categorie=concert" }}"""
     name, _sep, value = spec.partition("=")
     return value in request.GET.getlist(name)
+
+
+@register.simple_tag(takes_context=True)
+def my_interest(context, event):
+    """1 (« Ça m'intéresse »), -1 (« Pas pour moi ») ou 0 pour le membre connecté ; une seule requête par page."""
+    request = context.get("request")
+    user = getattr(request, "user", None)
+    if not user or not user.is_authenticated:
+        return 0
+    if not hasattr(request, "_interests"):
+        from community.models import EventInterest
+
+        request._interests = dict(EventInterest.objects.filter(user=user).values_list("event_id", "value"))
+    return request._interests.get(event.pk, 0)

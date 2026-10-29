@@ -82,6 +82,10 @@
       </div>
 
       <div class="cta">
+        {% if event.is_upcoming and event.status == 'published' %}
+          {% if user.is_authenticated %}{% include "events/_interest.html" with big=True %}
+          {% else %}<a class="btn btn-ghost btn-block" href="{% url 'community:login' %}?next={{ request.path|urlencode }}">{% icon "star" 18 %} {% translate "Ça m'intéresse" %}</a>{% endif %}
+        {% endif %}
         {% if event.is_external %}
         <a class="btn btn-primary btn-block" href="{{ event.external_url }}" rel="noopener nofollow" target="_blank">{% translate "Voir sur le site de l'organisateur" %} {% icon "external" 18 %}</a>
         {% else %}

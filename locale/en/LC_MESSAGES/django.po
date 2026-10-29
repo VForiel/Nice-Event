@@ -410,6 +410,10 @@ msgid "Ocre"
 msgstr "Ochre"
 
 #: community/models.py
+msgid "Pas pour moi"
+msgstr "Not for me"
+
+#: community/models.py
 msgid "Personne"
 msgstr "Nobody"
 
@@ -528,6 +532,10 @@ msgstr "website"
 #: community/models.py
 msgid "téléphone"
 msgstr "phone"
+
+#: community/models.py
+msgid "Ça m'intéresse"
+msgstr "Interested"
 
 #: community/urls.py
 msgid "amis/"
@@ -1474,6 +1482,14 @@ msgid "carte/evenements.json"
 msgstr "map/events.json"
 
 #: events/urls.py
+msgid "decouvrir/"
+msgstr "discover/"
+
+#: events/urls.py
+msgid "decouvrir/suivants.json"
+msgstr "discover/next.json"
+
+#: events/urls.py
 msgid "evenements/"
 msgstr "events/"
 
@@ -1488,6 +1504,10 @@ msgstr "events/<slug:slug>/"
 #: events/urls.py
 msgid "evenements/<slug:slug>/en-ligne/"
 msgstr "events/<slug:slug>/live/"
+
+#: events/urls.py
+msgid "evenements/<slug:slug>/interet/"
+msgstr "events/<slug:slug>/interest/"
 
 #: events/urls.py
 msgid "evenements/<slug:slug>/inviter/"
@@ -1824,6 +1844,10 @@ msgstr "Privacy"
 #: templates/base.html
 msgid "Contact"
 msgstr "Contact"
+
+#: templates/base.html
+msgid "Découvrir"
+msgstr "Discover"
 
 #: templates/base.html
 msgid "En savoir plus"
@@ -2308,6 +2332,14 @@ msgid "Compléter mon profil"
 msgstr "Complete my profile"
 
 #: templates/community/profile.html
+msgid "En découvrir d'autres"
+msgstr "Discover more"
+
+#: templates/community/profile.html
+msgid "Les événements à venir que tu as marqués « Ça m'intéresse »."
+msgstr "Upcoming events you marked “Interested”."
+
+#: templates/community/profile.html
 msgid "Liens"
 msgstr "Links"
 
@@ -2332,6 +2364,10 @@ msgid "Présentation"
 msgstr "About"
 
 #: templates/community/profile.html
+msgid "Rien pour l'instant : marque des événements « Ça m'intéresse », ou fais un tour sur Découvrir."
+msgstr "Nothing yet: mark events “Interested”, or have a look at Discover."
+
+#: templates/community/profile.html
 msgid "Signaler ce profil"
 msgstr "Report this profile"
 
@@ -2354,6 +2390,10 @@ msgstr "Went to"
 #: templates/community/profile.html
 msgid "Y va bientôt"
 msgstr "Going soon"
+
+#: templates/community/profile.html
+msgid "Ça l'intéresse"
+msgstr "Interested in"
 
 #: templates/community/profile_private.html
 msgid "Ce profil n'est visible que par les membres connectés."
@@ -2510,12 +2550,20 @@ msgid "Ce soir"
 msgstr "Tonight"
 
 #: templates/core/home.html
+msgid "Commencer avec Découvrir"
+msgstr "Start with Discover"
+
+#: templates/core/home.html
 msgid "Concerts, apéros, randos, ateliers, rencontres : l'agenda que tout le monde peut remplir, de Menton à Cannes."
 msgstr "Concerts, drinks, hikes, workshops, meetups: the events calendar anyone can add to, from Menton to Cannes."
 
 #: templates/core/home.html
 msgid "Crée ton profil, retrouve tes amis, dis où tu vas et vois qui vient. Gratuit, sans pub, sans traqueur."
 msgstr "Create your profile, find your friends, say where you're going and see who's coming. Free, no ads, no trackers."
+
+#: templates/core/home.html
+msgid "Dis-nous ce qui te tente (« Ça m'intéresse » ou « Pas pour moi » sur les cartes) pour recevoir des recommandations."
+msgstr "Tell us what you fancy (“Interested” or “Not for me” on the cards) to get recommendations."
 
 #: templates/core/home.html
 msgid "En famille"
@@ -2552,6 +2600,10 @@ msgstr "What's on in <em>Nice</em> tonight<span class=\"q\">?</span>"
 #: templates/core/home.html
 msgid "Rechercher"
 msgstr "Search"
+
+#: templates/core/home.html
+msgid "Recommandé pour toi"
+msgstr "Recommended for you"
 
 #: templates/core/home.html
 msgid "Rien d'annoncé pour aujourd'hui… pour l'instant."
@@ -2853,6 +2905,34 @@ msgstr "See on the organiser's site"
 msgid "Événement masqué : il n'est visible que par toi et l'équipe."
 msgstr "Hidden event: only you and the team can see it."
 
+#: templates/events/discover.html
+msgid "Au clavier : flèche gauche ou droite, Entrée pour le détail."
+msgstr "Keyboard: left or right arrow, Enter for details."
+
+#: templates/events/discover.html
+msgid "Plus rien à te proposer pour l'instant : de nouveaux événements arrivent plusieurs fois par jour."
+msgstr "Nothing more to suggest for now: new events arrive several times a day."
+
+#: templates/events/discover.html
+msgid "Revoir ce qui m'intéresse"
+msgstr "See what I'm interested in"
+
+#: templates/events/discover.html
+msgid "Tu as tout vu !"
+msgstr "You've seen it all!"
+
+#: templates/events/discover.html
+msgid "Une sortie à la fois, choisie d'après tes goûts. Glisse à droite si ça te tente, à gauche sinon : chaque choix affine tes recommandations."
+msgstr "One outing at a time, picked for your taste. Swipe right if you fancy it, left if not: every choice sharpens your recommendations."
+
+#: templates/events/discover.html
+msgid "Voir le détail"
+msgstr "See details"
+
+#: templates/events/discover.html
+msgid "via"
+msgstr "via"
+
 #: templates/events/form.html
 msgid "Adresse trouvée : l'événement sera bien placé sur la carte."
 msgstr "Address found: the event will be placed correctly on the map."
@@ -2952,10 +3032,6 @@ msgstr "See the event"
 #: templates/events/map.html
 msgid "Voir la liste des événements"
 msgstr "See the list of events"
-
-#: templates/events/map.html
-msgid "via"
-msgstr "via"
 
 #: templates/events/published.html
 msgid "%(n)s date créée."

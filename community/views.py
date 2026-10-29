@@ -20,7 +20,7 @@ from events.models import Event
 
 from . import confirmation
 from .forms import CommentForm, DeleteAccountForm, EmailForm, MediaForm, ProfileForm, ReportForm, SignupForm
-from .models import Comment, Friendship, Media, Notification, Profile, Report, friends_of, relation
+from .models import Comment, EventInterest, Friendship, Media, Notification, Profile, Report, friends_of, relation
 from .notify import notify
 
 SIGNUPS_PER_HOUR = 5
@@ -221,8 +221,11 @@ def profile(request, handle):
     rel = relation(request.user, person.user)
     going = []
     events = Event.objects.published().upcoming().select_related("venue__commune").prefetch_related("categories")
+    interested = []
     if person.show_events or rel == "self":
         going = events.filter(attendances__user=person.user).exclude(organizer=person.user)[:6]
+        interested = (events.filter(interests__user=person.user, interests__value=EventInterest.Value.YES)
+                      .exclude(attendances__user=person.user)[:24])
     organized = events.filter(organizer=person.user)[:6]
     went = []
     if person.past_events_visible_to(rel):
@@ -230,7 +233,7 @@ def profile(request, handle):
                 .select_related("venue__commune").prefetch_related("categories")[:12])
     return render(request, "community/profile.html", {
         "person": person, "rel": rel, "friends": friends_of(person.user)[:12],
-        "friend_count": friends_of(person.user).count(), "going": going, "organized": organized, "went": went,
+        "friend_count": friends_of(person.user).count(), "going": going, "interested": interested, "organized": organized, "went": went,
         "interests": person.interests.all(),
         "show_contacts": person.has_contacts and person.contacts_visible_to(request.user, rel),
     })

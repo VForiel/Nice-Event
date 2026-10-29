@@ -44,7 +44,7 @@ a.cat:hover { transform: translateY(-2px); }
 
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(270px, 100%), 1fr)); gap: 16px; }
 .cards-compact { grid-template-columns: repeat(auto-fill, minmax(min(230px, 100%), 1fr)); }
-.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; transition: border-color .15s ease, transform .15s ease; }
+.card { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; transition: border-color .15s ease, transform .15s ease; }
 .card:hover { border-color: var(--ink); transform: translateY(-2px); }
 .card-link { display: flex; flex-direction: column; height: 100%; color: var(--ink); text-decoration: none; }
 .card-pic { position: relative; aspect-ratio: 16 / 9; background: var(--tone); overflow: hidden; }
@@ -303,3 +303,49 @@ a.dd-btn::after { display: none; }
 .support-dialog h2 { margin: 0 0 8px; }
 .support-dialog p { margin: 0 0 18px; }
 .support-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Ça m'intéresse / Pas pour moi */
+.interest { display: flex; gap: 6px; }
+.card .interest { position: absolute; right: 10px; top: 10px; }
+.card:has(.interest) .card-state { top: 52px; }
+.ia { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--card); color: var(--ink-2); cursor: pointer; transition: background .15s ease, color .15s ease, border-color .15s ease; }
+.ia:hover { color: var(--ink); border-color: var(--ink); }
+.ia-yes[aria-pressed="true"] { background: var(--soleil); border-color: var(--soleil); color: var(--soleil-ink); }
+.ia-yes[aria-pressed="true"] .icon { fill: currentColor; }
+.ia-no[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.interest-big { margin-bottom: 10px; }
+.interest-big .ia { flex: 1; width: auto; height: auto; min-height: 44px; border-radius: var(--radius); display: inline-flex;
+  justify-content: center; align-items: center; gap: 8px; padding: 8px 12px; font-weight: 700; }
+.card.is-dismissed { opacity: .45; }
+.card.is-dismissed:hover { opacity: 1; }
+
+/* Découvrir : une carte à la fois, glissée à gauche (pas pour moi) ou à droite (ça m'intéresse) */
+.discover { max-width: 460px; margin: 0 auto; padding: 8px 0 32px; }
+.discover-stack { position: relative; height: clamp(340px, calc(100svh - 300px), 600px); touch-action: pan-y; }
+@media (max-width: 600px) { .page-discover .page-lede { display: none; } .page-discover .page-head { padding-bottom: 8px; } }
+.swipe-card { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius); overflow: hidden; user-select: none; cursor: grab; transition: transform .25s ease, opacity .25s ease; }
+.swipe-card.is-dragging { transition: none; cursor: grabbing; }
+.swipe-card.is-next { transform: scale(.96) translateY(10px); pointer-events: none; }
+.swipe-pic { position: relative; flex: 0 0 40%; display: grid; place-items: center; background: var(--tone); color: var(--tone-ink);
+  font: 800 1.75rem var(--title); }
+.swipe-pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.swipe-body { flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 16px; overflow: hidden; }
+.swipe-title { font: 800 1.5rem/1.15 var(--title); letter-spacing: -.02em; }
+.swipe-summary { color: var(--ink-2); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; }
+.swipe-stamp { position: absolute; top: 18px; padding: 4px 12px; border: 3px solid; border-radius: 6px; font: 800 1.25rem var(--title);
+  text-transform: uppercase; opacity: 0; transform: rotate(-12deg); background: var(--card); }
+.swipe-stamp-yes { left: 18px; color: var(--pin); }
+.swipe-stamp-no { right: 18px; color: var(--corail-ink); transform: rotate(12deg); }
+.discover-actions { display: flex; justify-content: center; align-items: center; gap: 18px; margin-top: 18px; }
+.discover-actions .ia { width: 64px; height: 64px; }
+.discover-actions .ia .icon { width: 28px; height: 28px; }
+.discover-actions .ia-yes { color: var(--pin); }
+.discover-actions .ia-no { color: var(--corail-ink); }
+.discover-actions .discover-open { width: 48px; height: 48px; }
+.discover-hint { margin-top: 12px; text-align: center; color: var(--ink-2); font-size: .9375rem; }
+.discover-empty { position: absolute; inset: 0; display: grid; place-content: center; gap: 12px; text-align: center; padding: 24px;
+  border: 1px dashed var(--line); border-radius: var(--radius); }
+@media (prefers-reduced-motion: reduce) { .swipe-card { transition: none; } }
+@media (hover: none) { .discover-hint { display: none; } }
