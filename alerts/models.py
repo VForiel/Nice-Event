@@ -1,4 +1,4 @@
-"""Alertes des membres : canaux de réception (comme UniCA-sport-notifier) et événements déjà signalés.
+"""Alertes des membres : canaux de réception et événements déjà signalés.
 
 Les filtres eux-mêmes sont des events.SavedFilter (règle + alerte + fréquence).
 """
